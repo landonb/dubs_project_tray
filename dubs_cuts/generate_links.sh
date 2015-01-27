@@ -15,9 +15,25 @@ find . -maxdepth 1 -type l -exec /bin/rm {} +
 # ordered logically and are pretty printed
 # in the project tray.
 
+fpath_dirs=()
+
+add_dubs_all=true
+if [[ -e ~/.vim/bundle_ ]]; then
+  fpath_dirs+=(~/.vim/bundle_/dubs*)
+elif [[ -e ~/.vim/bundle ]]; then
+  fpath_dirs+=(~/.vim/bundle/dubs*)
+  add_dubs_all=false
+fi
+if $add_dubs_all; then
+  if [[ -e ~/.vim/bundle/dubs_all ]]; then
+    fpath_dirs+=(~/.vim/bundle/dubs_all)
+  fi
+fi
+
+fpath_dirs+=(~/.vim/autoload)
+
 padline1='---------'
-for fpath in $(find ~/.vim/bundle/dubs* \
-                    ~/.vim/autoload \
+for fpath in $(find ${fpath_dirs[@]} \
                       -type f \
                       -regextype "posix-egrep" \
                       -regex ".*\.(in|py|rb|rst|sh|txt|vim)(rc)?$" \
@@ -29,6 +45,7 @@ for fpath in $(find ~/.vim/bundle/dubs* \
     proj_name=$(basename $(dirname $(dirname $fpath)))
     if [[    $proj_name == '' \
           || $proj_name == 'bundle' \
+          || $proj_name == 'bundle_' \
           || $proj_name == 'packages' ]]; then
       filedir_=${filedir}
     else
@@ -49,10 +66,13 @@ done
 
 # The two symlinks were neglected by the find and
 # their dubs_cuts names end up buried in the readmes.
-/bin/ln -s ~/.vim/bundle/dubs_all/dubs_projects.vim dubs_all--dubs_projects.vim
-/bin/ln -s ~/.vim/bundle/dubs_all/dubs_tagpaths.vim dubs_all--dubs_tagpaths.vim
+/bin/ln -s ~/.vim/bundle_/dubs_grep_steady/dubs_projects.vim dubs_all--dubs_projects.vim
+/bin/ln -s ~/.vim/bundle_/dubs_edit_juice/dubs_tagpaths.vim dubs_all--dubs_tagpaths.vim
 
 /bin/ln -s ~/.vim/README.rst dubs_all--README.rst
 /bin/ln -s ~/.vim/README-FIXME.rst dubs_all--README-FIXME.rst
 /bin/ln -s ~/.vim/README-USING.rst dubs_all--README-USING.rst
+/bin/ln -s ~/.vim/readme-using.pt1.rst dubs_all--readme-using.pt1.rst
+/bin/ln -s ~/.vim/readme-using.pt2.rst dubs_all--readme-using.pt2.rst
+/bin/ln -s ~/.vim/readme-using.make.sh dubs_all--readme-using.make.sh
 
