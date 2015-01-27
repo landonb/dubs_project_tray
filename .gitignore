@@ -1,0 +1,4 @@
+doc/tags
+dubs_cuts/*
+!dubs_cuts/generate_links.sh
+

@@ -1,0 +1,65 @@
+*dubs_project_tray.txt*	For Vim version 7.4.	Last change: 2015 Jan 23
+
+Dubsacks VIM -- Subtly Improved Project Tray~
+
+ENHANCED PROJECT PLUGIN REFERENCE		*dubs-project-tray*
+
+1. About This Plugin			|dubs-prjtray-about|
+2. Project Tray Commands		|dubs-prjtray-commands|
+
+==============================================================================
+1. About This Plugin					*dubs-prjtray-about*
+
+A simple wrapper around the Project plugin.
+
+  http://www.vim.org/scripts/script.php?script_id=69
+
+Additional features:
+
+- Toggle the project tray easily with <Alt-Shift-4>.
+  The key combo was chosen to integrate nicely with
+  Dubsacks Vim Toolkit, at
+    http://github.com/landonb/dubsacks_vim
+
+- Put your '.vimprojects' file anywhere in your Vim
+  folder and it'll be located.
+
+- Watch window sizes be fixed after hiding the tray.
+
+- Enjoy a few small usability tweaks to the original
+  Project plugin. What tweaks? Spoilers!
+
+==============================================================================
+2. Project Tray Commands			*dubs-prjtray-commands*
+
+				*<Shift-Alt-4>_* *<Alt-Shift-4>_* *<M-$>_* *<S-M-4>_* *<S-A-4>_*
+<Shift-Alt-4>		Toggle Project tray.
+			Use \c command in project tray to
+			add projects; <F5> to refresh.
+                        More hints in :help project.
+
+Details~
+
+Type <Shift-Alt-4> once to open the project tray.
+Type again to close the project tray. Repeat.
+
+This project includes a starter '.vimprojects'
+file. When you open the project tray, you'll see
+some comments at the top of the file. Read them.
+
+tl;dr, in command mode, type \c and answer two
+questions -- give your new project a name, and then
+enter its absolute path -- and project will create
+a new project for you.
+
+Hints: If you have two or more projects and would like
+to reorder them, rather than selecting, copying and
+pasting, there's an easier way. First, collapse all
+directories by typing zM, and then move the cursor
+on to the same line as the collapsed project you want
+to move. Finally, type <Ctrl-Up> and <Ctrl-Down> to
+swap the whole project with the line above or the line
+below; press the key combo multiple times to move the
+project to a new position.
+
+ vim:tw=78:ts=8:ft=help:norl:

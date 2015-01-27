@@ -1,0 +1,29 @@
+# THIS FILE IS SOMEWHAT
+#  AUTO-GENERATED.
+# :help project  *help*
+#  \c   Add new project
+# <F5>  Refresh project
+#  zA   Open/Close Fold
+# zc/zo Tiny Open/Close
+#  zM   Close All Folds
+#  zR   Open All Foldzs
+# zk/zj <--  / --> Fold
+
+# FIXME: Update .vim dir.
+# .vim Working dir
+VIM Home Dir =$HOME/.vim {
+}
+
+# Bash working files and some application config files
+Bash Etc =$HOME filter=".bashrc* .gitconfig .psqlrc* .vim* .waka*" {
+ .bashrc
+ .gitconfig
+ .psqlrc
+ .viminfo
+ .vimrc
+ .wakatime.cfg
+ .wakatime.data
+ .wakatime.db
+ .wakatime.log
+}
+
