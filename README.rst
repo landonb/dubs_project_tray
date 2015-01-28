@@ -20,6 +20,30 @@ Additional features:
 - Enjoy a few small usability tweaks to the original
   Project plugin.
 
+Installation
+------------
+
+Standard Pathogen installation:
+
+.. code-block:: bash
+
+   cd ~/.vim/bundle/
+   git clone https://github.com/landonb/dubs_project_tray.git
+
+Or, Standard submodule installation:
+
+.. code-block:: bash
+
+   cd ~/.vim/bundle/
+   git submodule add https://github.com/landonb/dubs_project_tray.git
+
+Online help:
+
+.. code-block:: vim
+
+   :Helptags
+   :help dubs-project-tray
+
 Usage
 -----
 
