@@ -1,12 +1,12 @@
 " File:        project.vim
-" Last Author: Landon Bouma (dubsacks &#x40; retrosoft &#x2E; com)
-" Last Change: Mon 26 Jan 2015 11:47:03 AM C
+" Last Author: Landon Bouma (landonb &#x40; retrosoft &#x2E; com)
+" Last Change: Tue 27 Jan 2015 04:01:11 PM C
 " Version:     1.4.2.lbfork (search [lb] to see changes -- just a few tweaks)
 " Project Page: https://github.com/landonb/dubs_project
 " 2014.01.21: See also: https://github.com/destroy/project.vim
 "=============================================================================
 " Orig Author: Aric Blumer (Aric.Blumer at aricvim@charter.net)
-" Last Change: Mon 26 Jan 2015 11:47:03 AM C
+" Last Change: Tue 27 Jan 2015 04:01:11 PM C
 " Version:     1.4.1
 " See documentation in accompanying help file
 " You may use this code in whatever way you see fit.
