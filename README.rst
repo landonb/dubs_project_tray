@@ -83,3 +83,48 @@ Key Mappings
                                                             file; basically, use ``\c`` to add a new project).
 ===========================  ============================  ==============================================================================
 
+Brackets in Directory Names
+---------------------------
+
+Bug: There's an issue handling directories with
+brackets in their names, such as those used in a
+`cookiecutter <https://github.com/audreyr/cookiecutter>`__
+which uses the `Jinja template engine <http://jinja.pocoo.org/>`__
+which uses brackets, e.g., ``cc-pyproject/{{project_name}}``.
+
+Specifically, folding doesn't work well. If the fold
+name is shorter than the project window width, e.g.,
+
+.. code-block:: vim
+
+   ex={{example}} {
+
+then the built-in ``za`` command works (which toggles
+folding), albeit not until after typing it at least
+three times. But if the name is wider than the project
+window, e.g.,
+
+.. code-block:: vim
+
+   long_{{example}}={{exammmmmmmmmmmmmmmmmmmmmple}} {
+
+so the text is clipped by the Vim window, using ``za``
+changes the name of the fold, e.g., from
+
+.. code-block:: vim
+
+   long_{{example}}={{exammmmmmmmmmmmmmmmmmmmmple}} {
+
+to
+
+.. code-block:: vim
+
+       long_{example}}------
+
+(with leading spaces, too)
+but doesn't collapse the directory listing.
+
+I wouldn't normally note a bug in a readme but this
+problem seems inherent to Vim and is something I'll
+probably never fix.
+

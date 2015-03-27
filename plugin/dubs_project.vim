@@ -1,12 +1,12 @@
 " File:        project.vim
 " Last Author: Landon Bouma (landonb &#x40; retrosoft &#x2E; com)
-" Last Change: Tue 27 Jan 2015 04:01:11 PM C
-" Version:     1.4.2.lbfork (search [lb] to see changes -- just a few tweaks)
+" Last Change: Wed 11 Feb 2015 05:05:09 PM C
+" Version:     1.4.2.lbfork2 (search [lb] to see changes)
 " Project Page: https://github.com/landonb/dubs_project
 " 2014.01.21: See also: https://github.com/destroy/project.vim
 "=============================================================================
 " Orig Author: Aric Blumer (Aric.Blumer at aricvim@charter.net)
-" Last Change: Tue 27 Jan 2015 04:01:11 PM C
+" Auth Change: Fri 13 Oct 2006 09:47:08 AM EDT
 " Version:     1.4.1
 " See documentation in accompanying help file
 " You may use this code in whatever way you see fit.
@@ -82,7 +82,10 @@ function! s:Project(filename) " <<<
     "   The foldtext function for displaying just the description.
     function! ProjFoldText()
         let line=substitute(getline(v:foldstart),'^[ \t#]*\([^=]*\).*', '\1', '')
-        let line=strpart('                                     ', 0, (v:foldlevel - 1)).substitute(line,'\s*{\+\s*', '', '')
+        " 2015.02.11: [lb] Here and throughout, I added [^{] and {$ to
+        " ensure we're dealing with fold delimiters and not confusing that
+        " delimiter with a value pathname (with on *nix can contain brackets).
+        let line=strpart('                                     ', 0, (v:foldlevel - 1)).substitute(line,'\s*{[^{]\s*', '', '')
         return line
     endfunction ">>>
     " s:DoSetup() <<<
@@ -290,15 +293,52 @@ function! s:Project(filename) " <<<
     function! s:RecordPrevBuffer_au()
         let g:proj_last_buffer = bufnr('%')
     endfunction ">>>
+
+    " 2015.02.11: Added by [lb] to support {{cookiecutter}} directories
+    "             and other paths with brackets in their name.
+    function! s:get_correct_foldlevel(lineno)
+        let foldlev = foldlevel(a:lineno)
+
+        " Do substitute to count number of left brackets.
+        " Note the 'n' actually skips the match, so no substitution
+        " happens (we could instead .s/{/{/g but that adds an undo).
+
+        " [lb] tried a try/catch/endtry here but I'd still get an
+        " error message, and silent! seems to suppress both the
+        " message and the error. Just be sure to clear v:statusmsg
+        " first: if it's not and the substitute fails, it won't be
+        " reset and will contain whatever its last value was, and then
+        " we can't test it to see if the substitute was successful.
+        let v:statusmsg = ""
+        " Count the number of opening brackets, which are legal
+        " directory characters but also used to delimit folds.
+        " The Vim substitute operator returns, e.g., "5 matches on 1 line".
+        " A few tests:
+        "   s/{//gn | echo v:statusmsg " { { { {
+        "   s/{//gn | let l_bracket_cnt = split(v:statusmsg)[0] " { { { {
+        " Possible raises we'll ignore (no try/catch/endtry) b/c of silent!:
+        "   E16: Invalid range
+        "   E486: Pattern not found: {
+        silent! exe a:lineno . "s/{//gn"
+        let captured_sm = v:statusmsg
+        if (captured_sm != "")
+            let l_bracket_cnt = split(captured_sm)[0]
+            if (l_bracket_cnt)
+                let foldlev -= l_bracket_cnt - 1
+            endif
+        endif
+        return foldlev
+    endfunction ">>>
+
     " s:RecursivelyConstructDirectives(lineno) <<<
     "   Construct the inherited directives
     function! s:RecursivelyConstructDirectives(lineno)
         let lineno=s:FindFoldTop(a:lineno)
         let foldlineno = lineno
-        let foldlev=foldlevel(lineno)
+        let foldlev=s:get_correct_foldlevel(lineno)
         let parent_infoline = ''
         if foldlev > 1
-            while foldlevel(lineno) >= foldlev " Go to parent fold
+            while s:get_correct_foldlevel(lineno) >= foldlev " Go to parent fold
                 if lineno < 1
                     echoerr 'Some kind of fold error.  Check your syntax.'
                     return
@@ -317,7 +357,7 @@ function! s:Project(filename) " <<<
         " Extract the home directory of this fold
         let home=s:GetHome(infoline, parent_home)
         if home != ''
-            if (foldlevel(foldlineno) == 1) && !s:IsAbsolutePath(home)
+            if (s:get_correct_foldlevel(foldlineno) == 1) && !s:IsAbsolutePath(home)
                 call confirm('Outermost Project Fold must have absolute path!  Or perhaps the path does not exist.', "&OK", 1)
                 let home = '~'  " Some 'reasonable' value
             endif
@@ -325,7 +365,7 @@ function! s:Project(filename) " <<<
         " Extract any CD information
         let c_d = s:GetCd(infoline, home)
         if c_d != ''
-            if (foldlevel(foldlineno) == 1) && !s:IsAbsolutePath(c_d)
+            if (s:get_correct_foldlevel(foldlineno) == 1) && !s:IsAbsolutePath(c_d)
                 call confirm('Outermost Project Fold must have absolute CD path!  Or perhaps the path does not exist.', "&OK", 1)
                 let c_d = '.'  " Some 'reasonable' value
             endif
@@ -377,7 +417,7 @@ function! s:Project(filename) " <<<
             if a:dir
                 let fname='.'
             else
-                if (foldlevel(a:line) == 0) && (a:editcmd[0] != '')
+                if (s:get_correct_foldlevel(a:line) == 0) && (a:editcmd[0] != '')
                     return 0                    " If we're outside a fold, do nothing
                 endif
                 let fname=substitute(getline(a:line), '\s*#.*', '', '') " Get rid of comments and whitespace before comment
@@ -407,11 +447,6 @@ function! s:Project(filename) " <<<
         "Save the cd command
         let cd_cmd = b:proj_cd_cmd
         if a:editcmd[0] != '' " If editcmd is '', then just set up the environment in the Project Window
-
-
-
-"
-            echomsg "Calling DoSetupAndSplit: " . fname
             call s:DoSetupAndSplit()
             " If it is an absolute path, don't prepend home
             if !s:IsAbsolutePath(fname)
@@ -423,11 +458,6 @@ function! s:Project(filename) " <<<
                 silent exec 'silent '.a:editcmd.' '.fname
             endif
         else " only happens in the Project File
-
-
-
-"
-            echomsg "Execing BufEnter/Leave: " . fname
             exec 'au! BufEnter,BufLeave '.expand('%:p')
         endif
         " Extract any CD information
@@ -467,7 +497,9 @@ function! s:Project(filename) " <<<
     "   Used for double clicking. If the mouse is on a fold, open/close it. If
     "   not, try to open the file.
     function! s:DoFoldOrOpenEntry(cmd0, cmd1)
-        if getline('.')=~'{\|}' || foldclosed('.') != -1
+"        " [lb] Bracket also ends the line$.
+"        if getline('.') =~ '{\|}$' || foldclosed('.') != -1
+        if getline('.') =~ '{\|}' || foldclosed('.') != -1
             normal! za
         else
             call s:DoEnsurePlacementSize_au()
@@ -598,8 +630,9 @@ function! s:Project(filename) " <<<
         if strlen(name) == 0
             return
         endif
-        let foldlev=foldlevel(line)
-        if (foldclosed(line) != -1) || (getline(line) =~ '}')
+        let foldlev = s:get_correct_foldlevel(line)
+        " [lb] Bracket also ends the line$.
+        if (foldclosed(line) != -1) || (getline(line) =~ '}$')
             let foldlev=foldlev - 1
         endif
         let absolute = (foldlev <= 0)?'Absolute ': ''
@@ -653,7 +686,8 @@ function! s:Project(filename) " <<<
         let c_d = ''
         let filter_directive = ''
         let exclude_directive = ''
-        let recursive = 0
+        " [lb] Default to recursive enabled, so \c is recursive.
+        let recursive = 1
         if a:inquisitive == 1
           let c_d = inputdialog('Enter the CD parameter: ', '')
           let filter_directive = inputdialog('Enter the File Filter: ', '')
@@ -677,16 +711,13 @@ function! s:Project(filename) " <<<
         if foldclosedend(line) != -1
             let line = foldclosedend(line)
         endif
-        let foldlev = foldlevel(line)
+        let foldlev = s:get_correct_foldlevel(line)
         " If we're at the end of a fold . . .
-        if getline(line) =~ '}'
+        " [lb] Bracket also ends the line$.
+        if getline(line) =~ '}$'
             let foldlev = foldlev - 1           " . . . decrease the indentation by 1.
         endif
         " Do the work
-
-
-
-
         call s:DoEntryFromDir(l:recursive, line, name, home.dir, dir, c_d, filter_directive, filter, exclude_directive, exclude, foldlev, 0)
         " Restore the cursor position
         normal! `k
@@ -695,12 +726,13 @@ function! s:Project(filename) " <<<
     "   Finds metadata at the top of the fold, and then replaces all files
     "   with the contents of the directory.  Works recursively if recursive is 1.
     function! s:RefreshEntriesFromDir(recursive)
-        if foldlevel('.') == 0
+        if s:get_correct_foldlevel('.') == 0
             echo 'Nothing to refresh.'
             return
         endif
         " Open the fold.
-        if getline('.') =~ '}'
+        " [lb] Bracket also ends the line$.
+        if getline('.') =~ '}$'
             normal! zo[z
         else
             normal! zo]z[z
@@ -730,7 +762,8 @@ function! s:Project(filename) " <<<
             " Extract the description (name) of the fold
             let name = substitute(infoline, '^[#\t ]*\([^=]*\)=.*', '\1', '')
             if strlen(name) == strlen(infoline)
-                return                  " If there's no name, we're done.
+                " If there's no name, we're done.
+                return
             endif
             if (home == '') || (name == '')
                 return
@@ -757,11 +790,13 @@ function! s:Project(filename) " <<<
         " Move to the first non-fold boundary line
         normal! j
         " Delete filenames until we reach the end of the fold
-        while getline('.') !~ '}'
+        " [lb] Bracket also ends the line$.
+        while getline('.') !~ '}$'
             if line('.') == line('$')
                 break
             endif
-            if getline('.') !~ '{'
+            " [lb] Bracket also ends the line$.
+            if getline('.') !~ '{$'
                 " We haven't reached a sub-fold, so delete what's there.
                 if (just_a_fold == 0) && (getline('.') !~ '^\s*#') && (getline('.') !~ '#.*pragma keep')
                     d _
@@ -789,7 +824,7 @@ function! s:Project(filename) " <<<
             if !isdirectory(glob(home))
                 call confirm('"'.home.'" is not a valid directory.', "&OK", 1)
             else
-                let foldlev=foldlevel('.')
+                let foldlev=s:get_correct_foldlevel('.')
                 " T flag.  Thanks Tomas Z.
                 if (match(flags, '\Ct') != -1) || ((match(g:proj_flags, '\CT') == -1) && (match(flags, '\CT') == -1))
                     " Go to the top of the fold (force other folds to the
@@ -913,7 +948,8 @@ function! s:Project(filename) " <<<
     function! s:Spawn(number)
         echo | if exists("g:proj_run".a:number)
             let fname=getline('.')
-            if fname!~'{\|}'
+            " [lb] Bracket also ends the line$.
+            if fname !~ '{\|}$'
                 let fname=substitute(fname, '\s*#.*', '', '')
                 let fname=substitute(fname, '^\s*\(.*\)\s*', '\1', '')
                 if fname == '' | return | endif
@@ -959,30 +995,37 @@ function! s:Project(filename) " <<<
             let number=number + 1
         endwhile
     endfunction ">>>
+
+
     " s:FindFoldTop(line) <<<
     "   Return the line number of the directive line
     function! s:FindFoldTop(line)
         let lineno=a:line
-        if getline(lineno) =~ '}'
+        " [lb] Bracket also ends the line$.
+        if getline(lineno) =~ '}$'
             let lineno = lineno - 1
         endif
-        while getline(lineno) !~ '{' && lineno > 1
-            if getline(lineno) =~ '}'
+        " [lb] Bracket also ends the line$.
+        while getline(lineno) !~ '{$' && lineno > 1
+            if getline(lineno) =~ '}$'
                 let lineno=s:FindFoldTop(lineno)
             endif
             let lineno = lineno - 1
         endwhile
         return lineno
     endfunction ">>>
+
+
     " s:FindFoldBottom(line) <<<
     "   Return the line number of the directive line
     function! s:FindFoldBottom(line)
         let lineno=a:line
-        if getline(lineno) =~ '{'
+        " [lb] Bracket also ends the line$.
+        if getline(lineno) =~ '{$'
             let lineno=lineno + 1
         endif
-        while getline(lineno) !~ '}' && lineno < line('$')
-            if getline(lineno) =~ '{'
+        while getline(lineno) !~ '}$' && lineno < line('$')
+            if getline(lineno) =~ '{$'
                 let lineno=s:FindFoldBottom(lineno)
             endif
             let lineno = lineno + 1
@@ -1188,7 +1231,7 @@ function! s:Project(filename) " <<<
     " Project_GetAllFnames(recurse, lineno, separator) <<<
     "   Grep all files in a project, optionally recursively
     function! Project_GetFname(line)
-        if (foldlevel(a:line) == 0)
+        if (s:get_correct_foldlevel(a:line) == 0)
             return ''
         endif
         let fname=substitute(getline(a:line), '\s*#.*', '', '') " Get rid of comments and whitespace before comment
@@ -1221,9 +1264,10 @@ function! s:Project(filename) " <<<
         let exclude = s:GetExclude(a:info, '')
         let lineno = a:lineno
         let curline=getline(lineno)
-        while (curline !~ '}') && (curline < line('$'))
+        " [lb] Bracket also ends the line$.
+        while (curline !~ '}$') && (curline < line('$'))
             if exists("b:stop_everything") && b:stop_everything | return 0 | endif
-            if curline =~ '{'
+            if curline =~ '{$'
                 if a:recurse
                     let flags=s:GetFlags(curline)
                     if (flags == '') || (a:match=='') || (match(flags, a:match) != -1)

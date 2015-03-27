@@ -6,6 +6,7 @@ ENHANCED PROJECT PLUGIN REFERENCE		*dubs-project-tray*
 
 1. About This Plugin			|dubs-prjtray-about|
 2. Project Tray Commands		|dubs-prjtray-commands|
+3. Brackets in Directory Names		|dubs-prjtray-brackets|
 
 ==============================================================================
 1. About This Plugin					*dubs-prjtray-about*
@@ -61,5 +62,42 @@ to move. Finally, type <Ctrl-Up> and <Ctrl-Down> to
 swap the whole project with the line above or the line
 below; press the key combo multiple times to move the
 project to a new position.
+
+==============================================================================
+3. Brackets in Directory Names			*dubs-prjtray-brackets*
+
+Bug: There's an issue handling directories with
+brackets in their names, such as those used in a
+cookiecutter https://github.com/audreyr/cookiecutter
+which uses the Jinja template engine http://jinja.pocoo.org/
+which uses brackets, e.g., `cc-pyproject/{{project_name}}`.
+
+Specifically, folding doesn't work well. If the fold
+name is shorter than the project window width, e.g.,
+
+    ex={{example}} {
+
+then the built-in `za` command works (which toggles
+folding), albeit not until after typing it at least
+three times. But if the name is wider than the project
+window, e.g.,
+
+    long_{{example}}={{exammmmmmmmmmmmmmmmmmmmmple}} {
+
+so the text is clipped by the Vim window, using `za`
+changes the name of the fold, e.g., from
+
+    long_{{example}}={{exammmmmmmmmmmmmmmmmmmmmple}} {
+
+to
+
+       long_{example}}------
+
+(with leading spaces, too)
+but doesn't collapse the directory listing.
+
+I wouldn't normally note a bug in a readme but this
+problem seems inherent to Vim and is something I'll
+probably never fix.
 
  vim:tw=78:ts=8:ft=help:norl:
