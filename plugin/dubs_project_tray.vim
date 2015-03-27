@@ -1,6 +1,6 @@
 " File: dubs_project_tray.vim
 " Author: Landon Bouma (landonb &#x40; retrosoft &#x2E; com)
-" Last Modified: 2015.01.27
+" Last Modified: 2015.02.10
 " Project Page: https://github.com/landonb/dubs_project_tray
 " Summary: Enhanced Project Plugin
 " License: GPLv3
@@ -281,4 +281,23 @@ endfunction
 "inoremap <M-&> <C-O>:NERDTreeToggle<CR>
 ""cnoremap <M-&> <C-C>:NERDTreeToggle<CR>
 ""onoremap <M-&> <C-C>:NERDTreeToggle<CR>
+
+" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+" cookiecutter support
+" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+" I guess Vim doesn't think brackets{} are parts of file paths names.
+"
+" And we can't add {{cookiecutter.paths}} otherwise.
+
+" 'isfname' string	(default for MS-DOS, Win32 and OS/2:
+" 			     "@,48-57,/,\,.,-,_,+,,,#,$,%,{,},[,],:,@-@,!,~,="
+" 			    for AMIGA: "@,48-57,/,.,-,_,+,,,$,:"
+" 			    for VMS: "@,48-57,/,.,-,_,+,,,#,$,%,<,>,[,],:,;,~"
+" 			    for OS/390: "@,240-249,/,.,-,_,+,,,#,$,%,~,="
+" 			    otherwise: "@,48-57,/,.,-,_,+,,,#,$,%,~,=")
+"
+" Linux is the "otherwise" default, to which we'll add leafy brackets.
+
+set isfname=@,48-57,/,.,-,_,+,,,#,$,%,~,=,{,}
 
