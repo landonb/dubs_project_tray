@@ -1,6 +1,6 @@
 " File: dubs_project_tray.vim
 " Author: Landon Bouma (landonb &#x40; retrosoft &#x2E; com)
-" Last Modified: 2016.02.26
+" Last Modified: 2016.03.24
 " Project Page: https://github.com/landonb/dubs_project_tray
 " Summary: Enhanced Project Plugin
 " License: GPLv3
@@ -22,6 +22,13 @@
 " or write Free Software Foundation, Inc., 51 Franklin Street,
 "                     Fifth Floor, Boston, MA 02110-1301, USA.
 " ===================================================================
+
+" FIXME: On first boot, make the project template.
+"        E.g., /bin/cp ~/.vim/bundle/dubs_project_tray/.vimprojects.template
+"          to dubs_all/.vimprojects
+"          (Note that you can't use dubs_project_tray/.vimprojects
+"           because it's not .gitignored from there.)
+" See example dubs_project.vim. Search for: finddir('cmdt_paths.template', ...)
 
 " ------------------------------------------
 " About/Usage:
