@@ -1,11 +1,11 @@
 " File: dubs_project_tray.vim
 " Author: Landon Bouma (landonb &#x40; retrosoft &#x2E; com)
-" Last Modified: 2015.02.10
+" Last Modified: 2016.02.26
 " Project Page: https://github.com/landonb/dubs_project_tray
 " Summary: Enhanced Project Plugin
 " License: GPLv3
 " -------------------------------------------------------------------
-" Copyright © 2009, 2015 Landon Bouma.
+" Copyright © 2009, 2015-2016 Landon Bouma.
 " 
 " This program is free software: you can redistribute it and/or
 " modify it under the terms of the GNU General Public License as
@@ -103,8 +103,19 @@ function s:ToggleProject_Wrapper()
         " See if we can't find one in the user's Vim directory,
         " which should be the first element of the runtimepath.
         " This happens if the user installs Dubsacks using Pathogen.
-        let l:projf = findfile('.vimprojects',
-                               \ pathogen#split(&rtp)[0] . "/**")
+
+        " Soooooo slow:
+        "   let l:projf = findfile('.vimprojects',
+        "                          \ pathogen#split(&rtp)[0] . "/**")
+        let l:projf = ''
+        for vim_dir in pathogen#split(&rtp)
+          let try_file = vim_dir . '/' . '.vimprojects'
+          if filereadable(try_file)
+            let l:projf = try_file
+            break
+          endif
+        endfor
+
         if l:projf != ''
           " Weird: If we call the fcn. directly, e.g., `Project(l:projf)`
           "        then the Project functions variable is assigned the value
@@ -113,16 +124,26 @@ function s:ToggleProject_Wrapper()
           execute "Project ".l:projf
           let s:project_loaded = 1
           " Tell the user if they've got multiple project files.
-          let l:fcnt = findfile('.vimprojects',
+
+          " Hey slow poke:
+          "   let l:fcnt2 = findfile('.vimprojects',
                                 \ pathogen#split(&rtp)[0] . "/**", -1)
-          if len(l:fcnt) > 1
+          let l:fcnt = 0
+          for vim_dir in pathogen#split(&rtp)
+            let try_file = vim_dir . '/' . '.vimprojects'
+            if filereadable(try_file)
+              let l:fcnt = l:fcnt + 1
+            endif
+          endfor
+
+          if l:fcnt > 1
             " This plugin has its own .vimprojects file, which I want
             " to leave, so, well... ignore the warning. Also, findfile
             " follows symlinks, so it could just as well find .vimprojects
             " files in source code outside of the ~/.vim folder.
-            "   call confirm('Warning: found ' . len(l:fcnt)
+            "   call confirm('Warning: found ' . l:fcnt
             "                \ . ' .vimprojects files.', 'OK')
-            echomsg 'Found ' . len(l:fcnt) . ' .vimprojects files.'
+            echomsg 'Found ' . l:fcnt . ' .vimprojects files.'
           endif
         else
           call confirm('dubs: Cannot find .vimprojects file.', 'OK')
