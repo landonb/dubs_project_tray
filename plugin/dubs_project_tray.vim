@@ -1,6 +1,6 @@
 " File: dubs_project_tray.vim
 " Author: Landon Bouma (landonb &#x40; retrosoft &#x2E; com)
-" Last Modified: 2016.03.24
+" Last Modified: 2016.11.29
 " Project Page: https://github.com/landonb/dubs_project_tray
 " Summary: Enhanced Project Plugin
 " License: GPLv3
@@ -317,6 +317,10 @@ endfunction
 " I guess Vim doesn't think brackets{} are parts of file paths names.
 "
 " And we can't add {{cookiecutter.paths}} otherwise.
+
+" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+" isfname setting
+" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 " 'isfname' string	(default for MS-DOS, Win32 and OS/2:
 " 			     "@,48-57,/,\,.,-,_,+,,,#,$,%,{,},[,],:,@-@,!,~,="
