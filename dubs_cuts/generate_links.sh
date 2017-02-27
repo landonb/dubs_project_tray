@@ -76,3 +76,6 @@ done
 /bin/ln -s ~/.vim/readme-using.pt2.rst dubs_all--readme-using.pt2.rst
 /bin/ln -s ~/.vim/readme-using.make.sh dubs_all--readme-using.make.sh
 
+# 2017-02-25: Huh? I wonder if the `ln -sf` in the loop overwrites it...
+/bin/ln -sf ~/.vim/bundle_/dubs_file_finder/cmdt_paths/generate_links.sh cmdt_path-generate_links.sh
+
