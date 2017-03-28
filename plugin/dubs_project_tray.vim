@@ -1,11 +1,11 @@
 " File: dubs_project_tray.vim
 " Author: Landon Bouma (landonb &#x40; retrosoft &#x2E; com)
-" Last Modified: 2016.11.29
+" Last Modified: 2017.03.28
 " Project Page: https://github.com/landonb/dubs_project_tray
 " Summary: Enhanced Project Plugin
 " License: GPLv3
 " -------------------------------------------------------------------
-" Copyright © 2009, 2015-2016 Landon Bouma.
+" Copyright © 2009, 2015-2017 Landon Bouma.
 " 
 " This program is free software: you can redistribute it and/or
 " modify it under the terms of the GNU General Public License as
@@ -60,21 +60,24 @@ let g:proj_flags='imst' " Default was 'imstb', but browse() in Fedora is wonky
 
 " NOTE noremap does not work
 " SYNC_ME: Dubsacks' <M-????> mappings are spread across plugins. [M-S-4]
-nmap <silent> <M-$> <Plug>ToggleProject_Wrapper
-imap <silent> <M-$> <C-O><Plug>ToggleProject_Wrapper
-"cmap <silent> <M-$> <C-C><Plug>ToggleProject
-"omap <silent> <M-$> <C-C><Plug>ToggleProject
+if !hasmapto('<Plug>DubsProjectTray_ToggleProject_Wrapper')
+  " 2017-03-28: Hrm. noremap and inoremap do not work for me here. (Also added !hasmapto.)
+  nmap <silent> <M-$> <Plug>DubsProjectTray_ToggleProject_Wrapper
+  imap <silent> <M-$> <C-O><Plug>DubsProjectTray_ToggleProject_Wrapper
+  "cmap <silent> <M-$> <C-C><Plug>DubsProjectTray_ToggleProject_Wrapper
+  "omap <silent> <M-$> <C-C><Plug>DubsProjectTray_ToggleProject_Wrapper
+endif
 
-" ToggleProject_Wrapper
-" --------------------------------
+" DubsProjectTray_ToggleProject_Wrapper
+" -------------------------------------
 
 " You can only setup Project once. If you call it again with
 " a path -- even with the same path we just used -- it'll
 " complain. So set the path once and then just use toggle.
 let s:project_loaded = 0
 
-map <silent> <unique> <script> 
-  \ <Plug>ToggleProject_Wrapper 
+noremap <silent> <unique> <script> 
+  \ <Plug>DubsProjectTray_ToggleProject_Wrapper 
   \ :call <SID>ToggleProject_Wrapper()<CR>
 "   2. Thunk the <Plug>
 function s:ToggleProject_Wrapper()
