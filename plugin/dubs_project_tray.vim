@@ -6,7 +6,7 @@
 " License: GPLv3
 " -------------------------------------------------------------------
 " Copyright © 2009, 2015-2017 Landon Bouma.
-" 
+"
 " This program is free software: you can redistribute it and/or
 " modify it under the terms of the GNU General Public License as
 " published by the Free Software Foundation, either version 3 of
@@ -42,9 +42,9 @@ let g:plugin_dubs_project_tray = 1
 
 " Alt-Shift-4 // Toggle Project Browser
 " --------------------------------
-" EditPlus doesn't necessarily have an 
-" Alt-Shift-4 mapping, but it does have 
-" a Project menu. This is similar. But 
+" EditPlus doesn't necessarily have an
+" Alt-Shift-4 mapping, but it does have
+" a Project menu. This is similar. But
 " better. =)
 
 "let g:proj_window_width=30 " Default project window width
@@ -53,8 +53,8 @@ let g:proj_window_width=33 " Default project window width
 "let g:proj_window_width=36 " Default project window width
 "let g:proj_window_width=39 " Default project window width
 
-" Remove the 'b' project flag, which uses browse() when handling 
-" the \C command. Problem is, I cannot select a directory (it 
+" Remove the 'b' project flag, which uses browse() when handling
+" the \C command. Problem is, I cannot select a directory (it
 " always open the directory), so just use a simple edit box instead.
 let g:proj_flags='imst' " Default was 'imstb', but browse() in Fedora is wonky
 
@@ -76,15 +76,15 @@ endif
 " complain. So set the path once and then just use toggle.
 let s:project_loaded = 0
 
-noremap <silent> <unique> <script> 
-  \ <Plug>DubsProjectTray_ToggleProject_Wrapper 
+noremap <silent> <unique> <script>
+  \ <Plug>DubsProjectTray_ToggleProject_Wrapper
   \ :call <SID>ToggleProject_Wrapper()<CR>
 "   2. Thunk the <Plug>
 function s:ToggleProject_Wrapper()
   let save_winnr = winnr()
   if !exists('g:proj_running') || bufwinnr(g:proj_running) == -1
-    " the Project adds itself as the first window, so 
-    " we need to increase winnr by 1 to find our current 
+    " the Project adds itself as the first window, so
+    " we need to increase winnr by 1 to find our current
     " window again
     let save_winnr = save_winnr + 1
     if s:project_loaded == 1
@@ -164,7 +164,7 @@ function s:ToggleProject_Wrapper()
     " else s:project_loaded == -1, so do nothing.
     endif
   else
-    " Otherwise, we're losing the first window, so 
+    " Otherwise, we're losing the first window, so
     " compensate for the loss by subtracting one
     let save_winnr = save_winnr - 1
     " Clear the project buffer
@@ -182,17 +182,17 @@ function s:ToggleProject_Wrapper()
     "unlet g:proj_mywindow
   endif
   "execute 'ToggleProject'
-  " FIXME This behaviour does not belong here: Use Alt key modifier or another 
+  " FIXME This behaviour does not belong here: Use Alt key modifier or another
   "       key combo to close all folds but the first and jump to the top,
-  "       otherwise, save the position the user was at, which supports the 
-  "       work flow method of C-S-4'ing to see the list of files, opening a 
+  "       otherwise, save the position the user was at, which supports the
+  "       work flow method of C-S-4'ing to see the list of files, opening a
   "       file, and then closing the sidebar.
   "if exists('g:proj_running') && bufwinnr(g:proj_running) == 1
   "  " Collapse all folds
   "  execute 'normal ' . 'zM'
   "  " Return to top of window
   "  execute 'normal ' . 'gg'
-  "  " Jump to first fold ... 
+  "  " Jump to first fold ...
   "  execute 'normal ' . 'zj'
   "  " ... and open it
   "  execute 'normal ' . 'zA'
@@ -200,8 +200,8 @@ function s:ToggleProject_Wrapper()
   "endif
 
   " 2011.01.15 On my laptop, I can't have the project window open and also
-  "            look at two buffers side-by-side with at least 80 columns each, 
-  "            unless if I dismiss the project window. But that messes up the 
+  "            look at two buffers side-by-side with at least 80 columns each,
+  "            unless if I dismiss the project window. But that messes up the
   "            widths of my windows. Hence, we do a little dance.
   "
   " First, see how many columns we have to work with.
@@ -211,7 +211,7 @@ function s:ToggleProject_Wrapper()
   endif
   "
   " Next, see if two buffers are open, and figure out which windows they're in.
-  " Hint: the way dubsacks sets it up, the Project window (file browser) is on 
+  " Hint: the way dubsacks sets it up, the Project window (file browser) is on
   " the left, and the buffer explorer and quickfix window are on the bottom.
   " That leaves one or two windows that the user is editing in the upper-right.
   " If there are two windows, they're either side-by-side or stacked depending
@@ -250,8 +250,8 @@ function s:ToggleProject_Wrapper()
     execute winnr_lhs . 'wincmd w'
     " Split the window either vertically or horizontally, depending on the
     " amount of room available and if the project window is showing.
-    " NOTE We closed a window and use to (v)split to make a new window, 
-    "      which automatically sizes each window similarly. If we didn't 
+    " NOTE We closed a window and use to (v)split to make a new window,
+    "      which automatically sizes each window similarly. If we didn't
     "      close the window and instead wanted to resize each window
     "      manually, we'd call
     "         let half_width = &columns / 2
@@ -286,7 +286,7 @@ function! s:IsWindowSpecial(window_nr)
         \ && ( (getbufvar(buffer_nr, "&buftype") == "help")
           \ || (getbufvar(buffer_nr, "&buftype") == "quickfix")
           \ || (bufname(buffer_nr) == "-MiniBufExplorer-")
-          \ || ( (exists('g:proj_running')) 
+          \ || ( (exists('g:proj_running'))
               \ && (a:window_nr == bufwinnr(g:proj_running)) ) ) )
       " FIXME There's probably an easy way to check if a window/buffer is normal
       let is_special = 1
@@ -302,7 +302,7 @@ endfunction
 " Alt-Shift-7 // Toggle File Browser
 " --------------------------------
 " NERDTree to the rescue.
-" 2010.06.14: Disabled; I don't use NERDTree! 
+" 2010.06.14: Disabled; I don't use NERDTree!
 "             I've been grooving on the Project plugin instead.
 " 2015.01.14: And now I'm grooving on Command-T more so than Project;
 "             see dubs_file_finder.
