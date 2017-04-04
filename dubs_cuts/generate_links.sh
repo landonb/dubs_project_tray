@@ -59,6 +59,8 @@ for fpath in $(find ${fpath_dirs[@]} \
           || $proj_name == 'bundle_' \
           || $proj_name == 'packages' ]]; then
       filedir_=${filedir}
+    elif [[ $proj_name == 'after' ]]; then
+      filedir_=aftr-${filedir:0:5}
     else
       filedir_=${filedir:0:9}
     fi
@@ -66,6 +68,14 @@ for fpath in $(find ${fpath_dirs[@]} \
                        "$filedir_" \
                        "${padline1:${#filedir_}}" \
                        "$filename")
+    if true; then
+        echo "${fpath}"
+        echo "  filename: ${filename}"
+        echo "  filedir: ${filedir}"
+        echo "  proj_name: ${proj_name}"
+        echo "  filedir_: ${filedir_}"
+        echo "  link_name: ${link_name}"
+    fi
     # Using -f, because file shortening may make two files look like one:
     # e.g., dubs_all/cmdt_paths/generate_links.sh
     #       dubs_file_finder/cmdt_paths.template/generate_links.sh
