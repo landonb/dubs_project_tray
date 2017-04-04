@@ -6,6 +6,17 @@
 # effect is that instead of one plugin/ directory,
 # now you've got two dozen.
 
+# Make sure we're where we're at.
+entered_the_dubs_cuts=false
+if [[ $(basename $(pwd -P)) != "dubs_cuts" ]]; then
+    if [[ ! -d "dubs_cuts" ]]; then
+        echo "Where's dubs_cuts?"
+        exit 1
+    fi
+    entered_the_dubs_cuts=true
+    pushd dubs_cuts &> /dev/null
+fi
+
 # Remove existing links, otherwise you'll
 # add links to the linked directories.
 
@@ -78,4 +89,8 @@ done
 
 # 2017-02-25: Huh? I wonder if the `ln -sf` in the loop overwrites it...
 /bin/ln -sf ~/.vim/bundle_/dubs_file_finder/cmdt_paths/generate_links.sh cmdt_path-generate_links.sh
+
+if ${entered_the_dubs_cuts}; then
+    popd &> /dev/null
+fi
 
