@@ -8,7 +8,7 @@
 
 # Make sure we're where we're at.
 entered_the_dubs_cuts=false
-if [[ $(basename $(pwd -P)) != "dubs_cuts" ]]; then
+if [[ $(basename -- $(pwd -P)) != "dubs_cuts" ]]; then
     if [[ ! -d "dubs_cuts" ]]; then
         echo "Where's dubs_cuts?"
         exit 1
@@ -51,9 +51,9 @@ for fpath in $(find ${fpath_dirs[@]} \
                | egrep -v "\/autoload\/xml" \
               ) ; do
   if [[ $fpath != ' ' ]]; then
-    filename=$(basename $fpath)
-    filedir=$(basename $(dirname $fpath))
-    proj_name=$(basename $(dirname $(dirname $fpath)))
+    filename=$(basename -- "${fpath}")
+    filedir=$(basename -- $(dirname -- "${fpath}"))
+    proj_name=$(basename -- $(dirname $(dirname -- "${fpath}")))
     if [[    $proj_name == '' \
           || $proj_name == 'bundle' \
           || $proj_name == 'bundle_' \
