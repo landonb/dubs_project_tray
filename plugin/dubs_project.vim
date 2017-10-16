@@ -1,6 +1,6 @@
 " File:        project.vim
 " Last Author: Landon Bouma (landonb &#x40; retrosoft &#x2E; com)
-" Last Change: Mon 16 Oct 2017 09:56:04 AM C
+" Last Change: Mon 16 Oct 2017 10:30:25 AM C
 " Version:     1.4.2.lbfork2 (search [lb] to see changes)
 " Project Page: https://github.com/landonb/dubs_project
 " 2014.01.21: See also: https://github.com/destroy/project.vim
@@ -579,7 +579,7 @@ function! s:Project(filename) " <<<
         endwhile
     endfunction ">>>
     " s:GenerateEntry(recursive, name, absolute_dir, dir, c_d, filter_directive, filter, exclude_directive, exclude, foldlev, sort) <<<
-    function! s:GenerateEntry(recursive, line, name, absolute_dir, dir, c_d, filter_directive, filter, exclude_directive, exclude, foldlev, sort)
+    function! s:GenerateEntry(recursive, line, name, absolute_dir, dir, c_d, filter_directive, filter, exclude_directive, exclude, foldlev, sort, first_line)
         let line=a:line
         if a:dir =~ '\\ '
             let dir='"'.substitute(a:dir, '\\ ', ' ', 'g').'"'
@@ -594,6 +594,13 @@ function! s:Project(filename) " <<<
         " 2017-10-16: It's more obvious to user how to hide hidden files if
         "call append(line, spaces.a:name.'='.dir.' '.c_d.'{')
         call append(line, spaces . a:name . '=' . a:absolute_dir . ' ' . c_d . '{')
+
+        " 2017-10-16: [lb] seeing an unresponsive Vim when loading a big project.
+        let on_line = a:line - a:first_line
+        if 0 == on_line % 100
+            echon "... on directory # " . on_line . "\r"
+        endif
+
         if a:recursive
             exec 'cd '.a:absolute_dir
             call s:VimDirListing("*", '', '', "\010", 'b:files', 'b:filecount', 'b:dirs', 'b:dircount')
@@ -605,7 +612,7 @@ function! s:Project(filename) " <<<
                 let dname = substitute(dirs,  '\(\( \|\f\|:\)*\).*', '\1', '')
                 let edname = escape(dname, ' ')
                 let dirs = substitute(dirs, '\( \|\f\|:\)*.\(.*\)', '\2', '')
-                let line=s:GenerateEntry(1, line + 1, dname, a:absolute_dir.'/'.edname, edname, '', '', a:filter, '', a:exclude, a:foldlev+1, a:sort)
+                let line=s:GenerateEntry(1, line + 1, dname, a:absolute_dir.'/'.edname, edname, '', '', a:filter, '', a:exclude, a:foldlev+1, a:sort, a:first_line)
                 let dcount=dcount-1
             endwhile
         endif
@@ -615,7 +622,7 @@ function! s:Project(filename) " <<<
     "   Generate the fold from the directory hierarchy (if recursive), then
     "   fill it in with RefreshEntriesFromDir()
     function! s:DoEntryFromDir(recursive, line, name, absolute_dir, dir, c_d, filter_directive, filter, exclude_directive, exclude, foldlev, sort)
-        call s:GenerateEntry(a:recursive, a:line, a:name, escape(a:absolute_dir, ' '), escape(a:dir, ' '), escape(a:c_d, ' '), a:filter_directive, a:filter, a:exclude_directive, a:exclude, a:foldlev, a:sort)
+        call s:GenerateEntry(a:recursive, a:line, a:name, escape(a:absolute_dir, ' '), escape(a:dir, ' '), escape(a:c_d, ' '), a:filter_directive, a:filter, a:exclude_directive, a:exclude, a:foldlev, a:sort, a:line)
         normal! j
         call s:RefreshEntriesFromDir(1)
     endfunction ">>>
