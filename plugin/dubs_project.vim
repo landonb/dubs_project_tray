@@ -1,6 +1,6 @@
 " File:        project.vim
 " Last Author: Landon Bouma (landonb &#x40; retrosoft &#x2E; com)
-" Last Change: Wed 11 Feb 2015 05:05:09 PM C
+" Last Change: Mon 16 Oct 2017 09:56:04 AM C
 " Version:     1.4.2.lbfork2 (search [lb] to see changes)
 " Project Page: https://github.com/landonb/dubs_project
 " 2014.01.21: See also: https://github.com/destroy/project.vim
@@ -591,7 +591,9 @@ function! s:Project(filename) " <<<
         let c_d=(strlen(a:filter_directive) > 0) ? c_d.'filter="'.a:filter_directive.'" ': c_d
         let c_d=(strlen(a:exclude_directive) > 0) ? c_d.'exclude="'.a:exclude_directive.'" ': c_d
         call append(line, spaces.'}')
-        call append(line, spaces.a:name.'='.dir.' '.c_d.'{')
+        " 2017-10-16: It's more obvious to user how to hide hidden files if
+        "call append(line, spaces.a:name.'='.dir.' '.c_d.'{')
+        call append(line, spaces . a:name . '=' . a:absolute_dir . ' ' . c_d . '{')
         if a:recursive
             exec 'cd '.a:absolute_dir
             call s:VimDirListing("*", '', '', "\010", 'b:files', 'b:filecount', 'b:dirs', 'b:dircount')
@@ -681,13 +683,23 @@ function! s:Project(filename) " <<<
                 return
             endif
         endif
+
         " 2015.01.08: [lb] only ever completes the first two dialog
         "             boxes, so disabling the rest.
+        " MAYBE/2017-10-16: Maybe I should show these things... though I
+        "             never use CD (what does it do?) nor exclude.
         let c_d = ''
-        let filter_directive = ''
+        " 2017-10-16: It's more obvious to user how to hide hidden files if
+        " we initially include them, otherwise `filter=...` is excluded, and
+        " user gets frustrated when they finally realize not all files are
+        " being shown.
+        "let filter_directive = ''
+        let filter_directive = '.* *'
         let exclude_directive = ''
+
         " [lb] Default to recursive enabled, so \c is recursive.
         let recursive = 1
+
         if a:inquisitive == 1
           let c_d = inputdialog('Enter the CD parameter: ', '')
           let filter_directive = inputdialog('Enter the File Filter: ', '')
