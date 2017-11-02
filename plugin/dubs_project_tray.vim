@@ -1,6 +1,6 @@
 " File: dubs_project_tray.vim
 " Author: Landon Bouma (landonb &#x40; retrosoft &#x2E; com)
-" Last Modified: 2017.03.28
+" Last Modified: 2017.11.02
 " Project Page: https://github.com/landonb/dubs_project_tray
 " Summary: Enhanced Project Plugin
 " License: GPLv3
@@ -335,4 +335,25 @@ endfunction
 " Linux is the "otherwise" default, to which we'll add leafy brackets.
 
 set isfname=@,48-57,/,.,-,_,+,,,#,$,%,~,=,{,}
+
+" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+" netrw/vim-vinegar tweaking
+" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+" 2017-11-02 13:30
+" https://shapeshed.com/vim-netrw/
+" https://github.com/tpope/vim-vinegar
+let g:netrw_winsize = 33
+
+" 1 - open files in a new horizontal split
+" 2 - open files in a new vertical split
+" 3 - open files in a new tab
+" 4 - open in previous window
+let g:netrw_browse_split = 4
+
+" Press 'I' to toggle the banner.
+let g:netrw_banner = 0
+
+" There are four different view types: thin, long, wide and tree.
+let g:netrw_liststyle = 3
 
