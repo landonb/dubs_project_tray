@@ -1,6 +1,6 @@
 " File: dubs_project_tray.vim
 " Author: Landon Bouma (landonb &#x40; retrosoft &#x2E; com)
-" Last Modified: 2017.11.02
+" Last Modified: 2017.12.12
 " Project Page: https://github.com/landonb/dubs_project_tray
 " Summary: Enhanced Project Plugin
 " License: GPLv3
@@ -30,8 +30,9 @@
 "           because it's not .gitignored from there.)
 " See example dubs_project.vim. Search for: finddir('cmdt_paths.template', ...)
 
-" ------------------------------------------
-" About/Usage:
+" -------------------------------------------------------------------------
+" About/Usage
+" -------------------------------------------------------------------------
 
 " See :help dubs-project-tray.
 
@@ -40,8 +41,9 @@ if exists("g:plugin_dubs_project_tray") || &cp
 endif
 let g:plugin_dubs_project_tray = 1
 
+" -------------------------------------------------------------------------
 " Alt-Shift-4 // Toggle Project Browser
-" --------------------------------
+" -------------------------------------------------------------------------
 " EditPlus doesn't necessarily have an
 " Alt-Shift-4 mapping, but it does have
 " a Project menu. This is similar. But
@@ -68,8 +70,9 @@ if !hasmapto('<Plug>DubsProjectTray_ToggleProject_Wrapper')
   "omap <silent> <M-$> <C-C><Plug>DubsProjectTray_ToggleProject_Wrapper
 endif
 
+" -------------------------------------------------------------------------
 " DubsProjectTray_ToggleProject_Wrapper
-" -------------------------------------
+" -------------------------------------------------------------------------
 
 " You can only setup Project once. If you call it again with
 " a path -- even with the same path we just used -- it'll
@@ -295,12 +298,13 @@ function! s:IsWindowSpecial(window_nr)
   return is_special
 endfunction
 
-" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+" =========================================================================
 " Obsolete Code
-" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+" =========================================================================
 
+" -------------------------------------------------------------------------
 " Alt-Shift-7 // Toggle File Browser
-" --------------------------------
+" -------------------------------------------------------------------------
 " NERDTree to the rescue.
 " 2010.06.14: Disabled; I don't use NERDTree!
 "             I've been grooving on the Project plugin instead.
@@ -313,17 +317,21 @@ endfunction
 ""cnoremap <M-&> <C-C>:NERDTreeToggle<CR>
 ""onoremap <M-&> <C-C>:NERDTreeToggle<CR>
 
-" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+" -------------------------------------------------------------------------
 " cookiecutter support
-" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+" -------------------------------------------------------------------------
 
 " I guess Vim doesn't think brackets{} are parts of file paths names.
 "
 " And we can't add {{cookiecutter.paths}} otherwise.
 
-" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+" =========================================================================
+" Less related project type stuff
+" =========================================================================
+
+" -------------------------------------------------------------------------
 " isfname setting
-" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+" -------------------------------------------------------------------------
 
 " 'isfname' string	(default for MS-DOS, Win32 and OS/2:
 " 			     "@,48-57,/,\,.,-,_,+,,,#,$,%,{,},[,],:,@-@,!,~,="
@@ -336,9 +344,9 @@ endfunction
 
 set isfname=@,48-57,/,.,-,_,+,,,#,$,%,~,=,{,}
 
-" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+" -------------------------------------------------------------------------
 " netrw/vim-vinegar tweaking
-" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+" -------------------------------------------------------------------------
 
 " 2017-11-02 13:30
 " https://shapeshed.com/vim-netrw/
