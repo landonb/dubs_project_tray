@@ -1,6 +1,6 @@
 " File: dubs_project_tray.vim
 " Author: Landon Bouma (landonb &#x40; retrosoft &#x2E; com)
-" Last Modified: 2017.12.12
+" Last Modified: 2017.12.20
 " Project Page: https://github.com/landonb/dubs_project_tray
 " Summary: Enhanced Project Plugin
 " License: GPLv3
@@ -368,7 +368,7 @@ let g:netrw_liststyle = 3
 " -------------------------------------------------------------------------
 " Maintain working directory
 " -------------------------------------------------------------------------
-" 2017-12-12: A .trushme.sh script is writing its log to the wrong file
+" 2017-12-12: A .trustme.sh script is writing its log to the wrong file
 " because of what Vim considers the current working directory. I should
 " probably fix this in the Bash script, but I can also keep Vim's `cwd`
 " up to date with the window's buffer's file's project directory.
@@ -377,7 +377,7 @@ let g:netrw_liststyle = 3
 "
 "   http://inlehmansterms.net/2014/09/04/sane-vim-working-directories/
 
-" follow symlinked file
+" Follow symlinked file.
 function! FollowSymlink()
   let current_file = expand('%:p')
   " check if file type is a symlink
@@ -389,17 +389,18 @@ function! FollowSymlink()
   end
 endfunction
 
-" set working directory to git project root
-" or directory of current file if not git project
+" Set working directory to git project root, or
+" to directory of current file if not git project.
 function! SetProjectRoot()
-  " default to the current file's directory
+  " Default to the current file's directory.
   lcd %:p:h
-  let git_dir = system("git rev-parse --show-toplevel")
-  " See if the command output starts with 'fatal' (if it does, not in a git repo)
-  let is_not_git_dir = matchstr(git_dir, '^fatal:.*')
-  " if git project, change local directory to git project root
-  if empty(is_not_git_dir)
-    lcd `=git_dir`
+  let l:git_dir = system("git rev-parse --show-toplevel")
+  " See if the command output starts with 'fatal'
+  " (if it does, it's not in a git repo).
+  let l:is_not_git_dir = matchstr(l:git_dir, '^fatal:.*')
+  " If git project, change local directory to git project root.
+  if empty(l:is_not_git_dir)
+    lcd `=l:git_dir`
   endif
 endfunction
 
