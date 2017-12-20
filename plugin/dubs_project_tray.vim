@@ -379,13 +379,33 @@ let g:netrw_liststyle = 3
 
 " Follow symlinked file.
 function! FollowSymlink()
-  let current_file = expand('%:p')
-  " check if file type is a symlink
-  if getftype(current_file) == 'link'
-    " if it is a symlink resolve to the actual file path
-    "   and open the actual file
-    let actual_file = resolve(current_file)
-    silent! execute 'file ' . actual_file
+  let l:current_file = expand('%:p')
+  " Check if file type is a symlink.
+  if getftype(l:current_file) == 'link'
+    " Resolve the file path and open the "actual" file.
+    let l:actual_file = resolve(l:current_file)
+    if l:current_file != l:actual_file
+      " 2017-12-20: What the what?!! For the past week (since I
+      " added this code 2017-12-12), some files (especially
+      " .vimprojects) throw errors when I try to blandly save, e.g.,
+      "     E13: File exists (use ! to override)
+      " which I tracked down to calling :file -- and it happens
+      " whether I `execute` or call it directly. And even more
+      " bizarrely, it happens even though this block of code does
+      " not execute! And even more mind blowingly confusingly, it
+      " does not happen if I if-0 the block of code! So we'll just,
+      " well, leave this code here as a testament to how much I love
+      " Vim but also how quirky it can be sometimes. (Actually, not
+      " too quirky; I cannot think of another Vim'ism like this.)
+      " Note, too, if you :file the same path in a buffer, it barks:
+      "     E95: Buffer with this name already exists
+      " See also: `:h :file` (not `:h file`) or `:h CTRL-G`.
+      if 0
+        silent! execute 'file ' . l:actual_file
+        "execute 'file ' . l:actual_file
+        "file l:actual_file
+      endif
+    endif
   end
 endfunction
 
@@ -404,7 +424,8 @@ function! SetProjectRoot()
   endif
 endfunction
 
-" follow symlink and set working directory
+" Follow symlink and set working directory.
+" 2017-12-20: See note in FollowSymlink, which is effectively disabled now.
 autocmd BufRead *
   \ call FollowSymlink() |
   \ call SetProjectRoot()
