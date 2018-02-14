@@ -22,6 +22,11 @@ fi
 
 find . -maxdepth 1 -type l -exec /bin/rm {} +
 
+# Ignore searching subdirectories symlinked herein.
+if [[ ! -e .ignore ]]; then
+  echo "*" > .ignore
+fi
+
 # Name the links deliberately so they're
 # ordered logically and are pretty printed
 # in the project tray.
