@@ -17,6 +17,8 @@ if exists('g:plugin_dubs_project') || &cp
 endif
 let g:plugin_dubs_project = 1
 
+let g:plugin_dubs_project_skip_symlink_dirs = 0
+
 function! s:Project(filename) " <<<
     " Initialization <<<
     if exists("g:proj_running")
@@ -583,6 +585,18 @@ function! s:Project(filename) " <<<
 
             if ignore == 0
                 if isdirectory(glob(fname))
+                    " 2018-03-05: Not if symlink directory? Uncomment if you want.
+                    " I'd rather not hide files except deliberately, and I don't
+                    " want to hack in a new exclude option, so for now it's up to
+                    " dev to enable this on an ad-hoc basis.
+                    if g:plugin_dubs_project_skip_symlink_dirs
+                        let ftype = getftype(glob(fname))
+                        if ftype == "link"
+                            echon "Skipping symlink: " . fname . "\r"
+                            continue
+                        endif
+                    endif
+
                     let {a:dirvariable}={a:dirvariable}.a:padding.fname.a:separator
                     let {a:dircount}={a:dircount} + 1
                 else
