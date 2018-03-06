@@ -596,6 +596,15 @@ function! s:Project(filename) " <<<
                             continue
                         endif
                     endif
+                    " 2018-03-05: Seems only fitting. Ignore dir with:
+                    "   cd dir/to/ignore
+                    "   touch .dubs_project.vim-ignore
+                    " See :help dos-backslash -- it says to use normal / separator.
+                    let l:subfnames=glob(fname . "/.dubs_project.vim-ignore", 0, 1)
+                    if len(l:subfnames) > 0
+                        echon "Skipping ignored: " . fname . "\r"
+                        continue
+                    endif
                     " Bah. I'd rather not encode business logic herein, but whatever.
                     if fname == ".git"
                         let l:subfnames=glob(fname . "/HEAD", 0, 1)
