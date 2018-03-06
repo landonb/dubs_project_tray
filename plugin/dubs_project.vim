@@ -1512,7 +1512,7 @@ if exists('g:proj_flags') && (match(g:proj_flags, '\Cg') != -1)
 endif
 
 " [lb] 2010.02.24: Expose externally, too.
-command ToggleProject call <SID>DoToggleProject()
+command! ToggleProject call <SID>DoToggleProject()
 
 finish
 
