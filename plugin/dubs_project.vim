@@ -529,9 +529,12 @@ function! s:Project(filename) " <<<
                 let end = strlen(filter)
                 let while_var = 0
             endif
-            let single=glob(strpart(filter, 0, end))
-            if strlen(single) != 0
-                let files = files.single."\010"
+            " MAYBE: Why not get a list reponse instead? (And use local var?)
+            "   let l:filenames=glob(strpart(filter, 0, end), 0, 1)
+            let l:filenames=glob(strpart(filter, 0, end))
+            if strlen(l:filenames) != 0
+                " glob() uses <NL> by default to separate paths.
+                let files = files . l:filenames . "\010"
             endif
             let filter = strpart(filter, end + 1)
         endwhile
@@ -543,6 +546,13 @@ function! s:Project(filename) " <<<
         let {a:filecount}=0
         let {a:dircount}=0
         while strlen(fnames) > 0
+            " FIXME/2018-03-05: If a file has a ! in it, that gets replaced
+            "   with newline. So not only is filename wroing in list, but
+            "   there's a blank line following it. It's easy to manually
+            "   fix, though... just annoying. But (lb) doesn't want to figure
+            "   out if it's because we call glob() above and don't get a list,
+            "   or if it's because of this unexplained regex, or something else.
+            " FIXME/2018-03-05: Hahaha, same goes for '@' and '!'! Word boundary?
             let fname = substitute(fnames,  '\(\(\f\|[ :\[\]]\)*\).*', '\1', '')
             let fnames = substitute(fnames, '\(\f\|[ :\[\]]\)*.\(.*\)', '\2', '')
 
@@ -591,7 +601,6 @@ function! s:Project(filename) " <<<
         let c_d=(strlen(a:filter_directive) > 0) ? c_d.'filter="'.a:filter_directive.'" ': c_d
         let c_d=(strlen(a:exclude_directive) > 0) ? c_d.'exclude="'.a:exclude_directive.'" ': c_d
         call append(line, spaces.'}')
-        " 2017-10-16: It's more obvious to user how to hide hidden files if
         "call append(line, spaces.a:name.'='.dir.' '.c_d.'{')
         call append(line, spaces . a:name . '=' . a:absolute_dir . ' ' . c_d . '{')
 
