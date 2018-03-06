@@ -596,6 +596,14 @@ function! s:Project(filename) " <<<
                             continue
                         endif
                     endif
+                    " Bah. I'd rather not encode business logic herein, but whatever.
+                    if fname == ".git"
+                        let l:subfnames=glob(fname . "/HEAD", 0, 1)
+                        if len(l:subfnames) > 0
+                            echon "Skipping .git: " . getcwd() . "/" . fname . "\r"
+                            continue
+                        endif
+                    endif
 
                     let {a:dirvariable}={a:dirvariable}.a:padding.fname.a:separator
                     let {a:dircount}={a:dircount} + 1
