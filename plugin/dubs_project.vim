@@ -556,6 +556,10 @@ function! s:Project(filename) " <<<
             let fname = substitute(fnames,  '\(\(\f\|[ :\[\]]\)*\).*', '\1', '')
             let fnames = substitute(fnames, '\(\f\|[ :\[\]]\)*.\(.*\)', '\2', '')
 
+            if (fname == '.') || (fname == "..")
+                continue
+            endif
+
             let exclude = a:exclude
             let ignore = 0
             let while_var = 1
@@ -612,7 +616,11 @@ function! s:Project(filename) " <<<
 
         if a:recursive
             exec 'cd '.a:absolute_dir
-            call s:VimDirListing("*", '', '', "\010", 'b:files', 'b:filecount', 'b:dirs', 'b:dircount')
+            " 2018-03-05: Missing dotdirectories!
+            "call s:VimDirListing("*", '', '', "\010", 'b:files', 'b:filecount', 'b:dirs', 'b:dircount')
+            " EXPLAIN/2018-03-05: What's "\010" separator?
+            " :: s:VimDirListing(filter, exclude, padding, separator, filevariable, filecount, dirvariable, dircount)
+            call s:VimDirListing(a:filter, a:exclude, '', "\010", 'b:files', 'b:filecount', 'b:dirs', 'b:dircount')
             cd -
             let dirs=b:dirs
             let dcount=b:dircount
@@ -655,7 +663,9 @@ function! s:Project(filename) " <<<
         endif
         let absolute = (foldlev <= 0)?'Absolute ': ''
         let home=''
-        let filter='*'
+        " 2018-03-05: Missing dotdirectories!
+        "let filter='*'
+        let filter='* .*'
         let exclude=''
         if (match(g:proj_flags, '\Cb') != -1) && has('browse')
             " Note that browse() is inconsistent: On Win32 you can't select a
