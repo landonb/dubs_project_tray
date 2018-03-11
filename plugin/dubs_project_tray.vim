@@ -84,6 +84,7 @@ noremap <silent> <unique> <script>
   \ :call <SID>ToggleProject_Wrapper()<CR>
 "   2. Thunk the <Plug>
 function s:ToggleProject_Wrapper()
+  mkview
   let save_winnr = winnr()
   if !exists('g:proj_running') || bufwinnr(g:proj_running) == -1
     " the Project adds itself as the first window, so
@@ -276,6 +277,7 @@ function s:ToggleProject_Wrapper()
   " Move cursor back to window it was just in
   execute save_winnr . 'wincmd w'
 
+  loadview
 endfunction
 
 " Test if a window is the Help, Quickfix, MiniBufExplorer, or Project window
