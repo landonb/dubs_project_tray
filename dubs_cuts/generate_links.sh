@@ -35,6 +35,8 @@ fpath_dirs=()
 add_dubs_all=true
 if [[ -e ~/.vim/bundle_ ]]; then
   fpath_dirs+=(~/.vim/bundle_/dubs*)
+  # 2018-03-13: Don't forget my privates!
+  fpath_dirs+=(~/.vim/bundle_/${USER}*)
 elif [[ -e ~/.vim/bundle ]]; then
   fpath_dirs+=(~/.vim/bundle/dubs*)
   add_dubs_all=false
@@ -54,30 +56,51 @@ for fpath in $(find ${fpath_dirs[@]} \
                       -regex ".*\.(in|py|rb|rst|sh|txt|vim)(rc)?$" \
                | egrep -v "\/autoload\/xml" \
               ) ; do
+  if true; then
+    echo "==================================================================="
+    echo "FOUND: ${fpath}"
+  fi
   if [[ ${fpath} != ' ' ]]; then
     filename=$(basename -- "${fpath}")
-    filedir=$(basename -- $(dirname -- "${fpath}"))
+    rpath=$(dirname -- "${fpath}")
     proj_name=$(basename -- $(dirname $(dirname -- "${fpath}")))
+    path_abbrevd=''
     if [[    ${proj_name} == '' \
           || ${proj_name} == 'bundle' \
           || ${proj_name} == 'bundle_' \
           || ${proj_name} == 'packages' ]]; then
       path_abbrevd="${proj_name:0:4}"
-    elif [[ ${proj_name} == 'after' ]]; then
-      filedir_=aftr-${filedir:0:5}
     else
-      filedir_=${filedir:0:9}
+      parent_name=$(basename -- "${rpath}")
+      while [[ \
+        ${parent_name} != '/' && \
+        ${parent_name} != '.vim' && \
+        ${parent_name:0:6} != 'bundle' \
+      ]]; do
+        proj_name=$(basename -- "${rpath}")
+        proj_name=${proj_name#dubs_}
+        proj_name=${proj_name#${USER}s_}
+        proj_name=${proj_name:0:8}
+        rpath=$(dirname -- "${rpath}")
+        parent_name=$(basename -- "${rpath}")
+        [[ ${path_abbrevd} != '' ]] && path_abbrevd="-${path_abbrevd}"
+        path_abbrevd="${proj_name:0:8}${path_abbrevd}"
+      done
+      if [[ ${parent_name} == '.vim' ]]; then
+        # If top-level ~/.vim/plugin or ~/.vim/autoload, etc.
+        [[ ${path_abbrevd} != '' ]] && path_abbrevd="-${path_abbrevd}"
+        path_abbrevd="${parent_name:0:8}${path_abbrevd}"
+      fi
     fi
     link_name=$(printf "%s%s-%s" \
-                       "${filedir_}" \
-                       "${padline1:${#filedir_}}" \
+                       "${path_abbrevd}" \
+                       "${padline1:${#path_abbrevd}}" \
                        "${filename}")
     if true; then
-        echo "${fpath}"
         echo "  filename: ${filename}"
-        echo "  filedir: ${filedir}"
+        echo "  rpath: ${rpath}"
         echo "  proj_name: ${proj_name}"
-        echo "  filedir_: ${filedir_}"
+        echo "  path_abbrevd: ${path_abbrevd}"
         echo "  link_name: ${link_name}"
     fi
     # Using -f, because file shortening may make two files look like one:
