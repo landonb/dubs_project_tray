@@ -9,17 +9,16 @@
 # Make sure we're where we're at.
 entered_the_dubs_cuts=false
 if [[ $(basename -- $(pwd -P)) != "dubs_cuts" ]]; then
-    if [[ ! -d "dubs_cuts" ]]; then
-        echo "Where's dubs_cuts?"
-        exit 1
-    fi
-    entered_the_dubs_cuts=true
-    pushd dubs_cuts &> /dev/null
+  if [[ ! -d "dubs_cuts" ]]; then
+    echo "Where's dubs_cuts?"
+    exit 1
+  fi
+  entered_the_dubs_cuts=true
+  pushd dubs_cuts &> /dev/null
 fi
 
 # Remove existing links, otherwise you'll
 # add links to the linked directories.
-
 find . -maxdepth 1 -type l -exec /bin/rm {} +
 
 # Ignore searching subdirectories symlinked herein.
@@ -40,7 +39,7 @@ elif [[ -e ~/.vim/bundle ]]; then
   fpath_dirs+=(~/.vim/bundle/dubs*)
   add_dubs_all=false
 fi
-if $add_dubs_all; then
+if ${add_dubs_all}; then
   if [[ -e ~/.vim/bundle/dubs_all ]]; then
     fpath_dirs+=(~/.vim/bundle/dubs_all)
   fi
@@ -55,24 +54,24 @@ for fpath in $(find ${fpath_dirs[@]} \
                       -regex ".*\.(in|py|rb|rst|sh|txt|vim)(rc)?$" \
                | egrep -v "\/autoload\/xml" \
               ) ; do
-  if [[ $fpath != ' ' ]]; then
+  if [[ ${fpath} != ' ' ]]; then
     filename=$(basename -- "${fpath}")
     filedir=$(basename -- $(dirname -- "${fpath}"))
     proj_name=$(basename -- $(dirname $(dirname -- "${fpath}")))
-    if [[    $proj_name == '' \
-          || $proj_name == 'bundle' \
-          || $proj_name == 'bundle_' \
-          || $proj_name == 'packages' ]]; then
-      filedir_=${filedir}
-    elif [[ $proj_name == 'after' ]]; then
+    if [[    ${proj_name} == '' \
+          || ${proj_name} == 'bundle' \
+          || ${proj_name} == 'bundle_' \
+          || ${proj_name} == 'packages' ]]; then
+      path_abbrevd="${proj_name:0:4}"
+    elif [[ ${proj_name} == 'after' ]]; then
       filedir_=aftr-${filedir:0:5}
     else
       filedir_=${filedir:0:9}
     fi
     link_name=$(printf "%s%s-%s" \
-                       "$filedir_" \
+                       "${filedir_}" \
                        "${padline1:${#filedir_}}" \
-                       "$filename")
+                       "${filename}")
     if true; then
         echo "${fpath}"
         echo "  filename: ${filename}"
@@ -86,7 +85,7 @@ for fpath in $(find ${fpath_dirs[@]} \
     #       dubs_file_finder/cmdt_paths.template/generate_links.sh
     #    both resolve to cmdt_path-generate_links.sh.
     # Obviously, remove -f to see what files conflict.
-    /bin/ln -sf $fpath $link_name
+    /bin/ln -sf ${fpath} ${link_name}
   fi
 done
 
@@ -103,9 +102,11 @@ done
 /bin/ln -s ~/.vim/readme-using.make.sh dubs_all--readme-using.make.sh
 
 # 2017-02-25: Huh? I wonder if the `ln -sf` in the loop overwrites it...
-/bin/ln -sf ~/.vim/bundle_/dubs_file_finder/cmdt_paths/generate_links.sh cmdt_path-generate_links.sh
+/bin/ln -sf \
+  ~/.vim/bundle_/dubs_file_finder/cmdt_paths/generate_links.sh \
+  cmdt_path-generate_links.sh
 
 if ${entered_the_dubs_cuts}; then
-    popd &> /dev/null
+  popd &> /dev/null
 fi
 
