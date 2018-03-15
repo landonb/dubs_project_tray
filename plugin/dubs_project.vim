@@ -612,6 +612,9 @@ function! s:Project(filename) " <<<
                             echon "Skipping .git: " . getcwd() . "/" . fname . "\r"
                             continue
                         endif
+                    elseif fname == "node_modules" || fname == ".vscode" || fname == ".nyc_output"
+                      echon "Skipping meta dir: " . fname . "\r"
+                      continue
                     endif
 
                     let {a:dirvariable}={a:dirvariable}.a:padding.fname.a:separator
