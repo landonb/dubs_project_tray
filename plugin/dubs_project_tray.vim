@@ -84,8 +84,13 @@ noremap <silent> <unique> <script>
   \ :call <SID>ToggleProject_Wrapper()<CR>
 "   2. Thunk the <Plug>
 function s:ToggleProject_Wrapper()
-  mkview
+  " Use mkview/loadview to store current view, i.e., to maintain
+  " current folds (otherwise Vim resets them when you reenter buffer).
+  " NOTE: Use silent to avoid "E35: No file name" warning message.
+  silent! mkview
+
   let save_winnr = winnr()
+
   if !exists('g:proj_running') || bufwinnr(g:proj_running) == -1
     " the Project adds itself as the first window, so
     " we need to increase winnr by 1 to find our current
@@ -277,7 +282,8 @@ function s:ToggleProject_Wrapper()
   " Move cursor back to window it was just in
   execute save_winnr . 'wincmd w'
 
-  loadview
+  " NOTE: Use silent to avoid "E35: No file name" warning message.
+  silent! loadview
 endfunction
 
 " Test if a window is the Help, Quickfix, MiniBufExplorer, or Project window
