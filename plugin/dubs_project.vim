@@ -1189,7 +1189,9 @@ function! s:Project(filename) " <<<
     function! s:GrepAll(recurse, lineno, pattern)
         cunmap <buffer> help
         let pattern=(a:pattern[0] == '')?input("GREP options and pattern: "):a:pattern
-        cnoremap <buffer> help let g:proj_doinghelp = 1<CR>:help
+        " 2018-05-06: (lb): See comment below/elsewhere: Disable 'help' mapping,
+        " because it interferes with /-search.
+        "cnoremap <buffer> help let g:proj_doinghelp = 1<CR>:help
         if pattern[0] == ''
             return
         endif
@@ -1489,7 +1491,10 @@ function! s:Project(filename) " <<<
         nnoremap <buffer> <silent> <LocalLeader>E :call <SID>OpenEntry(line('.'), '', 'e', 1)<CR>
         " The :help command stomps on the Project Window.  Try to avoid that.
         " This is not perfect, but it is alot better than without the mappings.
-        cnoremap <buffer> help let g:proj_doinghelp = 1<CR>:help
+        " 2018-05-06: (lb): This messes up /-search!
+        "   E.g., If you type </> <h> <e>, the autosearch feature does not
+        "   activate because Vim is waiting to see if you'll spell h-e-l-p!
+        "cnoremap <buffer> help let g:proj_doinghelp = 1<CR>:help
 
         " 2011.04.14 landonb: <F1> conflicts with dubsacks' find-under-cursor
         "nnoremap <buffer> <F1> :let g:proj_doinghelp = 1<CR><F1>
