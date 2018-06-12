@@ -424,10 +424,9 @@ function! SetProjectRoot()
   lcd %:p:h
   let l:git_dir = system("git rev-parse --show-toplevel")
   " See if the command output starts with 'fatal'
-  " (if it does, it's not in a git repo).
-  let l:is_not_git_dir = matchstr(l:git_dir, '^fatal:.*')
+  " (if it does, it's not in a git repo, duh).
   " If git project, change local directory to git project root.
-  if empty(l:is_not_git_dir)
+  if (l:git_dir != '') && empty(matchstr(l:git_dir, '^fatal:.*'))
     lcd `=l:git_dir`
   endif
 endfunction
