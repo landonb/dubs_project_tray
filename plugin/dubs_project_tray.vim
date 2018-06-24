@@ -44,6 +44,8 @@ let g:plugin_dubs_project_tray = 1
 " -------------------------------------------------------------------------
 " Alt-Shift-4 // Toggle Project Browser
 " -------------------------------------------------------------------------
+" DubsProjectTray_ToggleProject_Wrapper
+" -------------------------------------------------------------------------
 " EditPlus doesn't necessarily have an
 " Alt-Shift-4 mapping, but it does have
 " a Project menu. This is similar. But
@@ -60,7 +62,6 @@ let g:proj_window_width=33 " Default project window width
 " always open the directory), so just use a simple edit box instead.
 let g:proj_flags='imst' " Default was 'imstb', but browse() in Fedora is wonky
 
-" NOTE noremap does not work
 " SYNC_ME: Dubsacks' <M-????> mappings are spread across plugins. [M-S-4]
 if !hasmapto('<Plug>DubsProjectTray_ToggleProject_Wrapper')
   " 2017-03-28: Hrm. noremap and inoremap do not work for me here. (Also added !hasmapto.)
@@ -68,22 +69,18 @@ if !hasmapto('<Plug>DubsProjectTray_ToggleProject_Wrapper')
   imap <silent> <M-$> <C-O><Plug>DubsProjectTray_ToggleProject_Wrapper
   "cmap <silent> <M-$> <C-C><Plug>DubsProjectTray_ToggleProject_Wrapper
   "omap <silent> <M-$> <C-C><Plug>DubsProjectTray_ToggleProject_Wrapper
+  noremap <silent> <unique> <script>
+    \ <Plug>DubsProjectTray_ToggleProject_Wrapper
+    \ :call <SID>ToggleProject_Wrapper()<CR>
+  "   2. Thunk the <Plug>
 endif
-
-" -------------------------------------------------------------------------
-" DubsProjectTray_ToggleProject_Wrapper
-" -------------------------------------------------------------------------
 
 " You can only setup Project once. If you call it again with
 " a path -- even with the same path we just used -- it'll
 " complain. So set the path once and then just use toggle.
 let s:project_loaded = 0
 
-noremap <silent> <unique> <script>
-  \ <Plug>DubsProjectTray_ToggleProject_Wrapper
-  \ :call <SID>ToggleProject_Wrapper()<CR>
-"   2. Thunk the <Plug>
-function s:ToggleProject_Wrapper()
+function! s:ToggleProject_Wrapper()
   " Use mkview/loadview to store current view, i.e., to maintain
   " current folds (otherwise Vim resets them when you reenter buffer).
   " NOTE: Use silent to avoid "E35: No file name" warning message.
