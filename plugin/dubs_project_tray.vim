@@ -417,6 +417,12 @@ endfunction
 " Set working directory to git project root, or
 " to directory of current file if not git project.
 function! SetProjectRoot()
+  " Check for special paths, e.g., vim-fugitive paths look like:
+  "   fugitive:///repo/path/.git//SHA1XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/some/file
+  if (expand('%:p') == '') || !empty(matchstr(expand('%:p'), '^fugitive://.*'))
+    " E.g., this happens on opening Glog entry from quickfix.
+    return
+  endif
   " Default to the current file's directory.
   lcd %:p:h
   let l:git_dir = system("git rev-parse --show-toplevel")
