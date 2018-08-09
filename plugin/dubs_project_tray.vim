@@ -355,9 +355,13 @@ endfunction
 " 2018-08-09: Up until now:
 "   set isfname=@,48-57,/,.,-,_,+,,,#,$,%,~,=,{,}
 " 2018-08-09: Adds parentheses, and bang. And single quote... and double quote.
-"   (Also, is the triple comma, ``,,,``, so that files with commas in their
+"   (Also, is the triple comma, `,,,`, so that files with commas in their
 "   names are recognized properly?)
-set isfname=@,48-57,/,.,-,_,+,,,#,$,%,~,=,{,},(,),!,\',\"
+" 2018-08-09: On second thought, including double quote messes up loading
+"   .trustme.vim from within a project with a plus sign `+` in the path.
+"   This I cannot explain.
+"     set isfname=@,48-57,/,.,-,_,+,,,#,$,%,~,=,{,},(,),!,\',\"
+set isfname=@,48-57,/,.,-,_,+,,,#,$,%,~,=,{,},(,),!,\'
 
 " -------------------------------------------------------------------------
 " netrw/vim-vinegar tweaking
