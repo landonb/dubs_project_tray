@@ -346,8 +346,18 @@ endfunction
 " 			    otherwise: "@,48-57,/,.,-,_,+,,,#,$,%,~,=")
 "
 " Linux is the "otherwise" default, to which we'll add leafy brackets.
+"
+" 2018-08-09: See comments in dubs_project.vim's substitute(fnames, ...)
+"   which uses the regex character class for file characters, ``\f``.
+"   To prevent project from splitting filenames on special characters,
+"   like parentheses, and exclamation marks, include them here.
 
-set isfname=@,48-57,/,.,-,_,+,,,#,$,%,~,=,{,}
+" 2018-08-09: Up until now:
+"   set isfname=@,48-57,/,.,-,_,+,,,#,$,%,~,=,{,}
+" 2018-08-09: Adds parentheses, and bang. And single quote... and double quote.
+"   (Also, is the triple comma, ``,,,``, so that files with commas in their
+"   names are recognized properly?)
+set isfname=@,48-57,/,.,-,_,+,,,#,$,%,~,=,{,},(,),!,\',\"
 
 " -------------------------------------------------------------------------
 " netrw/vim-vinegar tweaking

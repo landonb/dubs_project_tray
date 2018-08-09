@@ -549,12 +549,28 @@ function! s:Project(filename) " <<<
         let {a:dircount}=0
         while strlen(fnames) > 0
             " FIXME/2018-03-05: If a file has a ! in it, that gets replaced
-            "   with newline. So not only is filename wroing in list, but
+            "   with newline. So not only is filename wrong in list, but
             "   there's a blank line following it. It's easy to manually
             "   fix, though... just annoying. But (lb) doesn't want to figure
             "   out if it's because we call glob() above and don't get a list,
             "   or if it's because of this unexplained regex, or something else.
             " FIXME/2018-03-05: Hahaha, same goes for '@' and '!'! Word boundary?
+            " 2018-08-09: Okay, this makes a little more sense.
+            "   - fnames is a long string with [unknown] delimiter [prints out as ^@]
+            "     and here we split fnames in 2: grab the first file name, and then
+            "     set fnames to the remainder of the list.
+            "   - the \f in this regex is a character class for file characters
+            "       :help character-classes
+            "         \f  file name character (see 'isfname' option)
+            "   - \f uses `isfname`, e.g.,
+            "       :TabMessage echo &isfname
+            "         @,48-57,/,.,-,_,+,,,#,$,%,~,=,{,}
+            "      We want to add things that are being split upon, line bang and parens.
+            "   - Here's the original isfname, at least as of 2018-08-09 for me (lb).
+            "       set isfname=@,48-57,/,.,-,_,+,,,#,$,%,~,=,{,}
+            "     And here's one with parentheses:
+            "       set isfname=@,48-57,/,.,-,_,+,#,$,%,~,=,{,},(,)
+            "     See where we set isfname in dubs_project_tray.vim.
             let fname = substitute(fnames,  '\(\(\f\|[ :\[\]]\)*\).*', '\1', '')
             let fnames = substitute(fnames, '\(\f\|[ :\[\]]\)*.\(.*\)', '\2', '')
 
