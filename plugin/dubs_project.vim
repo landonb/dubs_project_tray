@@ -531,7 +531,7 @@ function! s:Project(filename) " <<<
                 let end = strlen(filter)
                 let while_var = 0
             endif
-            " MAYBE: Why not get a list reponse instead? (And use local var?)
+            " MAYBE: Why not get a list response instead? (And use local var?)
             "   let l:filenames=glob(strpart(filter, 0, end), 0, 1)
             let l:filenames=glob(strpart(filter, 0, end))
             if strlen(l:filenames) != 0
@@ -571,6 +571,10 @@ function! s:Project(filename) " <<<
             "     And here's one with parentheses:
             "       set isfname=@,48-57,/,.,-,_,+,#,$,%,~,=,{,},(,)
             "     See where we set isfname in dubs_project_tray.vim.
+            " 2018-09-10: E.g., from your project file, before you `\c`, tell this
+            "             script not to break on '@', and not to follow symlinkgs:
+            "                 set isfname=48-57,/,.,-,_,+,,,#,$,%,~,=,{,},(,),!,'
+            "                 let g:plugin_dubs_project_skip_symlink_dirs = 1
             let fname = substitute(fnames,  '\(\(\f\|[ :\[\]]\)*\).*', '\1', '')
             let fnames = substitute(fnames, '\(\f\|[ :\[\]]\)*.\(.*\)', '\2', '')
 
