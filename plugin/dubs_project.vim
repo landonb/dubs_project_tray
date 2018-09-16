@@ -12,6 +12,8 @@
 " You may use this code in whatever way you see fit.
 "=============================================================================
 
+" OFF: vim600: set foldmethod=marker foldmarker=<<<,>>> foldlevel=1:
+
 if exists('g:plugin_dubs_project') || &cp
   finish
 endif
@@ -1585,4 +1587,3 @@ command! ToggleProject call <SID>DoToggleProject()
 
 finish
 
-" vim600: set foldmethod=marker foldmarker=<<<,>>> foldlevel=1:
