@@ -1,5 +1,5 @@
-Dubsacks Vim — Project Tray
-===========================
+Dubs Vim — Project Tray
+=======================
 
 A simple wrapper around the
 `Project <http://www.vim.org/scripts/script.php?script_id=69>`__
@@ -9,8 +9,7 @@ Additional features:
 
 - Toggle the project tray easily with ``<Alt-Shift-4>``.
   (The key combo was chosen to integrate nicely with
-  `Dubsacks Toolkit
-  <http://github.com/landonb/dubsacks_vim>`__.)
+  `Dubs Vim <http://github.com/landonb/dubs-vim>`__.)
 
 - Put your ``.vimprojects`` file anywhere in your Vim
   folder and it'll be located.

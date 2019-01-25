@@ -62,7 +62,7 @@ let g:proj_window_width=33 " Default project window width
 " always open the directory), so just use a simple edit box instead.
 let g:proj_flags='imst' " Default was 'imstb', but browse() in Fedora is wonky
 
-" SYNC_ME: Dubsacks' <M-????> mappings are spread across plugins. [M-S-4]
+" SYNC_ME: Dubs Vim's <M-????> mappings are spread across plugins. [M-S-4]
 if !hasmapto('<Plug>DubsProjectTray_ToggleProject_Wrapper')
   " 2017-03-28: Hrm. noremap and inoremap do not work for me here. (Also added !hasmapto.)
   nmap <silent> <M-$> <Plug>DubsProjectTray_ToggleProject_Wrapper
@@ -118,7 +118,7 @@ function! s:ToggleProject_Wrapper()
         " The project file is not at the default location.
         " See if we can't find one in the user's Vim directory,
         " which should be the first element of the runtimepath.
-        " This happens if the user installs Dubsacks using Pathogen.
+        " This happens if the user installs Dubs Vim using Pathogen.
 
         " Soooooo slow:
         "   let l:projf = findfile('.vimprojects',
@@ -217,8 +217,8 @@ function! s:ToggleProject_Wrapper()
   endif
   "
   " Next, see if two buffers are open, and figure out which windows they're in.
-  " Hint: the way dubsacks sets it up, the Project window (file browser) is on
-  " the left, and the buffer explorer and quickfix window are on the bottom.
+  " Hint: the way dubs_project_tray sets it up, the Project window (file browser)
+  " is on the left, and the buffer explorer and quickfix window are on the bottom.
   " That leaves one or two windows that the user is editing in the upper-right.
   " If there are two windows, they're either side-by-side or stacked depending
   " on how much room is available.
@@ -316,7 +316,7 @@ endfunction
 " 2015.01.14: And now I'm grooving on Command-T more so than Project;
 "             see dubs_file_finder.
 " (Note: It's M-&, not M-S-7)
-"" SYNC_ME: Dubsacks' <M-????> mappings are spread across plugins. [M-S-7]
+"" SYNC_ME: Dubs Vim's <M-????> mappings are spread across plugins. [M-S-7]
 "noremap <M-&> :NERDTreeToggle<CR>
 "inoremap <M-&> <C-O>:NERDTreeToggle<CR>
 ""cnoremap <M-&> <C-C>:NERDTreeToggle<CR>

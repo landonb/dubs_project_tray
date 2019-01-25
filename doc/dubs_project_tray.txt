@@ -1,6 +1,6 @@
 *dubs_project_tray.txt*	For Vim version 7.4.	Last change: 2015 Jan 23
 
-Dubsacks VIM -- Subtly Improved Project Tray~
+Dubs Vim -- Subtly Improved Project Tray~
 
 ENHANCED PROJECT PLUGIN REFERENCE		*dubs-project-tray*
 
@@ -19,8 +19,8 @@ Additional features:
 
 - Toggle the project tray easily with <Alt-Shift-4>.
   The key combo was chosen to integrate nicely with
-  Dubsacks Vim Toolkit, at
-    http://github.com/landonb/dubsacks_vim
+  Dubs Vim, at
+    http://github.com/landonb/dubs-vim
 
 - Put your '.vimprojects' file anywhere in your Vim
   folder and it'll be located.

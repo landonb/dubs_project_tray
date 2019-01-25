@@ -1518,8 +1518,9 @@ function! s:Project(filename) " <<<
         "   activate because Vim is waiting to see if you'll spell h-e-l-p!
         "cnoremap <buffer> help let g:proj_doinghelp = 1<CR>:help
 
-        " 2011.04.14 landonb: <F1> conflicts with dubsacks' find-under-cursor
-        "nnoremap <buffer> <F1> :let g:proj_doinghelp = 1<CR><F1>
+        " 2011-04-14: (lb): dubs_project's <F1> conflicts
+        "   with dubs_edit_juice's <F1> find-under-cursor
+        " nnoremap <buffer> <F1> :let g:proj_doinghelp = 1<CR><F1>
 
         " This is to avoid changing the buffer, but it is not fool-proof.
         nnoremap <buffer> <silent> <C-^> <Nop>
