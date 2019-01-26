@@ -1,5 +1,8 @@
-Dubs Vim — Project Tray
-=======================
+###############################
+Dubs Vim |em_dash| Project Tray
+###############################
+
+.. |em_dash| unicode:: 0x2014 .. em dash
 
 A simple wrapper around the
 `Project <http://www.vim.org/scripts/script.php?script_id=69>`__
@@ -20,7 +23,7 @@ Additional features:
   Project plugin.
 
 Installation
-------------
+============
 
 Standard Pathogen installation:
 
@@ -44,7 +47,7 @@ Online help:
    :help dubs-project-tray
 
 Usage
------
+=====
 
 Type ``<Shift-Alt-4>`` once to open the project tray.
 Type again to close the project tray. Repeat.
@@ -69,7 +72,7 @@ line below; press the key combo multiple times to move
 the project to a new position.
 
 Key Mappings
-------------
+============
 
 ===========================  ============================  ==============================================================================
  Key Mapping                  Description                   Notes
@@ -83,7 +86,7 @@ Key Mappings
 ===========================  ============================  ==============================================================================
 
 Brackets in Directory Names
----------------------------
+===========================
 
 Bug: There's an issue handling directories with
 brackets in their names, such as those used in a
