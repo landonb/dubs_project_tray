@@ -146,12 +146,12 @@ main () {
   local before_cd="$(pwd -L)"
   cd "${DUBS_PROJECT_TRAY_DUBS_CUTS}"
 
-  set -e
-
   dubs_cuts_generate_links
 
   cd "${before_cd}"
 }
 
-main "$@"
+set -e
+
+main "${@}"
 
