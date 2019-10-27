@@ -14,6 +14,10 @@ DUBS_PROJECT_TRAY_DUBS_CUTS="${HOME}/.vim/bundle_/dubs_project_tray/dubs_cuts"
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 
+remove_existing_links () {
+  find . -maxdepth 1 -type l -exec /bin/rm {} +
+}
+
 dubs_cuts_generate_links () {
   # Caller ensures we're in the proper directory, but just in case:
   if [ $(basename -- "$(pwd -P)") != 'dubs_cuts' ]; then
@@ -23,7 +27,7 @@ dubs_cuts_generate_links () {
 
   # Remove existing links, otherwise you'll
   # add links to the linked directories.
-  find . -maxdepth 1 -type l -exec /bin/rm {} +
+  remove_existing_links
 
   # Ignore searching subdirectories symlinked herein.
   if [ ! -e '.ignore' ]; then
