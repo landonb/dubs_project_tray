@@ -1253,12 +1253,12 @@ function! s:Project(filename) " <<<
         return home
     endfunction
     function! s:GetFilter(info, parent_filter)
-        let filter = substitute(a:info, '.*\<filter="\([^"]*\).*', '\1', '')
+        let filter = substitute(a:info, '.*\<filter="\([^"]\{-}\)".*', '\1', '')
         if strlen(filter) == strlen(a:info) | let filter = a:parent_filter | endif
         return filter
     endfunction
     function! s:GetExclude(info, parent_exclude)
-        let exclude = substitute(a:info, '.*\<exclude="\([^"]*\).*', '\1', '')
+        let exclude = substitute(a:info, '.*\<exclude="\([^"]\{-}\)".*', '\1', '')
         if strlen(exclude) == strlen(a:info) | let exclude = a:parent_exclude | endif
         return exclude
     endfunction
