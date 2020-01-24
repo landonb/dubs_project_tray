@@ -114,9 +114,10 @@ function! s:Project(filename) " <<<
         syntax match projectScriptinout    '\<out\s*=\s*\(\\ \|\f\|:\|"\)\+' contains=projectDescription,projectWhiteError
         syntax match projectComment        '#.*'
         syntax match projectCD             '\<CD\s*=\s*\(\\ \|\f\|:\|"\)\+' contains=projectDescription,projectWhiteError
-        syntax match projectFilterEntry    '\<filter\s*=.*"'               contains=projectWhiteError,projectFilterError,projectFilter,projectFilterRegexp
+        " 2020-01-23: (lb): Note to self: .\{-} is Vim's non-greedy .*
+        syntax match projectFilterEntry    '\<filter\s*=".\{-}"'           contains=projectWhiteError,projectFilterError,projectFilter,projectFilterRegexp
         syntax match projectFilter         '\<filter='he=e-1,me=e-1        contained nextgroup=projectFilterRegexp,projectFilterError,projectWhiteError
-        syntax match projectExcludeEntry   '\<exclude\s*=.*"'              contains=projectWhiteError,projectExcludeError,projectExclude,projectExcludeRegexp
+        syntax match projectExcludeEntry   '\<exclude\s*=".\{-}"'          contains=projectWhiteError,projectExcludeError,projectExclude,projectExcludeRegexp
         syntax match projectExclude        '\<exclude='he=e-1,me=e-1       contained nextgroup=projectExcludeRegexp,projectExcludeError,projectWhiteError
         syntax match projectFlagsEntry     '\<flags\s*=\( \|[^ ]*\)'       contains=projectFlags,projectWhiteError
         syntax match projectFlags          '\<flags'                       contained nextgroup=projectFlagsValues,projectWhiteError
@@ -125,9 +126,9 @@ function! s:Project(filename) " <<<
         syntax match projectWhiteError     '=\s\+'hs=s+1                   contained
         syntax match projectWhiteError     '\s\+='he=e-1                   contained
         syntax match projectFilterError    '=[^"]'hs=s+1                   contained
-        syntax match projectFilterRegexp   '=".*"'hs=s+1                   contained
+        syntax match projectFilterRegexp   '="[^"]\{-}"'hs=s+1             contained
         syntax match projectExcludeError   '=[^"]'hs=s+1                   contained
-        syntax match projectExcludeRegexp  '=".*"'hs=s+1                   contained
+        syntax match projectExcludeRegexp  '="[^"]\{-}"'hs=s+1             contained
         syntax match projectFoldText       '^[^=]\+{'
 
         highlight def link projectDescription   Identifier
