@@ -501,8 +501,8 @@ function! s:Project(filename) " <<<
     "   Used for double clicking. If the mouse is on a fold, open/close it. If
     "   not, try to open the file.
     function! s:DoFoldOrOpenEntry(cmd0, cmd1)
-"        " [lb] Bracket also ends the line$.
-"        if getline('.') =~ '{\|}$' || foldclosed('.') != -1
+        " (lb): Note to self: A right brace also ends the line$.
+        " ~ ...ine('.') =~ '{\|}$' ...
         if getline('.') =~ '{\|}' || foldclosed('.') != -1
             normal! za
         else
