@@ -389,7 +389,7 @@ function! s:Project(filename) " <<<
         " Extract filter
         let filter = s:GetFilter(infoline, parent_filter)
         let exclude = s:GetExclude(infoline, parent_exclude)
-        if filter == '' || exclude != '' | let filter = parent_filter | endif
+        if filter == '' | let filter = parent_filter | endif
         if exclude == '' | let exclude = parent_exclude | endif
         return s:ConstructInfo(home, c_d, scriptin, scriptout, '', filter, exclude)
     endfunction ">>>
