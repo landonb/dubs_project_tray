@@ -1526,13 +1526,35 @@ function! s:Project(filename) " <<<
         " This is to avoid changing the buffer, but it is not fool-proof.
         nnoremap <buffer> <silent> <C-^> <Nop>
         "nnoremap <script> <Plug>ProjectOnly :let lzsave=&lz<CR>:set lz<CR><C-W>o:Project<CR>:silent! wincmd p<CR>:let &lz=lzsave<CR>:unlet lzsave<CR>
-        nnoremap <script> <Plug>ProjectOnly :call <SID>DoProjectOnly()<CR>
-        if match(g:proj_flags, '\Cm') != -1
-            if !hasmapto('<Plug>ProjectOnly')
-                nmap <silent> <unique> <C-W>o <Plug>ProjectOnly
-                nmap <silent> <unique> <C-W><C-O> <C-W>o
-            endif
-        endif " >>>
+        "
+        " 2020-02-13: (lb): <Ctrl-w>o not working very well for me, didn't
+        " close all my windows; and on restore, hung (no files loaded) until
+        " I hit Ctrl-c. So disabling.
+        " - See ZoomWin, which also does window-only and restore, but for
+        "   any window.
+        "     https://github.com/vim-scripts/ZoomWin
+        " - (lb): There's not a compelling reason to make a mapping that works
+        "   from any window that makes the project tray fullscreen. Users
+        "   shouldn't have to make the project tray window wider very often
+        "   and when they do, hitting <Space> from within the tray to make it
+        "   wider works very well, and it's easy to remember -- it's also what
+        "   I've been doing ever since I first installed this plugin. In fact,
+        "   I didn't realize this map was here -- and somewhat broken -- until
+        "   I stumbled upon ZoomWin and was curious to try it out. Only, it
+        "   maps to the same <C-w>o keys, so I saw the conflict, then tested
+        "   this feature, then wrote this comment, then committed it.
+        "   - tl;dr A general purpose tool like ZoomWin works great. It also
+        "     decouples the project tray from doing things outside its core.
+        if 0
+          nnoremap <script> <Plug>ProjectOnly :call <SID>DoProjectOnly()<CR>
+          if match(g:proj_flags, '\Cm') != -1
+              if !hasmapto('<Plug>ProjectOnly')
+                  nmap <silent> <unique> <C-W>o <Plug>ProjectOnly
+                  nmap <silent> <unique> <C-W><C-O> <C-W>o
+              endif
+          endif " >>>
+        endif
+
         if filereadable(glob('~/.vimproject_mappings')) | source ~/.vimproject_mappings | endif
         " Autocommands <<<
         " Autocommands to clean up if we do a buffer wipe
