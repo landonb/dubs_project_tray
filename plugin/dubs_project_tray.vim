@@ -24,11 +24,25 @@
 " ===================================================================
 
 " FIXME: On first boot, make the project template.
-"        E.g., /bin/cp ~/.vim/bundle/dubs_project_tray/.vimprojects.template
-"          to dubs_all/.vimprojects
-"          (Note that you can't use dubs_project_tray/.vimprojects
-"           because it's not .gitignored from there.)
-" See example dubs_project.vim. Search for: finddir('cmdt_paths.template', ...)
+"        E.g.,
+"
+"         /bin/cp \
+"           ~/.vim/pack/landonb/start/dubs_project_tray/.vimprojects.template
+"           ~/.vim/pack/landonb/start/dubs_project_tray/.vimprojects
+"
+"       and tell user to move to private locate and create symlink from project.
+"
+"       - Or, just document in the readme and call it, 'good'.
+"
+"       - For example of copying template, see either how
+"           dubs_projects.vim.template
+"         is copied by ``LoadUsersGrepProjects`` in:
+"           ~/.vim/pack/landonb/start/dubs_grep_steady/plugin/dubs_grep_steady.vim
+"
+"         Or look at how cmdt_paths.template is copied. Search for:
+"           finddir('cmdt_paths.template', ...)
+"         in:
+"           ~/.vim/pack/landonb/start/dubs_file_finder/plugin/dubs_file_finder.vim
 
 " -------------------------------------------------------------------------
 " About/Usage
@@ -347,7 +361,7 @@ endfunction
 "
 " Linux is the "otherwise" default, to which we'll add leafy brackets.
 "
-" 2018-08-09: See comments in dubs_project.vim's substitute(fnames, ...)
+" 2018-08-09: See comments in plugin/dubs_project.vim's substitute(fnames, ...)
 "   which uses the regex character class for file characters, ``\f``.
 "   To prevent project from splitting filenames on special characters,
 "   like parentheses, and exclamation marks, include them here.
