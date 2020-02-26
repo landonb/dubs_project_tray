@@ -1,2 +1,5 @@
 doc/tags
+# User's private files.
+dubs_cuts
+.vimprojects
 
