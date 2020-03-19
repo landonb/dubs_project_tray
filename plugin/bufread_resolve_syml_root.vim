@@ -81,7 +81,7 @@ endfunction
 " Command to close opened file if opened at symlink path, and reopen at real path.
 "
 " - I've seen more basic, but broken, examples of how to do this, e.g.,
-"       command! FollowSymLink execute "file " . resolve(expand("%")) | edit
+"       command! FollowSymlink execute "file " . resolve(expand("%")) | edit
 "   but this approach has a glaring problem: if does not delete and wipe
 "   the symlink buffer, so Vim thinks it has two buffers open to the same
 "   file. So if you try to save the file opened second, it'll fail, and Vim
@@ -94,15 +94,32 @@ endfunction
 "   - Ref: Trying to buffer-delete (:bd) a symlink vs. buf-wiping (:bw) it:
 "     https://superuser.com/questions/960773/vim-opens-symlink-even-when-given-target-path-directly
 
-function! FollowSymlink()
+function! FollowSymlinkAndCleanupBufSurfHistory()
   " Using '%:p' for full path, as opposed to possibly relative '%' path.
   let l:sympath = expand('%:p')
-  " Check if file type is a symlink.
+  " Remove *previous* buffer, which is the (unlisted) netrw buffer (which
+  " somehow slips into the BufSurf list, even though I tried to protect
+  " against it -- but the appBufSurfAppendend does not fire for netrw?).
+  " - Note that we remove w:history_index and not the last element.
+  " MAYBE/2020-03-19: Filter every w:history element using buflisted, not just the 1.
+  let l:histxbuf = w:history[w:history_index - 1]
+  if !buflisted(l:histxbuf)
+    call remove(w:history, w:history_index - 1)
+    let w:history_index -= 1
+  endif
+  " Check if file type is a symlink, and resolve to canonical path if so.
   if getftype(l:sympath) == 'link'
     " Resolve the file path and open the "actual" file.
     let l:canpath = resolve(l:sympath)
     if l:sympath != l:canpath
+        let l:bufnr = winbufnr(winnr())
+        " Remove the buffer to the symlink.
+        call remove(w:history, w:history_index)
+        let w:history_index -= 1
         enew
+        " Remove the new buffer from vim-bursurf queue.
+        call remove(w:history, w:history_index)
+        let w:history_index -= 1
         " Note: Wipe the buffer, not delete, lest Vim re-open file at symlink path!
         " - WRONG: exe "bd " . l:sympath
         exe "bw " . l:sympath
@@ -231,5 +248,5 @@ endif
 "       and the TBD_FollowSymlink_BROKE, above, indicated I had previously
 "       tried to solve this problem but failed/gave up! But now, today, success!!
 
-let g:Netrw_funcref = function("FollowSymlink")
+let g:Netrw_funcref = function("FollowSymlinkAndCleanupBufSurfHistory")
 
