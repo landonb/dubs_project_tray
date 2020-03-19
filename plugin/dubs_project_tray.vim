@@ -381,7 +381,7 @@ set isfname=@,48-57,/,.,-,_,+,,,#,$,%,~,=,{,},(,),!,\'
 " netrw/vim-vinegar tweaking
 " -------------------------------------------------------------------------
 
-" 2017-11-02 13:30
+" 2017-11-02: % of current win to use for new win on 'o', 'v', and H/Vexplore.
 " https://shapeshed.com/vim-netrw/
 " https://github.com/tpope/vim-vinegar
 let g:netrw_winsize = 33
@@ -390,13 +390,28 @@ let g:netrw_winsize = 33
 " 2 - open files in a new vertical split
 " 3 - open files in a new tab
 " 4 - open in previous window
-let g:netrw_browse_split = 4
+" 0 - re-use same window (default)
+let g:netrw_browse_split = 0
 
 " Press 'I' to toggle the banner.
 let g:netrw_banner = 0
 
 " There are four different view types: thin, long, wide and tree.
-let g:netrw_liststyle = 3
+" Press 'i' to toggle the view.
+" 2020-03-19: Ha! I've only recently started using a split explorer,
+" and immediately ran into big problem: netrw does not resolve symlink
+" path correctly -- symlinks to files not in the same directory as the
+" symlink had incorrect paths. But seems to be tree-view specific!
+" - AVOID: let g:netrw_liststyle = 3
+"   Follow: "Netrw fails to open symlinks in tree mode #2386"
+"   Opened 2017-11-28 (not by me!) and still open 2020-03-19.
+"     https://github.com/vim/vim/issues/2386
+" - Set the netrw lifestyle, er, liststyle to 'thin' or 'long' listings.
+"   Opts- 'thin', one-file-per-line (0); long (1); wide (2); and tree (3).
+"   - I tried long, but the tabstops do not align, so the details column,
+"     well, it's not a column. Everything looks messy.
+"   AVOID: let g:netrw_liststyle = 1
+let g:netrw_liststyle = 0
 
 " -------------------------------------------------------------------------
 " Maintain working directory
