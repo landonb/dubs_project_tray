@@ -45,7 +45,7 @@ let g:loaded_dubs_resolve_syml_root = 1
 "   http://inlehmansterms.net/2014/09/04/sane-vim-working-directories/
 
 " Follow symlinked file.
-function! FollowSymlink()
+function! TBD_FollowSymlink_BROKE()
   let l:current_file = expand('%:p')
   " Check if file type is a symlink.
   if getftype(l:current_file) == 'link'
@@ -73,8 +73,45 @@ function! FollowSymlink()
         "file l:actual_file
       endif
     endif
-  end
+  endif
 endfunction
+
+" ***
+
+" Command to close opened file if opened at symlink path, and reopen at real path.
+"
+" - I've seen more basic, but broken, examples of how to do this, e.g.,
+"       command! FollowSymLink execute "file " . resolve(expand("%")) | edit
+"   but this approach has a glaring problem: if does not delete and wipe
+"   the symlink buffer, so Vim thinks it has two buffers open to the same
+"   file. So if you try to save the file opened second, it'll fail, and Vim
+"   will gripe:
+"       E13: File exists (add ! to override)
+" - So open a new buffer, delete (technically, Wipe!) the old buffer (i.e.,
+"   call `bw`, not `bd` -- if you :bd the symlink and open the canonical path,
+"   Vim will open the symlink path, so weird!), and then call edit with the
+"   canonical path.
+"   - Ref: Trying to buffer-delete (:bd) a symlink vs. buf-wiping (:bw) it:
+"     https://superuser.com/questions/960773/vim-opens-symlink-even-when-given-target-path-directly
+
+function! FollowSymlink()
+  " Using '%:p' for full path, as opposed to possibly relative '%' path.
+  let l:sympath = expand('%:p')
+  " Check if file type is a symlink.
+  if getftype(l:sympath) == 'link'
+    " Resolve the file path and open the "actual" file.
+    let l:canpath = resolve(l:sympath)
+    if l:sympath != l:canpath
+        enew
+        " Note: Wipe the buffer, not delete, lest Vim re-open file at symlink path!
+        " - WRONG: exe "bd " . l:sympath
+        exe "bw " . l:sympath
+        exe "edit " . l:canpath
+    endif
+  endif
+endfunction
+
+" ***
 
 " Set working directory to git project root, or
 " to directory of current file if not git project.
@@ -96,23 +133,103 @@ function! SetProjectRoot()
   endif
 endfunction
 
+" ***
+" *******
+" ***
+
 " Follow symlink and set working directory.
 " 2017-12-20: See note in FollowSymlink, which is effectively disabled now.
-autocmd BufRead *
-  \ call FollowSymlink() |
-  \ call SetProjectRoot()
+" 2020-03-19: Last comments refers to now-named TBD_FollowSymlink_BROKE.
+" - I sorta fixed FollowSymlinks to do a buffer dance, to wipe the buffer
+"   opened at the symlink path. But I still have issues with applying to
+"   to a BufRead, e.g., this does not work:
+if 0
+  " 2020-03-19: I also tried `au BufReadPost *` will same outcome:
+  " notes (reST) file is opened, but (at least) &filetype not (or un)set.
+  "   autocmd BufReadPost *
+  "     \ ...
+  autocmd BufRead *
+    \ call FollowSymlink() |
+    \ call SetProjectRoot()
+endif
+" - For whatever reason, that opens my rst files but clears &filetype!
+"   Or prevents filetype from being set in first place, not really sure.
+"   - Which means this fails similarly:
+"       autocmd BufRead *.rst call FollowSymlink()
 
+" We can at least take care of project root business!
+
+autocmd BufRead * call SetProjectRoot()
+
+" And we can also resolve symlinks from netrw, which is actually
+" my only pain point -- I previously hacked (featured) project.vim
+" to resolve symlinks on open.
+" - So my 2 open-file vectors from within Vim, project.vim and netrw,
+"   are patched and will figure out how to open each file at its
+"   canonical path.
+"   - However, you can still open the file at its symlink by calling
+"     :e directly (which I rarely do), or by opening the file from the
+"     command line (which is something I'll just have to be aware of
+"     from within the terminal, whatever, no biggie).
+
+" ***
+
+" 2020-03-19: More code from a few years back newly disabled,
+"             but keeping for posterity (or in lieu of having
+"             a bug tracker for this issue, I'll just maintain
+"             a file with a bottomload of comments to describe
+"             it).
+"
 " netrw: follow symlink and set working directory
-" NOTE: This is not perfect. See blog post. Apparently
-"         netrw *only* emits the CursorMoved command.
+" NOTE: This is not perfect. See blog post.
+"         http://inlehmansterms.net/2014/09/04/sane-vim-working-directories/
+"       Apparently netrw *only* emits the CursorMoved command.
 "       To see which autocommands get called, try:
 "         :set verbose=9
 "       And later reset it:
 "         :set verbose=0
-autocmd CursorMoved silent *
-  " short circuit for non-netrw files
-  \ if &filetype == 'netrw' |
-  \   call FollowSymlink() |
-  \   call SetProjectRoot() |
-  \ endif
+" 2020-03-19: Not sure if I just didn't read the netrw help years ago, but
+" rather than hacking CursorMoved, we can hook Netrw_funcref. See below.
+if 0
+  autocmd CursorMoved silent *
+    " short circuit for non-netrw files
+    \ if &filetype == 'netrw' |
+    \   call FollowSymlink() |
+    \   call SetProjectRoot() |
+    \ endif
+endif
+
+" ***
+" *******
+" ***
+
+" Bugfix: Open canonical path and close symlinked path.
+" - I experience problems with the mate-panel window list when window titles
+"   contain certain emoji characters -- the window list changes from two rows
+"   to one row!
+"   - So as a workaround, I generally name the actual files with ASCII characters,
+"     and then if I want to use emoji, I create a symlinks (I do this with notes
+"     files, so that my project tray shows friendlier names, and do not do this
+"     with code files; so really this workaround is for me and my notes symlinks).
+"   - But when I open symlinks via netrw (but not via project.vim tray, because I
+"     already fixed that to resolve symlinks), the symlinked file is opened -- and
+"     if said file has any of those pesky emoji characters in it, the mate-panel
+"     window list single-row issue gets tickled.
+"   - So upon opening such files, resolve the symlink to the canonical path.
+"   - Inspired by autocmd suggestion from reddit
+"       https://www.reddit.com/r/vim/comments/97a34g/how_do_i_open_the_actual_file_in_vim_instead_of/
+"     - But with tweaks:
+"       - We need to buf-wipe the symlink-named buffer, which means we have to
+"         open a new buffer, wipe the old, then open the buffer again but using
+"         the actual file path.
+"       - Also, blog post suggests hooking BufReadPost, but that did not work
+"         (see comments above: trying `au BufRead[Post]` vs. setting g:Netrw_funcref,
+"          with the autocmds, the symlink path is resolved, but buffer opens without
+"          &filetype set!).
+"     - See also original article apparently I found in 2017
+"         http://inlehmansterms.net/2014/09/04/sane-vim-working-directories/
+"       and the TBD_FollowSymlink_BROKE, above, indicated I had previously
+"       tried to solve this problem but failed/gave up! But now, today, success!!
+
+let g:Netrw_funcref = function("FollowSymlink")
 
