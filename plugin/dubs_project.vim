@@ -460,7 +460,7 @@ function! s:Project(filename) " <<<
             " 2020-03-18: (lb): If you open one file and then open another that's
             " a symlink to it, Vim pops up the dreaded (or just annoying) alert,
             " "Swap File <> Already Exists!". So resolve paths.
-            let fname=resolve(fname)
+            let fname=resolve(expand(fname))
             if s:IsAbsolutePath(fname) == 2
                 exec a:editcmd.' '.fname
             else
