@@ -1488,10 +1488,56 @@ function! s:Project(filename) " <<<
         nmap     <buffer> <silent> <3-RightMouse> <space>
         nmap     <buffer> <silent> <4-RightMouse> <space>
         nnoremap <buffer> <silent> <space>  \|:silent exec 'vertical resize '.(match(g:proj_flags, '\Ct')!=-1 && winwidth('.') > g:proj_window_width?(g:proj_window_width):(winwidth('.') + g:proj_window_increment))<CR>
-        nnoremap <buffer> <silent> <C-Up>   \|:silent call <SID>MoveUp()<CR>
-        nnoremap <buffer> <silent> <C-Down> \|:silent call <SID>MoveDown()<CR>
-        nmap     <buffer> <silent> <LocalLeader><Up> <C-Up>
-        nmap     <buffer> <silent> <LocalLeader><Down> <C-Down>
+
+        " 2021-01-31: (lb) The dubs_buffer_fun plugin maps Ctrl-Up/-Down to
+        " scrolling the window up/down one line (without moving the cursor);
+        " and it maps the Alt-Up/-Down combos to TmuxNavigateUp/Down.
+        " - The origin project.vim C-Up/-Down maps shadow those from
+        "   dubs_buffer_fun, but only in normal mode, which leads to an
+        "   incongruity where C-Up/-Down work differently in the two modes
+        "   in the project tray only.
+        "     nnoremap <buffer> <silent> <C-Up>   \|:silent call <SID>MoveUp()<CR>
+        "     nnoremap <buffer> <silent> <C-Down> \|:silent call <SID>MoveDown()<CR>
+        "     nmap     <buffer> <silent> <LocalLeader><Up> <C-Up>
+        "     nmap     <buffer> <silent> <LocalLeader><Down> <C-Down>
+        " - I first looked into wiring Alt-Up/-Down instead, e.g.,
+        "     nnoremap <buffer> <silent> <M-Up>   :call <SID>MoveUp()<CR>
+        "     nnoremap <buffer> <silent> <M-Down> :call <SID>MoveDown()<CR>
+        "     inoremap <buffer> <silent> <M-Up>   <C-O>:call <SID>MoveUp()<CR>
+        "     inoremap <buffer> <silent> <M-Down> <C-O>:call <SID>MoveDown()<CR>
+        "   But then in tmux if you've got a split pane, you cannot use
+        "   Alt-Up/-Down to leave the project tray (it moves text instead).
+        "   And I wasn't too keen on the peculiar change in behavior for that
+        "   buffer (especially for something I rarely do, use the project tray
+        "   in a tmux window split horizontally). I'd rather stay w/ C-Up/-Down.
+        " - Then I realized that these maps don't need to use arrow keys, which
+        "   are highly prized and coveted, and I mostly use them for moving the
+        "   cursor around buffers, panes, and tabs, and not for moving text, so
+        "   let's think outside the arrow box.
+        "   - Another popular plugin, vim-buffer-ring, uses Ctrl-J/-K to change
+        "     buffers, and it's disabled for special buffers, including project.
+        "     Which means these keys are available for project.vim (and Ctrl-key
+        "     maps are also highly prized combos, especially because Ctrl-key
+        "     combos do not recognize case (so rather than 52 Ctrl-[[:alpha:]]
+        "     combos, there are only 26).
+        " - So rather than Ctrl-Up/-Down in Normal mode moving lines (and
+        "   Ctrl-Up/-Down in Insert mode scrolling the buffer view, if
+        "   dubs_buffer_fun is installed), let's wire Ctrl-J/-K in both
+        "   Normal and Insert modes to moving line or fold under cursor
+        "   up and down.
+        "   - And note that I removed the \| (what's that do?) and the 'silent'
+        "     (also what?) from the maps and didn't see a difference in behavior.
+        nnoremap <buffer> <silent> <C-k> :call <SID>MoveUp()<CR>
+        nnoremap <buffer> <silent> <C-j> :call <SID>MoveDown()<CR>
+        inoremap <buffer> <silent> <C-k> <C-O>:call <SID>MoveUp()<CR>
+        inoremap <buffer> <silent> <C-j> <C-O>:call <SID>MoveDown()<CR>
+        " The complementary \-Up and \-Down maps, historical, but also
+        " maybe easier to remember.
+        nmap     <buffer> <silent> <LocalLeader><Up> <C-k>
+        nmap     <buffer> <silent> <LocalLeader><Down> <C-j>
+        imap     <buffer> <silent> <LocalLeader><Up> <C-O><C-k>
+        imap     <buffer> <silent> <LocalLeader><Down> <C-O><C-j>
+
         let k=1
         while k < 10
             exec 'nnoremap <buffer> <LocalLeader>'.k.'  \|:call <SID>Spawn('.k.')<CR>'

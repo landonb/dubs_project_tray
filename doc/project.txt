@@ -316,20 +316,18 @@ Map	Action ~
 
 <space> Same as <RightMouse>
 
-<CTRL-Up>
+<Ctrl-K>
 \<Up>
-	Move the text or fold under the cursor up one row. This may not work
-	in a terminal because the terminal is unaware of this key combination.
-	<LocalLeader><Up> is provided for those terminals that don't recognize
-	<C-Up>.
+	Move the text or fold under the cursor up one row.
+	<LocalLeader><Up> is provided for historic reasons,
+	and maybe it'll be easier to remember than <C-K>.
 
 
-<CTRL-Down>
+<Ctrl-J>
 \<Down>
-	Move the text or fold under the cursor down one row. This may not work
-	in a terminal because the terminal is unaware of this key combination.
-	<LocalLeader><Down> is provided for those terminals that don't
-	recognize <C-Down>.
+	Move the text or fold under the cursor down one row.
+	<LocalLeader><Down> is provided for historic reasons,
+	and maybe it'll be easier to remember than <C-J>.
 
 \i	Show in the status line the completely resolved and inherited
 	parameters for the fold the cursor is in.  This is intended for
