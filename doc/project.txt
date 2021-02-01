@@ -250,6 +250,7 @@ Map	Action ~
 
 	This does not work for Projects using |netrw|.
 
+<F5>
 \R	Executes \r recursively in the current fold and all folds below.
 	This does not work for Projects using |netrw|.
 
