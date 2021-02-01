@@ -1526,6 +1526,25 @@ function! s:Project(filename) " <<<
         " 2011-04-14: (lb): dubs_project's <F1> conflicts
         "   with dubs_edit_juice's <F1> find-under-cursor
         " nnoremap <buffer> <F1> :let g:proj_doinghelp = 1<CR><F1>
+        "
+        " 2021-01-31: (lb): Only match once (first hit) per line.
+        " - Only took 10 years to figure this out.
+        " - For now, maybe only map from one mode,
+        "   so you can access traditional behavior.
+        "   - I guess map special behavior only Normal mode, In Insert mode,
+        "     maybe you want to jump to all matches (to edit, whatever).
+        "   - At least don't map in Visual mode, I mostly only care about
+        "     not matching the always-repeated basename, e.g., the 'foo' in
+        "       foo=path/to/foo
+        " - Thanks, Reddit! (And this is the week after GameStonk, too!):
+        "     https://www.reddit.com/r/vim/comments/tvvu6/pattern_to_match_first_occurrence_in_line/
+        " - Hints: \{-} is non-greedy, \zs matches start (see also \ze).
+        nnoremap <buffer> <F1> /^.\{-}\zs<C-R><C-W><CR>
+        "  inoremap <buffer> <F1> <C-O>/^.\{-}\zs<C-R><C-W><CR>
+        "  vnoremap <buffer> <F1> :<C-U>
+        "    \ <CR>gvy
+        "    \ gV
+        "    \ /^.\{-}\zs<C-R>"<CR>
 
         " This is to avoid changing the buffer, but it is not fool-proof.
         nnoremap <buffer> <silent> <C-^> <Nop>

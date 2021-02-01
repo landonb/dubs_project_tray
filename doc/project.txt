@@ -385,6 +385,9 @@ Map	Action ~
 \E	Explore (using |file-explorer|) the directory of the project the
 	cursor is in.  Does not work with netrw.
 
+<F1>    Search forward for selection or word under cursor,
+	only matching on the first occurrence of the term.
+
 <F12>	When the 'g' flag is present in g:proj_flags (see |project-flags|)
 	this key toggles the Project Window open and closed. You may remap
 	this toggle function by putting the following in your vimrc and
