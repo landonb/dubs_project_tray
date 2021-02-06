@@ -1207,7 +1207,7 @@ function! s:Project(filename) " <<<
     " s:GrepAll(recurse, lineno, pattern) <<<
     "   Grep all files in a project, optionally recursively
     function! s:GrepAll(recurse, lineno, pattern)
-        cunmap <buffer> help
+        silent! cunmap <buffer> help
         let pattern=(a:pattern[0] == '')?input("GREP options and pattern: "):a:pattern
         " 2018-05-06: (lb): See comment below/elsewhere: Disable 'help' mapping,
         " because it interferes with /-search.
