@@ -1,9 +1,8 @@
 " File:        project.vim
-" Last Author: Landon Bouma (landonb &#x40; retrosoft &#x2E; com)
-" Last Change: Mon 16 Oct 2017 10:30:25 AM C
-" Version:     1.4.2.lbfork2 (search [lb] to see changes)
-" Project Page: https://github.com/landonb/dubs_project
-" 2014.01.21: See also: https://github.com/destroy/project.vim
+" Maintainer+: Landon Bouma (landonb &#x40; retrosoft &#x2E; com)
+" Project URL: https://github.com/landonb/dubs_project
+"  vim:foldmethod=marker:foldmarker=<<<,>>>:foldlevel=20
+"  Fold hints: zM closes all, zR opens all; zm/zr close/open 1; za/zA toggle.
 "=============================================================================
 " Orig Author: Aric Blumer (Aric.Blumer at aricvim@charter.net)
 " Auth Change: Fri 13 Oct 2006 09:47:08 AM EDT
@@ -11,8 +10,7 @@
 " See documentation in accompanying help file
 " You may use this code in whatever way you see fit.
 "=============================================================================
-
-" OFF: vim600: set foldmethod=marker foldmarker=<<<,>>> foldlevel=1:
+" 2014.01.21: See also: https://github.com/destroy/project.vim
 
 if exists('g:plugin_dubs_project') || &cp
   finish
