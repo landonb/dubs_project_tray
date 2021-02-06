@@ -1577,12 +1577,29 @@ function! s:Project(filename) " <<<
         " - Thanks, Reddit! (And this is the week after GameStonk, too!):
         "     https://www.reddit.com/r/vim/comments/tvvu6/pattern_to_match_first_occurrence_in_line/
         " - Hints: \{-} is non-greedy, \zs matches start (see also \ze).
+        "
+        " 2021-02-06: (lb): There's a complementary plugin (or at least another
+        " plugin that I like to use, and that I also maintain) that defines its
+        " own F1 mapping, which is what we want to adjust here (and why we chose
+        " the F1 binding). Though because of how unmap works, even though we only
+        " care about the normal mode map, we'll recreate the maps for the other
+        " modes that get unwired. See: https://github.com/landonb/dubs_edit_juice.
+        silent! unmap <buffer> <F1>
+        " Wire a match-once-per-line F1.
         nnoremap <buffer> <F1> /^.\{-}\zs<C-R><C-W><CR>
-        "  inoremap <buffer> <F1> <C-O>/^.\{-}\zs<C-R><C-W><CR>
-        "  vnoremap <buffer> <F1> :<C-U>
-        "    \ <CR>gvy
-        "    \ gV
-        "    \ /^.\{-}\zs<C-R>"<CR>
+        " Re-wire the more inclusive dubs_edit_juice bindings.
+        inoremap <buffer> <F1> <C-O>/<C-R><C-W><CR>
+        vnoremap <buffer> <F1> :<C-U>
+          \ <CR>gvy
+          \ gV
+          \ /<C-R>"<CR>
+        " For posterity, here's how you'd make the other modes' bindings
+        " more restrictive:
+        "   inoremap <buffer> <F1> <C-O>/^.\{-}\zs<C-R><C-W><CR>
+        "   vnoremap <buffer> <F1> :<C-U>
+        "     \ <CR>gvy
+        "     \ gV
+        "     \ /^.\{-}\zs<C-R>"<CR>
 
         " This is to avoid changing the buffer, but it is not fool-proof.
         nnoremap <buffer> <silent> <C-^> <Nop>
