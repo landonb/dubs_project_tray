@@ -12,12 +12,13 @@
 "=============================================================================
 " 2014.01.21: See also: https://github.com/destroy/project.vim
 
-if exists('g:plugin_dubs_project') || &cp
+if exists('g:plugin_dubs_project') || &cp " <<<
   finish
 endif
 let g:plugin_dubs_project = 1
 
 let g:plugin_dubs_project_skip_symlink_dirs = 0
+">>>
 
 function! s:Project(filename) " <<<
     " Initialization <<<
@@ -99,8 +100,9 @@ function! s:Project(filename) " <<<
         if match(g:proj_flags, '\Cn') != -1
             setlocal number
         endif
-    endfunction ">>>
+    endfunction
     call s:DoSetup()
+    ">>>
     " Syntax Stuff <<<
     if match(g:proj_flags, '\Cs')!=-1 && has('syntax') && exists('g:syntax_on') && !has('syntax_items')
         syntax match projectDescriptionDir '^\s*.\{-}=\s*\(\\ \|\f\|:\|"\)\+' contains=projectDescription,projectWhiteError
@@ -202,7 +204,7 @@ function! s:Project(filename) " <<<
             return 1
         endif
         return 0
-    endfunction " >>>
+    endfunction ">>>
     " s:DoSetupAndSplit() <<<
     "   Call DoSetup to ensure the settings are correct.  Split to the next
     "   file.
@@ -296,7 +298,7 @@ function! s:Project(filename) " <<<
     function! s:RecordPrevBuffer_au()
         let g:proj_last_buffer = bufnr('%')
     endfunction ">>>
-
+    " s:get_correct_foldlevel(lineno) <<<
     " 2015.02.11: Added by [lb] to support {{cookiecutter}} directories
     "             and other paths with brackets in their name.
     function! s:get_correct_foldlevel(lineno)
@@ -332,7 +334,6 @@ function! s:Project(filename) " <<<
         endif
         return foldlev
     endfunction ">>>
-
     " s:RecursivelyConstructDirectives(lineno) <<<
     "   Construct the inherited directives
     function! s:RecursivelyConstructDirectives(lineno)
@@ -436,8 +437,7 @@ function! s:Project(filename) " <<<
         let retval=s:OpenEntry2(a:line, infoline, fname, a:editcmd)
         call s:DisplayInfo()
         return retval
-    endfunction
-    ">>>
+    endfunction ">>>
     " s:OpenEntry2(line, infoline, precmd, editcmd) <<<
     "   Get the filename under the cursor, and open a window with it.
     function! s:OpenEntry2(line, infoline, fname, editcmd)
@@ -498,8 +498,7 @@ function! s:Project(filename) " <<<
             endif
         endif
         return 1
-    endfunction
-    ">>>
+    endfunction ">>>
     " s:DoFoldOrOpenEntry(cmd0, cmd1) <<<
     "   Used for double clicking. If the mouse is on a fold, open/close it. If
     "   not, try to open the file.
@@ -1092,8 +1091,6 @@ function! s:Project(filename) " <<<
             let number=number + 1
         endwhile
     endfunction ">>>
-
-
     " s:FindFoldTop(line) <<<
     "   Return the line number of the directive line
     function! s:FindFoldTop(line)
@@ -1111,8 +1108,6 @@ function! s:Project(filename) " <<<
         endwhile
         return lineno
     endfunction ">>>
-
-
     " s:FindFoldBottom(line) <<<
     "   Return the line number of the directive line
     function! s:FindFoldBottom(line)
@@ -1437,7 +1432,7 @@ function! s:Project(filename) " <<<
             endif
         endif
     endfunction ">>>
-    if !exists("g:proj_running")
+    if !exists("g:proj_running") "<<<
         " s:DoProjectOnly(void) <<<
         "   Make the file window the only one.
         function! s:DoProjectOnly()
@@ -1452,7 +1447,6 @@ function! s:Project(filename) " <<<
             endif
         endfunction
         " >>>
-
         " Mappings <<<
         nnoremap <buffer> <silent> <Return>   \|:call <SID>DoFoldOrOpenEntry('', 'e')<CR>
         nnoremap <buffer> <silent> <S-Return> \|:call <SID>DoFoldOrOpenEntry('', 'sp')<CR>
@@ -1619,11 +1613,12 @@ function! s:Project(filename) " <<<
                   nmap <silent> <unique> <C-W>o <Plug>ProjectOnly
                   nmap <silent> <unique> <C-W><C-O> <C-W>o
               endif
-          endif " >>>
+          endif
         endif
 
         if filereadable(glob('~/.vimproject_mappings')) | source ~/.vimproject_mappings | endif
-        " Autocommands <<<
+        ">>>
+        " Autocommands "<<<
         " Autocommands to clean up if we do a buffer wipe
         " These don't work unless we substitute \ for / for Windows
         let bufname=escape(substitute(expand('%:p', 0), '\\', '/', 'g'), ' ')
@@ -1635,7 +1630,9 @@ function! s:Project(filename) " <<<
         exec 'au WinLeave '.bufname.' call s:DoEnsurePlacementSize_au()'
         exec 'au BufEnter '.bufname.' call s:DoSetupAndSplit_au()'
         au WinLeave * call s:RecordPrevBuffer_au()
-        " >>>
+        ">>>
+        " Verify that :Project loaded okay "<<<
+        " [2021-02-06: At least I think that's what's happening here.]
         setlocal buflisted
         let g:proj_running = bufnr(bufname.'\>')
         if g:proj_running == -1
@@ -1643,14 +1640,21 @@ function! s:Project(filename) " <<<
             unlet g:proj_running
         endif
         setlocal nobuflisted
-    endif
-endfunction " >>>
+        " >>>
+    endif ">>>
+endfunction ">>>
 
+" :Project and :ToggleProject commands "<<<
+
+" :Project command " <<<
 if exists(':Project') != 2
     command -nargs=? -complete=file Project call <SID>Project('<args>')
 endif
-" Toggle Mapping
-if !exists("*<SID>DoToggleProject()") "<<<
+
+">>>
+
+" DoToggleProject function and maps "<<<
+if !exists("*<SID>DoToggleProject()")
     function! s:DoToggleProject()
         if !exists('g:proj_running') || bufwinnr(g:proj_running) == -1
             ":call <SID>Project("~/.vimprojects")
@@ -1665,16 +1669,23 @@ if !exists("*<SID>DoToggleProject()") "<<<
             unlet g:proj_mywindow
         endif
     endfunction
-endif ">>>
+endif
+
 nnoremap <script> <Plug>ToggleProject :call <SID>DoToggleProject()<CR>
+
 if exists('g:proj_flags') && (match(g:proj_flags, '\Cg') != -1)
     if !hasmapto('<Plug>ToggleProject')
         nmap <silent> <F12> <Plug>ToggleProject
     endif
 endif
 
+">>>
+
+" :ToggleProject command "<<<
 " [lb] 2010.02.24: Expose externally, too.
 command! ToggleProject call <SID>DoToggleProject()
+">>>
 
 finish
+">>>
 
