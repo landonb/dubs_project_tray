@@ -282,7 +282,23 @@ function! s:Project(filename) " <<<
         endif
         call s:DoSetup()                " Ensure that all the settings are right
         if winbufnr(2) == -1            " We're the only window right now.
-            exec 'silent vertical split | bnext'
+            " If two windows are open, including the tray, and the other window
+            " is closed, BufEnter actions this function, but the split fails,
+            " indicating, 'Can't split a window while closing another'. We can
+            " ignore the error with silent!, but then test if actually split.
+            silent! exec 'silent vertical split | bnext'
+            if winbufnr(2) == -1
+                " Per previous comment, split failed if Vim is closing a window
+                " (and I [lb] don't know how to detect that state easily, so
+                "  this work-around instead).
+                " Note that if we left the project tray as the only window, not
+                " only does it look funny, but opening a file from the tray
+                " replaces the tray with that file, in the same window (which
+                " could be some other issue causing this; but don't care). So
+                " not very useful. Instead, return now, which leaves the window
+                " the user was closing as the only window (i.e., tray closes).
+                return
+            endif
             if exists("g:proj_running") && (bufnr('%') == g:proj_running)
                 enew
             endif
