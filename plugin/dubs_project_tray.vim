@@ -157,7 +157,7 @@ function! s:ToggleProject_Wrapper()
 
           " Hey slow poke:
           "   let l:fcnt2 = findfile('.vimprojects',
-                                \ pathogen#split(&rtp)[0] . "/**", -1)
+          "                          \ pathogen#split(&rtp)[0] . "/**", -1)
           let l:fcnt = 0
           for vim_dir in pathogen#split(&rtp)
             let try_file = vim_dir . '/' . '.vimprojects'
