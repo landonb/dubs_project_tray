@@ -12,6 +12,15 @@
 "=============================================================================
 " 2014.01.21: See also: https://github.com/destroy/project.vim
 
+" HINT: To reload this script, try:
+"   :unlet g:plugin_dubs_project
+"   <F9>
+" EXCEPT: I'm not sure how to reload the project tray buffer,
+"         which still uses the old code. So currently you
+"         gotta restart Vim to reload this code. Somewhat
+"         annoying, but this project (ha!) doesn't change
+"         much.
+
 if exists('g:plugin_dubs_project') || &cp " <<<
   finish
 endif
