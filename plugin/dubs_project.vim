@@ -111,6 +111,7 @@ function! s:Project(filename) " <<<
         endif
     endfunction
     call s:DoSetup()
+
     ">>>
     " Syntax Stuff <<<
     if match(g:proj_flags, '\Cs')!=-1 && has('syntax') && exists('g:syntax_on') && !has('syntax_items')
@@ -642,6 +643,7 @@ function! s:Project(filename) " <<<
                         let ftype = getftype(glob(fname))
                         if ftype == "link"
                             echon "Skipping symlink: " . fname . "\r"
+
                             continue
                         endif
                     endif
@@ -649,16 +651,18 @@ function! s:Project(filename) " <<<
                     "   cd dir/to/ignore
                     "   touch .dubs_project.vim-ignore
                     " See :help dos-backslash -- it says to use normal / separator.
-                    let l:subfnames=glob(fname . "/.dubs_project.vim-ignore", 0, 1)
+                    let l:subfnames = glob(fname . "/.dubs_project.vim-ignore", 0, 1)
                     if len(l:subfnames) > 0
                         echon "Skipping ignored: " . fname . "\r"
+
                         continue
                     endif
                     " Bah. I'd rather not encode business logic herein, but whatever.
                     if fname == ".git"
-                        let l:subfnames=glob(fname . "/HEAD", 0, 1)
+                        let l:subfnames = glob(fname . "/HEAD", 0, 1)
                         if len(l:subfnames) > 0
                             echon "Skipping .git: " . getcwd() . "/" . fname . "\r"
+
                             continue
                         endif
                     elseif fname == "node_modules"
@@ -666,6 +670,7 @@ function! s:Project(filename) " <<<
                       \ || fname == ".nyc_output"
                       \ || fname == "__pycache__"
                       echon "Skipping generated cache dir: " . fname . "\r"
+
                       continue
                     endif
 
