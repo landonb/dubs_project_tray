@@ -658,12 +658,40 @@ function! s:Project(filename) " <<<
                         continue
                     endif
                     " Bah. I'd rather not encode business logic herein, but whatever.
+                    " 2022-12-07: At least this code tries to be smart about it:
+                    " - When possible, verify the directory being ignored (e.g.,
+                    "   .git/) is the thing you think it is (e.g., Git plumbing).
                     if fname == ".git"
+                        " Verify Git artifact.
                         let l:subfnames = glob(fname . "/HEAD", 0, 1)
                         if len(l:subfnames) > 0
                             echon "Skipping .git: " . getcwd() . "/" . fname . "\r"
 
                             continue
+                        endif
+                    elseif fname == "htmlcov"
+                        " Verify `python -m coverage` artifact.
+                        let l:subfnames = glob(fname . "/.gitignore", 0, 1)
+                        if len(l:subfnames) > 0
+                            let l:gitignore = l:subfnames[0]
+                            let l:firstlines = readfile(l:gitignore, "", 1)
+                            if l:firstlines[0] == "# Created by coverage.py"
+                              echon "Skipping htmlcov: " . getcwd() . "/" . fname . "\r"
+
+                              continue
+                            endif
+                        endif
+                    elseif fname == ".pytest_cache"
+                        " Verify `python -m pytest` artifact.
+                        let l:subfnames = glob(fname . "/.gitignore", 0, 1)
+                        if len(l:subfnames) > 0
+                            let l:gitignore = l:subfnames[0]
+                            let l:firstlines = readfile(l:gitignore, "", 1)
+                            if l:firstlines[0] == "# Created by pytest automatically."
+                              echon "Skipping .pytest_cache: " . getcwd() . "/" . fname . "\r"
+
+                              continue
+                            endif
                         endif
                     elseif fname == "node_modules"
                       \ || fname == ".vscode"
