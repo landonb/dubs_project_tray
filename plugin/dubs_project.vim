@@ -114,7 +114,9 @@ function! s:Project(filename) " <<<
 
     ">>>
     " Syntax Stuff <<<
-    if match(g:proj_flags, '\Cs')!=-1 && has('syntax') && exists('g:syntax_on') && !has('syntax_items')
+    if match(g:proj_flags, '\Cs')!=-1 && has('syntax') && exists('g:syntax_on')
+        syntax clear
+
         syntax match projectDescriptionDir '^\s*.\{-}=\s*\(\\ \|\f\|:\|"\)\+' contains=projectDescription,projectWhiteError
         syntax match projectDescription    '\<.\{-}='he=e-1,me=e-1         contained nextgroup=projectDirectory contains=projectWhiteError
         syntax match projectDescription    '{\|}'
