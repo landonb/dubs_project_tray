@@ -346,9 +346,9 @@ function! s:Project(filename) " <<<
         " Count the number of opening brackets, which are legal
         " directory characters but also used to delimit folds.
         " The Vim substitute operator returns, e.g., "5 matches on 1 line".
-        " A few tests:
-        "   s/{//gn | echo v:statusmsg " { { { {
-        "   s/{//gn | let l_bracket_cnt = split(v:statusmsg)[0] " { { { {
+        " A few tests [2023-01-29: I \"-delimited the double-quotes to fix Vim highlighting...???]:
+        "   s/{//gn | echo v:statusmsg \" { { { {
+        "   s/{//gn | let l_bracket_cnt = split(v:statusmsg)[0] \" { { { {
         " Possible raises we'll ignore (no try/catch/endtry) b/c of silent!:
         "   E16: Invalid range
         "   E486: Pattern not found: {
