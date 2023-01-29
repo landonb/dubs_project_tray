@@ -946,6 +946,8 @@ function! s:Project(filename) " <<<
                 let flags=''
             endif
         endif
+        " Fix the opening bracket line indent.
+        call s:RedentFoldPrefix()
         " Move to the first non-fold boundary line
         normal! j
         " Delete filenames until we reach the end of the fold
@@ -977,6 +979,10 @@ function! s:Project(filename) " <<<
                 endif
             endif
         endwhile
+        " Fix the closing bracket line indent.
+        if getline('.') =~ '}$'
+            call s:RedentFoldPrefix()
+        endif
         if just_a_fold == 0
             " We're not just in a fold, and we have deleted all the filenames.
             " Now it is time to regenerate what is in the directory.
@@ -1019,6 +1025,14 @@ function! s:Project(filename) " <<<
         endif
         " Go to the top of the refreshed fold.
         normal! [z
+    endfunction ">>>
+    " s:RedentFoldPrefix() <<<
+    "   Sets the whitespce fold or unfold ('{' and '}' lines) indent
+    function! s:RedentFoldPrefix()
+        let l:foldlev = s:get_correct_foldlevel('.')
+        " A trick to basically `' ' * foldlev`, take substring of long spacestring:
+        let l:spaces=strpart('                                               ', 0, l:foldlev - 1)
+        exec '.s/^\s*/' . l:spaces . '/'
     endfunction ">>>
     " s:MoveUp() <<<
     "   Moves the entity under the cursor up a line.
