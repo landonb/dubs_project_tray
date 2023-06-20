@@ -78,5 +78,5 @@ let g:loaded_dubs_set_isfname = 1
 "   `isfname` is a global. (So if you run `setlocal isfname=@,48-57`
 "   in one buffer, switch to another buffer, and then `echo &isfname`,
 "   what you set in the other buffer is what you'll see).
-set isfname=@,48-57,/,.,-,_,+,,,#,$,%,~,=,{,},(,),!
+set isfname=@,48-57,/,.,-,_,+,,,#,$,%,~,=,{,},(,),!,39
 
