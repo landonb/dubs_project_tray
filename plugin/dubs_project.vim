@@ -696,9 +696,9 @@ function! s:Project(filename) " <<<
                             endif
                         endif
                     elseif fname == "node_modules"
-                      \ || fname == ".vscode"
                       \ || fname == ".nyc_output"
                       \ || fname == "__pycache__"
+                      \ || fname == ".vscode"
                       echon "Skipping generated/cache/packages dir: " . fname . "\r"
 
                       continue
