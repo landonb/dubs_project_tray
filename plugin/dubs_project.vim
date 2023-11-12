@@ -699,7 +699,7 @@ function! s:Project(filename) " <<<
                       \ || fname == ".vscode"
                       \ || fname == ".nyc_output"
                       \ || fname == "__pycache__"
-                      echon "Skipping generated cache dir: " . fname . "\r"
+                      echon "Skipping generated/cache/packages dir: " . fname . "\r"
 
                       continue
                     endif
