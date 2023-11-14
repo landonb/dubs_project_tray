@@ -698,6 +698,8 @@ function! s:Project(filename) " <<<
                     elseif fname == "node_modules"
                       \ || fname == ".nyc_output"
                       \ || fname == "__pycache__"
+                      \ || fname == ".tox"
+                      \ || fname =~ "\\.venv.*"
                       \ || fname == ".vscode"
                       echon "Skipping generated/cache/packages dir: " . fname . "\r"
 
