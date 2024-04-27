@@ -553,24 +553,24 @@ function! s:Project(filename) " <<<
     function! s:VimDirListing(filter, exclude, padding, separator, filevariable, filecount, dirvariable, dircount)
         let end = 0
         let files=''
-        let filter = a:filter
+        let l:filters = a:filter
         " Chop up the filter
         "   Apparently glob() cannot take something like this: glob('*.c *.h')
         let while_var = 1
         while while_var
-            let end = stridx(filter, ' ')
+            let end = stridx(l:filters, ' ')
             if end == -1
-                let end = strlen(filter)
+                let end = strlen(l:filters)
                 let while_var = 0
             endif
             " MAYBE: Why not get a list response instead? (And use local var?)
-            "   let l:filenames=glob(strpart(filter, 0, end), 0, 1)
-            let l:filenames=glob(strpart(filter, 0, end))
+            "   let l:filenames=glob(strpart(l:filters, 0, end), 0, 1)
+            let l:filenames=glob(strpart(l:filters, 0, end))
             if strlen(l:filenames) != 0
                 " glob() uses <NL> by default to separate paths.
                 let files = files . l:filenames . "\010"
             endif
-            let filter = strpart(filter, end + 1)
+            let l:filters = strpart(l:filters, end + 1)
         endwhile
         " files now contains a list of everything in the directory. We need to
         " weed out the directories.
