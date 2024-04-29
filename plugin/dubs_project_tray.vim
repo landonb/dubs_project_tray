@@ -65,16 +65,15 @@ let g:plugin_dubs_project_tray = 1
 " a Project menu. This is similar. But
 " better. =)
 
-"let g:proj_window_width=30 " Default project window width
-"let g:proj_window_width=3 " Default project window width
-let g:proj_window_width=33 " Default project window width
-"let g:proj_window_width=36 " Default project window width
-"let g:proj_window_width=39 " Default project window width
+" Set the default project window width.
+" - Some widths that've been tried in the past: 30, 3, 36, 39
+let g:proj_window_width=33
 
-" Remove the 'b' project flag, which uses browse() when handling
-" the \C command. Problem is, I cannot select a directory (it
-" always open the directory), so just use a simple edit box instead.
-let g:proj_flags='imst' " Default was 'imstb', but browse() in Fedora is wonky
+" Remove the 'b' project flag, which uses browse() when handling the
+" \C command. Problem is, you cannot select a directory (because it
+" opens the directory instead), so use a simple edit box instead.
+" - Default was 'imstb'.
+let g:proj_flags='imst'
 
 " SYNC_ME: Dubs Vim's <M-????> mappings are spread across plugins. [M-S-4]
 if !hasmapto('<Plug>DubsProjectTray_ToggleProject_Wrapper')
