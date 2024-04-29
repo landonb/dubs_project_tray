@@ -550,12 +550,68 @@ function! s:Project(filename) " <<<
         endif
     endfunction ">>>
     " s:VimDirListing(filter, exclude, padding, separator, filevariable, filecount, dirvariable, dircount) <<<
+    "
+    " SAVVY: Use `readdir` to generate a directory listing.
+    " - HSTRY: Orig code used `glob`, e.g.,
+    "     let l:filenames=glob(strpart(l:filters, 0, end))
+    " - This has 2 drawbacks:
+    "   - The result is a '\010'-byte separted string, rather than
+    "     a List, and is not newline-friendly; also
+    "   - The `glob` sorts by OS order, which is case-insensitive
+    "     on @macOS, and the opposite on @Linux (e.g., @Linux sorts
+    "     'UNCAPPED, capped' while @macOS sorts 'capped, UNCAPPED').
+    "     - And if you maintain the same .vimprojects across OSes,
+    "       this disparity might be annoying to you.
+    " - So we'll used `readdir` instead, which lets us pick a sort
+    "   order; it also returns a List. However, the {expr} chosen
+    "   below uses regex, not glob syntax, e.g., =~ '.rst' won't
+    "   work, we'd want =~ '.*\.rst' instead. So we need to convert.
+    "   - Note that these two are similar:
+    "       readdir(dirname, {n -> n =~ '\.rst'})
+    "       readdir(dirname, {n -> n =~ '.*\.rst'})
+    "     Whereas this is a little stricter:
+    "       readdir(dirname, {n -> n =~ '.*\.rst$'})
+    "     And that glob behaves like the *stricter* example,
+    "     e.g., the glob '*.rst' is like '.*\.rst$' (or more
+    "     simply '\.rst$').
+    " - Note there's obviously a different {expr} we could use that
+    "   does a glob-like compare. But the {expr} below is based on
+    "   the example from the Vim help; which is now working with a
+    "   (relatively) simple glob-to-regex conversion, so why change it.
+    " SAVVY: List advantages:
+    " - We don't have to 'guess' how to split up the `glob` response.
+    "   - Ha! Consider this old `glob` parse code, where fnames is
+    "     originally set to the `glob` output:
+    "       let fname = substitute(fnames,  '\(\(\f\|[ :\[\]]\)*\).*', '\1', '')
+    "       let fnames = substitute(fnames, '\(\f\|[ :\[\]]\)*.\(.*\)', '\2', '')
+    "     - Here you see \f which uses `isfname` to split on filename boundaries.
+    "       - But this approach often fails, e.g., it might replace '@' and '!'
+    "         characters with newlines (so a file named 'bar@baz' would get
+    "         listed as two files, 'bar' and 'baz', or a file named 'foo!'
+    "         would get listed as 'foo' followed by a blank line).
+    "       - The user could support @-names by dropping '@' from isfname, e.g.,
+    "           set isfname=48-57,/,.,-,_,+,,,#,$,%,~,=,{,},(,),!,'
+    "         But now we're talking weeds.
+    " - INERT/2024-04-27: FTREQ: Support regex 'filter' and 'exclude' syntax.
+    "   - INERT: Futile unless there's something glob syntax can't do.
+    "
     function! s:VimDirListing(filter, exclude, padding, separator, filevariable, filecount, dirvariable, dircount)
-        let end = 0
-        let files=''
+        let l:files = []
+
         let l:filters = a:filter
-        " Chop up the filter
-        "   Apparently glob() cannot take something like this: glob('*.c *.h')
+        let l:end = 0
+
+        " SAVVY: @macOS glob() sorts like 'icase'; @Linux like 'case'.
+        let l:readdir_sort = 'case'
+        if (exists("g:proj_sort"))
+          let l:readdir_sort = g:proj_sort
+        endif
+
+        " Loop over individual filter expressions.
+        " - Historically because glob() does not accept mult. expressions,
+        "   e.g., `glob('*.c *.h')` won't work.
+        " - Now because readdir() uses a callback function, and processing
+        "   filter expressions one at a time seems simpler.
         let while_var = 1
         while while_var
             let end = stridx(l:filters, ' ')
@@ -563,53 +619,78 @@ function! s:Project(filename) " <<<
                 let end = strlen(l:filters)
                 let while_var = 0
             endif
-            " MAYBE: Why not get a list response instead? (And use local var?)
-            "   let l:filenames=glob(strpart(l:filters, 0, end), 0, 1)
-            let l:filenames=glob(strpart(l:filters, 0, end))
-            if strlen(l:filenames) != 0
-                " glob() uses <NL> by default to separate paths.
-                let files = files . l:filenames . "\010"
+            let l:filter = strpart(l:filters, 0, l:end)
+
+            " 2024-04-27: Unsure this hits, but never assume?
+            if (l:filter == '')
+                continue
             endif
+
+            " Glob-to-regex conversion: Emulate glob using re syntax.
+            " - Convert periods to '\.'
+            " - Add leading '^' unless starts with '*'
+            " - Add trailing '$' unless ends with '*'
+            " - Convert non-leading asterisks to '.*'
+            " - Convert leading asterisks to '^[^.]\\{-}.*'
+            "     using \{-} non-greedy match to leave the leading
+            "       char alone
+            " - Don't pass raw `~` aka 'latest substitute string' regexp token
+            let l:refilter = ""
+            if l:filter == '*'
+              let l:refilter = "^[^.].*"
+            elseif l:filter == '.*'
+              let l:refilter = "^\\..*"
+            else
+              let l:refilter = substitute(
+                \ substitute(
+                \   substitute(
+                \     substitute(
+                \       substitute(
+                \         substitute(
+                \           l:filter, '\.', '\\\.', 'g'),
+                \         '^\([^*]\)', '\^\1', ''),
+                \       '\([^*]\)$', '\1\$', ''),
+                \     '\([^^]\)\*', '\1\.*', 'g'),
+                \   '^\*', '^[^.]\\{-}.*', 'g'),
+                \ '\~', '\\\~', 'g')
+            endif
+
+            " CPYST- Demo previous call:
+            "   :echo substitute(substitute(substitute(substitute(substitute(substitute('*', '\.', '\\\.', 'g'), '^\([^*]\)', '\^\1', ''), '\([^*]\)$', '\1\$', ''), '\([^^]\)\*', '\1\.*', 'g'), '^\*', '^[^.]\\{-}.*', 'g'), '\~', '\\\~', 'g')
+
+            " DEV- Uncomment to print trace, e.g.,
+            "   filter: .* / refilter: ^\..*
+            "   filter: * / refilter: ^[^.].*
+            "
+            " echom 'filter: ' . l:filter . ' / refilter: ' . l:refilter
+            " " Flush (odd, the last echom not always echoed before the
+            " " pause; though it appears in a later :messages)
+            " echom ""
+
+            let l:filter_files = readdir('.', {n -> n =~ l:refilter}, #{sort: l:readdir_sort})
+
+            let l:files += l:filter_files
+
             let l:filters = strpart(l:filters, end + 1)
         endwhile
-        " files now contains a list of everything in the directory. We need to
-        " weed out the directories.
-        let fnames=files
+
+        " The files var contains all files, dirs, and symlinks in the directory.
+
+        " - Note that the project plugin historically just concatenated the
+        "   results from each filter.
+        "   - This lets the user impose somewhat of an order on files.
+        "   - It also allows duplicate listings, if the filter expressions
+        "     have overlapping results.
+        " - Users can now opt-in to deduplicate files.
+        if exists("g:proj_unique") && (g:proj_unique == 1)
+          let l:files = uniq(sort(l:files))
+        endif
+
         let {a:filevariable}=''
         let {a:dirvariable}=''
         let {a:filecount}=0
         let {a:dircount}=0
-        while strlen(fnames) > 0
-            " FIXME/2018-03-05: If a file has a ! in it, that gets replaced
-            "   with newline. So not only is filename wrong in list, but
-            "   there's a blank line following it. It's easy to manually
-            "   fix, though... just annoying. But (lb) doesn't want to figure
-            "   out if it's because we call glob() above and don't get a list,
-            "   or if it's because of this unexplained regex, or something else.
-            " FIXME/2018-03-05: Hahaha, same goes for '@' and '!'! Word boundary?
-            " 2018-08-09: Okay, this makes a little more sense.
-            "   - fnames is a long string with [unknown] delimiter [prints out as ^@]
-            "     and here we split fnames in 2: grab the first file name, and then
-            "     set fnames to the remainder of the list.
-            "   - the \f in this regex is a character class for file characters
-            "       :help character-classes
-            "         \f  file name character (see 'isfname' option)
-            "   - \f uses `isfname`, e.g.,
-            "       :TabMessage echo &isfname
-            "         @,48-57,/,.,-,_,+,,,#,$,%,~,=,{,}
-            "      We want to add things that are being split upon, line bang and parens.
-            "   - Here's the original isfname, at least as of 2018-08-09 for me (lb).
-            "       set isfname=@,48-57,/,.,-,_,+,,,#,$,%,~,=,{,}
-            "     And here's one with parentheses:
-            "       set isfname=@,48-57,/,.,-,_,+,#,$,%,~,=,{,},(,)
-            "     See where we set isfname in dubs_project_tray.vim.
-            " 2018-09-10: E.g., from your project file, before you `\c`, tell this
-            "             script not to break on '@', and not to follow symlinkgs:
-            "                 set isfname=48-57,/,.,-,_,+,,,#,$,%,~,=,{,},(,),!,'
-            "                 let g:plugin_dubs_project_skip_symlink_dirs = 1
-            let fname = substitute(fnames,  '\(\(\f\|[ :\[\]]\)*\).*', '\1', '')
-            let fnames = substitute(fnames, '\(\f\|[ :\[\]]\)*.\(.*\)', '\2', '')
-
+        for fname in l:files
             if (fname == '.') || (fname == "..")
                 continue
             endif
@@ -713,7 +794,7 @@ function! s:Project(filename) " <<<
                     let {a:filecount}={a:filecount} + 1
                 endif
             endif
-        endwhile
+        endfor
     endfunction ">>>
     " s:GenerateEntry(recursive, name, absolute_dir, dir, c_d, filter_directive, filter, exclude_directive, exclude, foldlev, sort) <<<
     function! s:GenerateEntry(recursive, line, name, absolute_dir, dir, c_d, filter_directive, filter, exclude_directive, exclude, foldlev, sort, first_line)
