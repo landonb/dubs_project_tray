@@ -89,10 +89,10 @@ if !hasmapto('<Plug>DubsProjectTray_ToggleProject_Wrapper')
   "   2. Thunk the <Plug>
 endif
 
-" You can only setup Project once. If you call it again with
-" a path -- even with the same path we just used -- it'll
-" complain. So set the path once and then just use toggle.
-let s:project_loaded = 0
+" After Project() is used to setup the project buffer, we must use
+" ToggleProject thereafter, unless the project buffer is :bwipeout.
+" - Project() complains when called again and project buffer exists.
+" - REFER: g:proj_running
 
 function! s:ToggleProject_Wrapper()
   " Use mkview/loadview to store current view, i.e., to maintain
@@ -107,7 +107,7 @@ function! s:ToggleProject_Wrapper()
     " we need to increase winnr by 1 to find our current
     " window again
     let save_winnr = save_winnr + 1
-    if s:project_loaded == 1
+    if exists("g:proj_running")
       " After we set the .vimprojects path, we can stick
       " to using toggle to show and hide the project tray.
       " In fact, we cannot call Project(some_path) again
@@ -123,28 +123,36 @@ function! s:ToggleProject_Wrapper()
       " lose our cursor position in the buffer, which is
       " undesireable).
       execute 'ToggleProject'
-    elseif s:project_loaded == 0
-      if filereadable($HOME . '/.vimprojects')
+    else
+      let try_file = ''
+      if exists('g:vimprojects_file')
+        let try_file = g:vimprojects_file
+      endif
+      if (try_file == '') && filereadable($HOME . '/.vimprojects')
         " By default, Project opens ~/.vimprojects.
         execute "ToggleProject"
-        let s:project_loaded = 1
       else
-        " The project file is not at the default location.
-        " See if we can't find one in the user's Vim directory,
-        " which should be the first element of the runtimepath.
-        " This happens if the user installs Dubs Vim using Pathogen.
-
-        " Soooooo slow:
-        "   let l:projf = findfile('.vimprojects',
-        "                          \ pathogen#split(&rtp)[0] . "/**")
         let l:projf = ''
-        for vim_dir in pathogen#split(&rtp)
-          let try_file = vim_dir . '/' . '.vimprojects'
-          if filereadable(try_file)
-            let l:projf = try_file
-            break
-          endif
-        endfor
+        if (try_file != '') && filereadable(try_file)
+          let l:projf = try_file
+        else
+          " The project file is not at the default location.
+          " See if we can't find one in the user's Vim directory,
+          " which should be the first element of the runtimepath.
+          " This happens if the user installs Dubs Vim using Pathogen.
+
+          " Soooooo slow:
+          "   let l:projf = findfile('.vimprojects',
+          "                          \ pathogen#split(&rtp)[0] . "/**")
+
+          for vim_dir in pathogen#split(&rtp)
+            let try_file = vim_dir . '/' . '.vimprojects'
+            if filereadable(try_file)
+              let l:projf = try_file
+              break
+            endif
+          endfor
+        endif
 
         if l:projf != ''
           " Weird: If we call the fcn. directly, e.g., `Project(l:projf)`
@@ -152,7 +160,6 @@ function! s:ToggleProject_Wrapper()
           "        l:projf (the *name* of the variable we're passing!). So
           "        we have to convert to a string first and use execute.
           execute "Project ".l:projf
-          let s:project_loaded = 1
           " Tell the user if they've got multiple project files.
 
           " Hey slow poke:
@@ -177,11 +184,8 @@ function! s:ToggleProject_Wrapper()
           endif
         else
           call confirm('dubs: Cannot find .vimprojects file.', 'OK')
-          let s:project_loaded = -1
         endif
       endif
-      let s:project_loaded = 1
-    " else s:project_loaded == -1, so do nothing.
     endif
   else
     " Otherwise, we're losing the first window, so
