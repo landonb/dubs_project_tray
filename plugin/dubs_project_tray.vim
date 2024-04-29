@@ -148,7 +148,7 @@ function! s:ToggleProject_Wrapper()
 
         if l:projf != ''
           " Weird: If we call the fcn. directly, e.g., `Project(l:projf)`
-          "        then the Project functions variable is assigned the value
+          "        then the Project function's variable is assigned the value
           "        l:projf (the *name* of the variable we're passing!). So
           "        we have to convert to a string first and use execute.
           execute "Project ".l:projf
