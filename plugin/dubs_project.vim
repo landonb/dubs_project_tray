@@ -1720,8 +1720,8 @@ function! s:Project(filename) " <<<
         let bufname=escape(substitute(expand('%:p', 0), '\\', '/', 'g'), ' ')
         exec 'au BufWipeout '.bufname.' au! * '.bufname
         exec 'au BufWipeout '.bufname.' unlet g:proj_running'
-        exec 'au BufWipeout '.bufname.' nunmap <C-W>o'
-        exec 'au BufWipeout '.bufname.' nunmap <C-W><C-O>'
+        exec 'au BufWipeout '.bufname.' silent! nunmap <C-W>o'
+        exec 'au BufWipeout '.bufname.' silent! nunmap <C-W><C-O>'
         " Autocommands to keep the window the specified size
         exec 'au WinLeave '.bufname.' call s:DoEnsurePlacementSize_au()'
         exec 'au BufEnter '.bufname.' call s:DoSetupAndSplit_au()'
