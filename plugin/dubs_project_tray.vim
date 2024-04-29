@@ -75,15 +75,28 @@ let g:proj_window_width=33
 " - Default was 'imstb'.
 let g:proj_flags='imst'
 
+" ***
+
+" FTREQ: Here are elsewhere, use g:vars to control bindings.
+" - Another option is to skip a binding if already bound, e.g.,
+"   if !hasmapto('<Plug>DubsProjectTray_ToggleProject_Wrapper')
+
 " SYNC_ME: Dubs Vim's <M-????> mappings are spread across plugins. [M-S-4]
-if !hasmapto('<Plug>DubsProjectTray_ToggleProject_Wrapper')
-  " 2017-03-28: Hrm. noremap and inoremap do not work for me here. (Also added !hasmapto.)
+function! s:mappings_toggle_project_wrapper()
+  " Note that nnoremap and inoremap won't work because <Plug> mapping.
   nmap <silent> <M-$> <Plug>DubsProjectTray_ToggleProject_Wrapper
   imap <silent> <M-$> <C-O><Plug>DubsProjectTray_ToggleProject_Wrapper
+  " Regarding of previous bindings, always create the Plug map.
+  " - This makes the command externally callable, which allows
+  "   other plugins to toggle the project tray.
   noremap <silent> <unique> <script>
     \ <Plug>DubsProjectTray_ToggleProject_Wrapper
     \ :call <SID>ToggleProject_Wrapper()<CR>
-endif
+endfunction
+
+call <SID>mappings_toggle_project_wrapper()
+
+" ***
 
 " After Project() is used to setup the project buffer, we must use
 " ToggleProject thereafter, unless the project buffer is :bwipeout.
