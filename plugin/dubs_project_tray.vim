@@ -80,12 +80,9 @@ if !hasmapto('<Plug>DubsProjectTray_ToggleProject_Wrapper')
   " 2017-03-28: Hrm. noremap and inoremap do not work for me here. (Also added !hasmapto.)
   nmap <silent> <M-$> <Plug>DubsProjectTray_ToggleProject_Wrapper
   imap <silent> <M-$> <C-O><Plug>DubsProjectTray_ToggleProject_Wrapper
-  "cmap <silent> <M-$> <C-C><Plug>DubsProjectTray_ToggleProject_Wrapper
-  "omap <silent> <M-$> <C-C><Plug>DubsProjectTray_ToggleProject_Wrapper
   noremap <silent> <unique> <script>
     \ <Plug>DubsProjectTray_ToggleProject_Wrapper
     \ :call <SID>ToggleProject_Wrapper()<CR>
-  "   2. Thunk the <Plug>
 endif
 
 " After Project() is used to setup the project buffer, we must use
