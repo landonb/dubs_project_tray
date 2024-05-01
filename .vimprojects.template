@@ -1,17 +1,35 @@
-# THIS FILE IS SOMEWHAT
-#  AUTO-GENERATED.
-# :help project  *help*
-#  \c   Add new project
-# <F5>  Refresh project
-#  zA   Open/Close Fold
-# zc/zo Tiny Open/Close
-#  zM   Close All Folds
-#  zR   Open All Foldzs
-# zk/zj <--  / --> Fold
+# USAGE: Add your projects below
+# - Position cursor, then type
+#   <Leader>c to bring up dialog
 
-# FIXME: Add your project here.
+# Keyboard Shortcuts:
+#
+┏━┫ k͟e͟y͟b͟o͟a͟r͟d͟ ͟b͟i͟n͟d͟i͟n͟g͟s͟ ┣━━━━━━━━┓
+┃    :help project             ┃
+┃  \c   Add New Project        ┃
+┃ <F5>  Re-list Project        ┃
+┃  zM   Close All Folds        ┃
+┃  zR   Open All Folds         ┃
+┃  zA   Fold/Unfold Project    ┃
+┃  za   Toggle One Fold        ┃
+┃ zc/zo Close/Open One Fold    ┃
+┃ zm/zr More/Reduce All Folds  ┃
+┃ zk/zj ↑ Prev/↓ Next Fold     ┃
+┃ [z/]z ⤴Start/⤵End Fold     ┃
+┃ ⇧<CR> Open in New Window     ┃
+┃ ^<CR> Open in Only Window    ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
-# Bash working files and some application config files
+# Bash working files and some
+#   application config files
+# - This is an example project
+# - Put cursor inside braces and
+#   press <F5> to reload list.
+# - Put cursor on filename and
+#   <Enter> to open.
+#   - Or double-click filename.
+# - Or type 'za' (normal mode)
+#   to toggle folding.
 Bash Etc =$HOME filter=".bashrc* .git* .vimrc*" {
  .bashrc
  .gitconfig
