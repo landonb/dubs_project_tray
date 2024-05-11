@@ -39,10 +39,11 @@
 "         is copied by ``LoadUsersGrepProjects`` in:
 "           ~/.vim/pack/landonb/start/dubs_grep_steady/plugin/dubs_grep_steady.vim
 "
-"         Or look at how cmdt_paths.template is copied. Search for:
-"           finddir('cmdt_paths.template', ...)
-"         in:
-"           ~/.vim/pack/landonb/start/dubs_file_finder/plugin/dubs_file_finder.vim
+"         Or look at how cmdt_paths.template is copied. Look for:
+"           cmdt_paths.template
+"         via
+"           cd ~/.vim/pack/landonb/start/dubs_file_finder
+"           git show 40aa0b4:plugin/dubs_file_finder.vim
 
 " -------------------------------------------------------------------------
 " About/Usage
