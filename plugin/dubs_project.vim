@@ -783,6 +783,7 @@ function! s:Project(filename) " <<<
                     elseif fname == "node_modules"
                       \ || fname == ".nyc_output"
                       \ || fname == "__pycache__"
+                      \ || fname == "site-packages"
                       \ || fname == ".tox"
                       \ || fname =~ "\\.venv.*"
                       \ || fname == ".vscode"
