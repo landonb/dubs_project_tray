@@ -1422,6 +1422,12 @@ function! s:Project(filename) " <<<
     function! s:GetExclude(info, parent_exclude)
         let exclude = substitute(a:info, '.*\<exclude="\([^"]\{-}\)".*', '\1', '')
         if strlen(exclude) == strlen(a:info) | let exclude = a:parent_exclude | endif
+        " Default-ignore macOS Finder .DS_Store files (which author assumes
+        " no user anywhere will ever care about).
+        " - SAVVY: If there's an extraneous/extra space, everything is excluded,
+        "   so only add space if exclude nonempty.
+        if strlen(exclude) > 0 | let exclude = exclude .. " " | endif
+        let exclude = exclude .. ".DS_Store"
         return exclude
     endfunction
     function! s:GetCd(info, home)
