@@ -34,16 +34,10 @@
 "
 "       - Or, just document in the readme and call it, 'good'.
 "
-"       - For example of copying template, see either how
+"       - For an example of copying the template, see how
 "           dubs_projects.vim.template
-"         is copied by ``LoadUsersGrepProjects`` in:
+"         is copied by `LoadUsersGrepProjects` in:
 "           ~/.vim/pack/landonb/start/dubs_grep_steady/plugin/dubs_grep_steady.vim
-"
-"         Or look at how cmdt_paths.template is copied. Look for:
-"           cmdt_paths.template
-"         via
-"           cd ~/.vim/pack/landonb/start/dubs_file_finder
-"           git show 40aa0b4:plugin/dubs_file_finder.vim
 
 " -------------------------------------------------------------------------
 " About/Usage
