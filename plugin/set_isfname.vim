@@ -52,15 +52,15 @@ let g:loaded_dubs_set_isfname = 1
 
 " 2018-08-09: Up until now, I've used:
 "     set isfname=@,48-57,/,.,-,_,+,,,#,$,%,~,=,{,}
-"   - Today I've added parentheses, the bang, and the single quote.
+" - Today I've added parentheses, the bang, and the single quote.
 " 2023-06-06: The single quote was being specified incorrectly:
 "     set isfname=@,48-57,/,.,-,_,+,,,#,$,%,~,=,{,},(,),!,\'  <-- WRONG
-"   - Including the literal quote character cause problems with plugins
-"     that modify isfname, which usually entails caching the existing
-"     value, setting a new value, and then restoring the old value.
-"     - But depending on how the plugin evaluates isfname, you'll likely
-"       get an error, e.g., if you add a literal single quote ('), then
-"       ftplugin/perl.vim (among others) fails, complaining:
+" - Including the literal quote character cause problems with plugins
+"   that modify isfname, which usually entails caching the existing
+"   value, setting a new value, and then restoring the old value.
+"   - But depending on how the plugin evaluates isfname, you'll likely
+"     get an error, e.g., if you add a literal single quote ('), then
+"     ftplugin/perl.vim (among others) fails, complaining:
 "         E115: Missing single quote: '@,48-57,...
 "   - The proper approach is to use ASCII codes in place of quotes,
 "     e.g., avoid this:
