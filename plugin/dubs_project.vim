@@ -1683,6 +1683,7 @@ function! s:Project(filename) " <<<
         "     maps are also highly prized combos, especially because Ctrl-key
         "     combos do not recognize case (so rather than 52 Ctrl-[[:alpha:]]
         "     combos, there are only 26).
+        "       https://github.com/landonb/vim-buffer-ring#💍
         " - So rather than Ctrl-Up/-Down in Normal mode moving lines (and
         "   Ctrl-Up/-Down in Insert mode scrolling the buffer view, if
         "   dubs_buffer_fun is installed), let's wire Ctrl-J/-K in both
