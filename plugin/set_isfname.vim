@@ -1,5 +1,5 @@
 " Author: Landon Bouma (landonb &#x40; retrosoft &#x2E; com)
-" Project Page: https://github.com/landonb/dubs_project_tray
+" Project: https://github.com/landonb/dubs_project_tray#🗂
 " License: GPLv3
 " -------------------------------------------------------------------
 " Copyright © 2009, 2015-2017 Landon Bouma.

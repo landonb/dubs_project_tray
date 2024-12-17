@@ -1,9 +1,7 @@
-" File: dubs_project_tray.vim
-" Author: Landon Bouma (landonb &#x40; retrosoft &#x2E; com)
-" Last Modified: 2017.12.20
-" Project Page: https://github.com/landonb/dubs_project_tray
-" Summary: Enhanced Project Plugin
+" Author: Landon Bouma <https://tallybark.com/> 
+" Project: https://github.com/landonb/dubs_project_tray#🗂
 " License: GPLv3
+" Summary: Enhanced Project Plugin
 " -------------------------------------------------------------------
 " Copyright © 2009, 2015-2017 Landon Bouma.
 "

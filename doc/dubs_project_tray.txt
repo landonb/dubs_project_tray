@@ -1,6 +1,6 @@
 *dubs_project_tray.txt*	For Vim version 7.4.	Last change: 2015 Jan 23
 
-Dubs Vim -- Subtly Improved Project Tray~
+Dubs Vim 🗂 Subtly Improved Project Tray~
 
 ENHANCED PROJECT PLUGIN REFERENCE		*dubs-project-tray*
 
