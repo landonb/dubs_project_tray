@@ -5,12 +5,18 @@
 
 " -------------------------------------------------------------------------
 
-" YOU: Uncomment and <F9> to source/reload.
-"  silent! unlet g:loaded_dubs_set_isfname
+" GUARD: Press <F9> to reload this plugin (or :source it).
+" - Via: https://github.com/embrace-vim/vim-source-reloader#↩️
 
-if exists("g:loaded_dubs_set_isfname") || &cp
+if expand('%:p') ==# expand('<sfile>:p')
+  unlet! g:loaded_dubs_set_isfname
+endif
+
+if exists('g:loaded_dubs_set_isfname') || &cp
+
   finish
 endif
+
 let g:loaded_dubs_set_isfname = 1
 
 " -------------------------------------------------------------------------
