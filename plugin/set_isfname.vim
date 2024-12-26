@@ -8,15 +8,15 @@
 " - Via: https://github.com/embrace-vim/vim-source-reloader#↩️
 
 if expand('%:p') ==# expand('<sfile>:p')
-  unlet! g:loaded_dubs_set_isfname
+  unlet! g:loaded_dubs_project_tray_set_isfname
 endif
 
-if exists('g:loaded_dubs_set_isfname') || &cp
+if exists('g:loaded_dubs_project_tray_set_isfname') || &cp
 
   finish
 endif
 
-let g:loaded_dubs_set_isfname = 1
+let g:loaded_dubs_project_tray_set_isfname = 1
 
 " -------------------------------------------------------------------
 

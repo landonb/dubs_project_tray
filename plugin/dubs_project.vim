@@ -21,10 +21,23 @@
 "         annoying, but this project (ha!) doesn't change
 "         much.
 
-if exists('g:plugin_dubs_project') || &cp " <<<
+" -------------------------------------------------------------------
+
+" GUARD: Press <F9> to reload this plugin (or :source it).
+" - Via: https://github.com/embrace-vim/vim-source-reloader#↩️
+
+if expand('%:p') ==# expand('<sfile>:p')
+  unlet! g:plugin_dubs_project
+endif
+
+if exists('g:plugin_dubs_project') || &cp
+
   finish
 endif
+
 let g:plugin_dubs_project = 1
+
+" -------------------------------------------------------------------
 
 let g:plugin_dubs_project_skip_symlink_dirs = 0
 ">>>

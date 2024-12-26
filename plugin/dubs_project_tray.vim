@@ -27,9 +27,20 @@
 
 " See :help dubs-project-tray.
 
-if exists("g:plugin_dubs_project_tray") || &cp
+" -------------------------------------------------------------------
+
+" GUARD: Press <F9> to reload this plugin (or :source it).
+" - Via: https://github.com/embrace-vim/vim-source-reloader#↩️
+
+if expand('%:p') ==# expand('<sfile>:p')
+  unlet! g:plugin_dubs_project_tray
+endif
+
+if exists('g:plugin_dubs_project_tray') || &cp
+
   finish
 endif
+
 let g:plugin_dubs_project_tray = 1
 
 " -------------------------------------------------------------------
