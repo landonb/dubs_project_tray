@@ -1,7 +1,6 @@
 " Author: Landon Bouma <https://tallybark.com/>
 " Project: https://github.com/landonb/dubs_project_tray#🗂
-" License: GPLv3
-"   Copyright © 2009, 2015-2017 Landon Bouma.
+" License: GPLv3 | Copyright © 2009, 2015-2017 Landon Bouma.
 
 " -------------------------------------------------------------------------
 
