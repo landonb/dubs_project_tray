@@ -125,7 +125,7 @@ function! s:Project(filename) " <<<
         if match(g:proj_flags, '\Cn') != -1
             setlocal number
         endif
-    endfunction
+    endfunction ">>>
     call s:DoSetup()
 
     ">>>
