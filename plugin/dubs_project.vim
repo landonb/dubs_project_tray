@@ -504,6 +504,7 @@ function! s:Project(filename) " <<<
             " "Swap File <> Already Exists!". So resolve paths.
             let fname=resolve(expand(fname))
             if s:IsAbsolutePath(fname) == 2
+                " Starts with '^ftp:'|'^rcp:'|'^scp:'|'^http:'
                 exec a:editcmd.' '.fname
             else
                 silent exec 'silent '.a:editcmd.' '.fname
