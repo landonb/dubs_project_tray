@@ -1,3 +1,4 @@
+" vim:tw=0:ts=4:sw=4:et:norl:
 " File:        project.vim
 " Maintainer+: Landon Bouma <https://tallybark.com/> 
 " Project URL: https://github.com/landonb/dubs_project#🗂
