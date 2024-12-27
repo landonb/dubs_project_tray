@@ -51,10 +51,6 @@ let g:plugin_dubs_project_tray = 1
 " -------------------------------------------------------------------
 " DubsProjectTray_ToggleProject_Wrapper
 " -------------------------------------------------------------------
-" EditPlus doesn't necessarily have an
-" Alt-Shift-4 mapping, but it does have
-" a Project menu. This is similar. But
-" better. =)
 
 " Set the default project window width.
 " - Some widths that've been tried in the past: 30, 3, 36, 39
