@@ -58,10 +58,12 @@ function! s:Project(filename) " <<<
         endif
     endif
     if !exists('g:proj_window_width')
-        let g:proj_window_width=24              " Default project window width
+        " Default project window width
+        let g:proj_window_width = get(g:, 'proj_window_width', 24)
     endif
     if !exists('g:proj_window_increment')
-        let g:proj_window_increment=100         " Project Window width increment
+        " Project Window width increment
+        let g:proj_window_increment = get(g:, 'proj_window_increment', 100)
     endif
     if !exists('g:proj_flags')
         if has("win32") || has("mac")

@@ -54,7 +54,7 @@ let g:plugin_dubs_project_tray = 1
 
 " Set the default project window width.
 " - Some widths that've been tried in the past: 30, 3, 36, 39
-let g:proj_window_width=33
+let g:proj_window_width = get(g:, 'proj_window_width', 33)
 
 " Remove the 'b' project flag, which uses browse() when handling the
 " \C command. Problem is, you cannot select a directory (because it
