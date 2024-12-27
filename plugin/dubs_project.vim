@@ -216,7 +216,7 @@ function! s:Project(filename) " <<<
         endif
         call s:SortR(a:start, partition - 1)
         call s:SortR(partition + 1, a:end)
-    endfunc ">>>
+    endfunction ">>>
     " s:IsAbsolutePath(path) <<<
     "   Returns true if filename has an absolute path.
     function! s:IsAbsolutePath(path)
