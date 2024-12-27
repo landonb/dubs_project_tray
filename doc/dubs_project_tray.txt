@@ -33,7 +33,7 @@ Additional features:
 ==============================================================================
 2. Project Tray Commands			*dubs-prjtray-commands*
 
-				*<Shift-Alt-4>_* *<Alt-Shift-4>_* *<M-$>_* *<S-M-4>_* *<S-A-4>_*
+				*<Shift-Alt-4>_* *<Alt-Shift-4>_* *<M-$>_* *<S-M-4>_* *<M-S-4>_* *<S-A-4>_*
 <Shift-Alt-4>		Toggle Project tray.
 			Use \c command in project tray to
 			add projects; <F5> to refresh.
