@@ -71,8 +71,13 @@ let g:proj_flags='imst'
 " SYNC_ME: Dubs Vim's <M-????> mappings are spread across plugins. [M-S-4]
 function! s:mappings_toggle_project_wrapper()
   " Note that nnoremap and inoremap won't work because <Plug> mapping.
-  nnoremap <silent> <M-$> <Plug>DubsProjectTray_ToggleProject_Wrapper
-  inoremap <silent> <M-$> <C-O><Plug>DubsProjectTray_ToggleProject_Wrapper
+  if has('macunix')
+    nnoremap <silent> › <Plug>DubsProjectTray_ToggleProject_Wrapper
+    inoremap <silent> › <C-O><Plug>DubsProjectTray_ToggleProject_Wrapper
+  else
+    nnoremap <silent> <M-$> <Plug>DubsProjectTray_ToggleProject_Wrapper
+    inoremap <silent> <M-$> <C-O><Plug>DubsProjectTray_ToggleProject_Wrapper
+  endif
   " Regarding of previous bindings, always create the Plug map.
   " - This makes the command externally callable, which allows
   "   other plugins to toggle the project tray.
