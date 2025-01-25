@@ -684,7 +684,13 @@ function! s:Project(filename) " <<<
             " " pause; though it appears in a later :messages)
             " echom ""
 
-            let l:filter_files = readdir('.', {n -> n =~ l:refilter}, #{sort: l:readdir_sort})
+            if has('nvim')
+                " DUNNO: Did nvim remove 3rd arg ({ sort: }) ), or
+                "        was it added to vim after nvim forked?
+                let l:filter_files = readdir('.', {n -> n =~ l:refilter})
+            else
+                let l:filter_files = readdir('.', {n -> n =~ l:refilter}, #{sort: l:readdir_sort})
+            endif
 
             let l:files += l:filter_files
 
