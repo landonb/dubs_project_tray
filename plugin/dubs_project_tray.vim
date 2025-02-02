@@ -140,10 +140,8 @@ function! s:ToggleProject_Wrapper()
         if (try_file != '') && filereadable(try_file)
           let l:projf = try_file
         else
-          " The project file is not at the default location.
-          " See if we can't find one in the user's Vim directory,
-          " which should be the first element of the runtimepath.
-          " This happens if the user installs Dubs Vim using Pathogen.
+          " The project file is not at ~/.vimprojects.
+          " - Rummage through user's &runtimepath.
 
           " Soooooo slow:
           "   let projf = findfile('.vimprojects', pathogen#split(&rtp)[0] . '/**')
