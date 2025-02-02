@@ -230,9 +230,9 @@ function! s:ToggleProject_Wrapper()
   "            widths of my windows. Hence, we do a little dance.
   "
   " First, see how many columns we have to work with.
-  let cols_avail = &columns
+  let l:cols_avail = &columns
   if exists('g:proj_running') && bufwinnr(g:proj_running) == 1
-    let cols_avail = cols_avail - g:proj_window_width
+    let l:cols_avail = l:cols_avail - g:proj_window_width
   endif
   "
   " Next, see if two buffers are open, and figure out which windows they're in.
@@ -241,8 +241,8 @@ function! s:ToggleProject_Wrapper()
   " That leaves one or two windows that the user is editing in the upper-right.
   " If there are two windows, they're either side-by-side or stacked depending
   " on how much room is available.
-  let winnr_lhs = 0
-  let winnr_rhs = 0
+  let l:winnr_lhs = 0
+  let l:winnr_rhs = 0
   if !exists('g:proj_running') || bufwinnr(g:proj_running) == -1
     " The project window is not showing, so the user's windows are the first
     " and maybe the second window (since Vim numbers windows 1, 2, 3, ..., from
@@ -250,8 +250,8 @@ function! s:ToggleProject_Wrapper()
     if ( (0 == <SID>IsWindowSpecial(1))
         \ && (0 == <SID>IsWindowSpecial(2))
         \ && (0 != <SID>IsWindowSpecial(3)) )
-      let winnr_lhs = 1
-      let winnr_rhs = 2
+      let l:winnr_lhs = 1
+      let l:winnr_rhs = 2
     endif
   else
     " The project window is showing, so the user's window(s) are the second and
@@ -259,12 +259,12 @@ function! s:ToggleProject_Wrapper()
     if ( (0 == <SID>IsWindowSpecial(2))
         \ && (0 == <SID>IsWindowSpecial(3))
         \ && (0 != <SID>IsWindowSpecial(4)) )
-      let winnr_lhs = 2
-      let winnr_rhs = 3
+      let l:winnr_lhs = 2
+      let l:winnr_rhs = 3
     endif
   endif
 
-  call s:ToggleProjectPost_ResizeTwoWindowView(winnr_lhs, winnr_rhs, cols_avail)
+  call s:ToggleProjectPost_ResizeTwoWindowView(l:winnr_lhs, l:winnr_rhs, l:cols_avail)
 
   " Move cursor back to window it was just in
   execute save_winnr . 'wincmd w'
