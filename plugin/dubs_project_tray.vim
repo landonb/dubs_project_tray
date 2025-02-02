@@ -97,6 +97,7 @@ call s:mappings_toggle_project_wrapper()
 " - REFER: g:proj_running
 
 let s:vimprojs_fname = '.vimprojects'
+let s:projs_template = '.vimprojects.template'
 
 function! s:ToggleProject_Wrapper() abort
   " Use mkview/loadview to store current view, i.e., to maintain
@@ -303,15 +304,26 @@ endfunction
 " ***
 
 function! s:FindUsersVimProjects() abort
+  " Look for user's projects file.
   let l:files = s:FindFile(s:vimprojs_fname)
 
   " Tell the user if they've got multiple project files.
-  call s:AlertIfMultipleUsersVimProjectsFiles(l:files)
-
-  let l:user_projs = ''
+  call s:AlertIfMultipleUsersVimProjectsFiles(l:files, 'file')
 
   if !empty(l:files)
     let l:user_projs = l:files[0]
+  else
+    " No file, but there should be a template we can copy.
+    let l:tmplate = ''
+
+    let l:files = s:FindFile(s:projs_template)
+    call s:AlertIfMultipleUsersVimProjectsFiles(l:files, 'template')
+
+    if !empty(l:files)
+      let l:tmplate = l:files[0]
+    endif
+
+    let l:user_projs = s:DeployUsersVimProjectsTemplate(l:tmplate)
   endif
 
   return l:user_projs
@@ -390,16 +402,45 @@ function! s:FindFileAnywhereOnRuntimepath_Vim(fname) abort
   return l:user_projs
 endfunction
 
-function! s:AlertIfMultipleUsersVimProjectsFiles(matches) abort
+function! s:AlertIfMultipleUsersVimProjectsFiles(matches, what) abort
   if len(a:matches) <= 1
 
     return
   endif
   
-  echom 'ALERT: dubs_project_tray: Found more than one ' . s:vimprojs_fname . ' file:'
+  echom 'ALERT: dubs_project_tray: Found more than one user projects ' .. a:what .. ':'
   for l:path in a:matches
     echom '  ' .. l:path
   endfor
+endfunction
+
+function! s:DeployUsersVimProjectsTemplate(tmplate) abort
+  let l:user_projs = ''
+
+  if a:tmplate != ''
+    " Get the full path (:p), and drop the '.template'
+    " extension, aka get the filename root (:r).
+    let l:user_projs = fnamemodify(a:tmplate, ':p:r')
+
+    if getftype(l:user_projs) != ''
+      echom 'ALERT: dubs_project_tray: Cannot expand template: Target exists (broken symlink?): ' . l:user_projs
+
+      let l:user_projs = ''
+    else
+      " Make a copy of the template.
+      execute '!command cp ' . a:tmplate . ' ' . l:user_projs
+
+      echom 'dubs_project_tray: Created user file from template: ' . l:user_projs
+    endif
+  else
+    " This is more of a GAFFE, i.e., more likely it's our error than users's.
+    " - I.e., if this script is running, the project root should be on &rtp,
+    "   and the template should be within the project directory (and we should
+    "   have found it).
+    echom 'ALERT: dubs_project_tray: Could not find template: ' .. s:projs_template
+  endif
+
+  return l:user_projs
 endfunction
 
 " ***
