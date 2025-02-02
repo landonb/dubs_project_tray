@@ -128,6 +128,70 @@ function! s:ToggleProject_Wrapper() abort
       " undesireable).
       execute 'ToggleProject'
     else
+      call s:ToggleProject_Unitialized()
+    endif
+  else
+    " Otherwise, we're losing the first window, so
+    " compensate for the loss by subtracting one
+    let l:save_winnr = l:save_winnr - 1
+    " Clear the project buffer
+    "execute bufwinnr(g:proj_running) . 'wincmd w'
+    "bwipeout
+    "
+    execute 'ToggleProject'
+    " 2011.06.14: This is what ToggleProject does:
+    "let g:proj_mywindow = winnr()
+    "Project
+    "hide
+    "if(winnr() != g:proj_mywindow)
+    "  wincmd p
+    "endif
+    "unlet g:proj_mywindow
+  endif
+  "execute 'ToggleProject'
+  " FIXME This behaviour does not belong here: Use Alt key modifier or another
+  "       key combo to close all folds but the first and jump to the top,
+  "       otherwise, save the position the user was at, which supports the
+  "       work flow method of C-S-4'ing to see the list of files, opening a
+  "       file, and then closing the sidebar.
+  "if exists('g:proj_running') && bufwinnr(g:proj_running) == 1
+  "  " Collapse all folds
+  "  execute 'normal ' . 'zM'
+  "  " Return to top of window
+  "  execute 'normal ' . 'gg'
+  "  " Jump to first fold ...
+  "  execute 'normal ' . 'zj'
+  "  " ... and open it
+  "  execute 'normal ' . 'zA'
+  "  " Now when the user closes the first fold, all others are visible
+  "endif
+
+  " 2011.01.15 On my laptop, I can't have the project window open and also
+  "            look at two buffers side-by-side with at least 80 columns each,
+  "            unless if I dismiss the project window. But that messes up the
+  "            widths of my windows. Hence, we do a little dance.
+  "
+  " First, see how many columns we have to work with.
+  let l:cols_avail = &columns
+  if exists('g:proj_running') && bufwinnr(g:proj_running) == 1
+    let l:cols_avail = l:cols_avail - g:proj_window_width
+  endif
+  "
+  " Next, see if two buffers are open, and figure out which windows they're in.
+  let [l:winnr_lhs, l:winnr_rhs] = s:ToggleProjectPost_ProbeTwoWindowView()
+
+  call s:ToggleProjectPost_ResizeTwoWindowView(l:winnr_lhs, l:winnr_rhs, l:cols_avail)
+
+  " Move cursor back to window it was just in
+  execute l:save_winnr . 'wincmd w'
+
+  " NOTE: Use silent to avoid 'E35: No file name' warning message.
+  silent! loadview
+endfunction
+
+" ***
+
+function! s:ToggleProject_Unitialized() abort
       let try_file = ''
       if exists('g:vimprojects_file')
         let try_file = g:vimprojects_file
@@ -187,64 +251,6 @@ function! s:ToggleProject_Wrapper() abort
           call confirm('dubs: Cannot find ' . s:vimprojs_fname . ' file.', 'OK')
         endif
       endif
-    endif
-  else
-    " Otherwise, we're losing the first window, so
-    " compensate for the loss by subtracting one
-    let l:save_winnr = l:save_winnr - 1
-    " Clear the project buffer
-    "execute bufwinnr(g:proj_running) . 'wincmd w'
-    "bwipeout
-    "
-    execute 'ToggleProject'
-    " 2011.06.14: This is what ToggleProject does:
-    "let g:proj_mywindow = winnr()
-    "Project
-    "hide
-    "if(winnr() != g:proj_mywindow)
-    "  wincmd p
-    "endif
-    "unlet g:proj_mywindow
-  endif
-  "execute 'ToggleProject'
-  " FIXME This behaviour does not belong here: Use Alt key modifier or another
-  "       key combo to close all folds but the first and jump to the top,
-  "       otherwise, save the position the user was at, which supports the
-  "       work flow method of C-S-4'ing to see the list of files, opening a
-  "       file, and then closing the sidebar.
-  "if exists('g:proj_running') && bufwinnr(g:proj_running) == 1
-  "  " Collapse all folds
-  "  execute 'normal ' . 'zM'
-  "  " Return to top of window
-  "  execute 'normal ' . 'gg'
-  "  " Jump to first fold ...
-  "  execute 'normal ' . 'zj'
-  "  " ... and open it
-  "  execute 'normal ' . 'zA'
-  "  " Now when the user closes the first fold, all others are visible
-  "endif
-
-  " 2011.01.15 On my laptop, I can't have the project window open and also
-  "            look at two buffers side-by-side with at least 80 columns each,
-  "            unless if I dismiss the project window. But that messes up the
-  "            widths of my windows. Hence, we do a little dance.
-  "
-  " First, see how many columns we have to work with.
-  let l:cols_avail = &columns
-  if exists('g:proj_running') && bufwinnr(g:proj_running) == 1
-    let l:cols_avail = l:cols_avail - g:proj_window_width
-  endif
-  "
-  " Next, see if two buffers are open, and figure out which windows they're in.
-  let [l:winnr_lhs, l:winnr_rhs] = s:ToggleProjectPost_ProbeTwoWindowView()
-
-  call s:ToggleProjectPost_ResizeTwoWindowView(l:winnr_lhs, l:winnr_rhs, l:cols_avail)
-
-  " Move cursor back to window it was just in
-  execute l:save_winnr . 'wincmd w'
-
-  " NOTE: Use silent to avoid 'E35: No file name' warning message.
-  silent! loadview
 endfunction
 
 " ***
