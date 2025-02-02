@@ -9,18 +9,19 @@
 " FIXME: On first boot, make the project template.
 "        E.g.,
 "
-"         /bin/cp \
-"           ~/.vim/pack/landonb/start/dubs_project_tray/.vimprojects.template
-"           ~/.vim/pack/landonb/start/dubs_project_tray/.vimprojects
+"         command cp \
+"           ~/.kit/nvim/landonb/start/dubs_project_tray/.vimprojects.template \
+"           ~/.kit/nvim/landonb/start/dubs_project_tray/.vimprojects
 "
-"       and tell user to move to private locate and create symlink from project.
+"       and tell user to move to private location
+"       and to create a symlink in project root.
 "
 "       - Or, just document in the readme and call it, 'good'.
 "
 "       - For an example of copying the template, see how
 "           dubs_projects.vim.template
 "         is copied by `LoadUsersGrepProjects` in:
-"           ~/.vim/pack/landonb/start/dubs_grep_steady/plugin/dubs_grep_steady.vim
+"           ~/.kit/nvim/landonb/start/dubs_grep_steady/plugin/dubs_grep_steady.vim
 
 " -------------------------------------------------------------------
 " About/Usage
