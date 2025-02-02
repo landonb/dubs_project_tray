@@ -305,10 +305,9 @@ endfunction
 
 " Test if a window is the Help, Quickfix, MiniBufExplorer, or Project window
 function! s:IsWindowSpecial(winnr)
-  let is_special = 0
-
+  let l:is_special = 0
   if (-1 == winbufnr(a:winnr))
-    let is_special = -1
+    let l:is_special = -1
   else
     let l:bufnr = winbufnr(a:winnr)
     if ( (-1 != l:bufnr)
@@ -318,9 +317,9 @@ function! s:IsWindowSpecial(winnr)
           \ || ( (exists('g:proj_running'))
               \ && (a:winnr == bufwinnr(g:proj_running)) ) ) )
       " FIXME There's probably an easy way to check if a window/buffer is normal
-      let is_special = 1
+      let l:is_special = 1
     endif
   endif
-  return is_special
+  return l:is_special
 endfunction
 
