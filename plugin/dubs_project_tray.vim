@@ -278,13 +278,13 @@ endfunction
 " If the user is editing using two windows, resize and reposition the windows
 " to the pleasurement of all
 function s:ToggleProjectPost_ResizeTwoWindowView(winnr_lhs, winnr_rhs, cols_avail) abort
-  if winnr_lhs != 0 && winnr_rhs != 0
+  if a:winnr_lhs != 0 && a:winnr_rhs != 0
     " Switch to the second window, remember its buffer, and close the window
-    execute winnr_rhs . 'wincmd w'
+    execute a:winnr_rhs . 'wincmd w'
     let bufnr = winbufnr('%')
     close
     " Switch back to the first window and split it
-    execute winnr_lhs . 'wincmd w'
+    execute a:winnr_lhs . 'wincmd w'
     " Split the window either vertically or horizontally, depending on the
     " amount of room available and if the project window is showing.
     " NOTE We closed a window and use to (v)split to make a new window,
@@ -293,8 +293,8 @@ function s:ToggleProjectPost_ResizeTwoWindowView(winnr_lhs, winnr_rhs, cols_avai
     "      manually, we'd call
     "         let half_width = &columns / 2
     "         execute 'vertical resize ' . half_width
-    " Hack alert! winnr_lhs is 1 if project window isn't showing, 2 otherwise
-    if winnr_lhs == 1 || cols_avail > 160
+    " Hack alert! a:winnr_lhs is 1 if project window isn't showing, 2 otherwise
+    if a:winnr_lhs == 1 || a:cols_avail > 160
       " Split vertically
       execute 'vsplit'
     else
@@ -303,7 +303,7 @@ function s:ToggleProjectPost_ResizeTwoWindowView(winnr_lhs, winnr_rhs, cols_avai
     endif
     " Switch back to the (newly-created) second window and load the
     " remembered buffer
-    execute winnr_rhs . 'wincmd w'
+    execute a:winnr_rhs . 'wincmd w'
     execute 'buffer ' . bufnr
   endif
 endfunction
