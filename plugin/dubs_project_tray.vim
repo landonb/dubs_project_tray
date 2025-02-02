@@ -236,13 +236,29 @@ function! s:ToggleProject_Wrapper() abort
   endif
   "
   " Next, see if two buffers are open, and figure out which windows they're in.
-  " Hint: the way dubs_project_tray sets it up, the Project window (file browser)
-  " is on the left, and the buffer explorer and quickfix window are on the bottom.
-  " That leaves one or two windows that the user is editing in the upper-right.
-  " If there are two windows, they're either side-by-side or stacked depending
-  " on how much room is available.
+  let [l:winnr_lhs, l:winnr_rhs] = s:ToggleProjectPost_ProbeTwoWindowView()
+
+  call s:ToggleProjectPost_ResizeTwoWindowView(l:winnr_lhs, l:winnr_rhs, l:cols_avail)
+
+  " Move cursor back to window it was just in
+  execute l:save_winnr . 'wincmd w'
+
+  " NOTE: Use silent to avoid 'E35: No file name' warning message.
+  silent! loadview
+endfunction
+
+" ***
+
+" Checks if user is working on two buffers in two of the first three windows.
+" Hint: the way dubs_project_tray sets it up, the Project window (file browser)
+" is on the left, and the buffer explorer and quickfix window are on the bottom.
+" That leaves one or two windows that the user is editing in the upper-right.
+" If there are two windows, they're either side-by-side or stacked depending
+" on how much room is available.
+function! s:ToggleProjectPost_ProbeTwoWindowView() abort
   let l:winnr_lhs = 0
   let l:winnr_rhs = 0
+
   if !exists('g:proj_running') || bufwinnr(g:proj_running) == -1
     " The project window is not showing, so the user's windows are the first
     " and maybe the second window (since Vim numbers windows 1, 2, 3, ..., from
@@ -250,6 +266,7 @@ function! s:ToggleProject_Wrapper() abort
     if ( (0 == s:IsWindowSpecial(1))
         \ && (0 == s:IsWindowSpecial(2))
         \ && (0 != s:IsWindowSpecial(3)) )
+
       let l:winnr_lhs = 1
       let l:winnr_rhs = 2
     endif
@@ -259,18 +276,13 @@ function! s:ToggleProject_Wrapper() abort
     if ( (0 == s:IsWindowSpecial(2))
         \ && (0 == s:IsWindowSpecial(3))
         \ && (0 != s:IsWindowSpecial(4)) )
+
       let l:winnr_lhs = 2
       let l:winnr_rhs = 3
     endif
   endif
 
-  call s:ToggleProjectPost_ResizeTwoWindowView(l:winnr_lhs, l:winnr_rhs, l:cols_avail)
-
-  " Move cursor back to window it was just in
-  execute l:save_winnr . 'wincmd w'
-
-  " NOTE: Use silent to avoid 'E35: No file name' warning message.
-  silent! loadview
+  return [l:winnr_lhs, l:winnr_rhs]
 endfunction
 
 " ***
