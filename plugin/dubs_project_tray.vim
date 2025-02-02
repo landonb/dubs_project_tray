@@ -87,7 +87,7 @@ function! s:mappings_toggle_project_wrapper()
     \ :call <SID>ToggleProject_Wrapper()<CR>
 endfunction
 
-call <SID>mappings_toggle_project_wrapper()
+call s:mappings_toggle_project_wrapper()
 
 " ***
 
@@ -247,18 +247,18 @@ function! s:ToggleProject_Wrapper()
     " The project window is not showing, so the user's windows are the first
     " and maybe the second window (since Vim numbers windows 1, 2, 3, ..., from
     " left to right and top to bottom
-    if ( (0 == <SID>IsWindowSpecial(1))
-        \ && (0 == <SID>IsWindowSpecial(2))
-        \ && (0 != <SID>IsWindowSpecial(3)) )
+    if ( (0 == s:IsWindowSpecial(1))
+        \ && (0 == s:IsWindowSpecial(2))
+        \ && (0 != s:IsWindowSpecial(3)) )
       let l:winnr_lhs = 1
       let l:winnr_rhs = 2
     endif
   else
     " The project window is showing, so the user's window(s) are the second and
     " maybe the third window(s)
-    if ( (0 == <SID>IsWindowSpecial(2))
-        \ && (0 == <SID>IsWindowSpecial(3))
-        \ && (0 != <SID>IsWindowSpecial(4)) )
+    if ( (0 == s:IsWindowSpecial(2))
+        \ && (0 == s:IsWindowSpecial(3))
+        \ && (0 != s:IsWindowSpecial(4)) )
       let l:winnr_lhs = 2
       let l:winnr_rhs = 3
     endif
