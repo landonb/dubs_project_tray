@@ -70,7 +70,7 @@ let g:proj_flags='imst'
 "   if !hasmapto('<Plug>DubsProjectTray_ToggleProject_Wrapper')
 
 " SYNC_ME: Dubs Vim's <M-????> mappings are spread across plugins. [M-S-4]
-function! s:mappings_toggle_project_wrapper()
+function! s:mappings_toggle_project_wrapper() abort
   " Note that nnoremap and inoremap won't work because <Plug> mapping.
   if has('macunix')
     nnoremap <silent> › <Plug>DubsProjectTray_ToggleProject_Wrapper
@@ -98,7 +98,7 @@ call s:mappings_toggle_project_wrapper()
 
 let s:vimprojs_fname = '.vimprojects'
 
-function! s:ToggleProject_Wrapper()
+function! s:ToggleProject_Wrapper() abort
   " Use mkview/loadview to store current view, i.e., to maintain
   " current folds (otherwise Vim resets them when you reenter buffer).
   " NOTE: Use silent to avoid 'E35: No file name' warning message.
@@ -320,7 +320,7 @@ endfunction
 " - CXREF/2025-02-02: See similar fcn. in author's other plugins:
 "     g:embrace#windows#IsNormalBuffer
 "   ~/.kit/nvim/embrace-vim/start/vim-buffer-delights/autoload/embrace/windows.vim
-function! s:IsWindowSpecial(winnr)
+function! s:IsWindowSpecial(winnr) abort
   let l:is_special = 0
 
   if (-1 == winbufnr(a:winnr))
