@@ -304,6 +304,9 @@ function! s:ToggleProject_Wrapper()
 endfunction
 
 " Test if a window is the Help, Quickfix, MiniBufExplorer, or Project window
+" - CXREF/2025-02-02: See similar fcn. in author's other plugins:
+"     g:embrace#windows#IsNormalBuffer
+"   ~/.kit/nvim/embrace-vim/start/vim-buffer-delights/autoload/embrace/windows.vim
 function! s:IsWindowSpecial(winnr)
   let l:is_special = 0
 
@@ -312,12 +315,20 @@ function! s:IsWindowSpecial(winnr)
   else
     let l:bufnr = winbufnr(a:winnr)
 
-    if ( (-1 != l:bufnr)
-        \ && ( (getbufvar(l:bufnr, '&buftype') == 'help')
-          \ || (getbufvar(l:bufnr, '&buftype') == 'quickfix')
-          \ || (bufname(l:bufnr) == '-MiniBufExplorer-')
-          \ || ( (exists('g:proj_running'))
-              \ && (a:winnr == bufwinnr(g:proj_running)) ) ) )
+    let l:ftype = getbufvar(l:bufnr, "&filetype")
+
+    if 0
+      \ || -1 == l:bufnr
+      \ || getbufvar(l:bufnr, '&buftype') != ''
+      \ || getbufvar(l:bufnr, "&previewwindow")
+      \ || !getbufvar(l:bufnr, "&modifiable")
+      \ || !buflisted(l:bufnr)
+      \ || l:ftype == 'qf'
+      \ || l:ftype == 'git'
+      \ || l:ftype == 'fugitiveblame'
+      \ || bufname(l:bufnr) == '-MiniBufExplorer-'
+      \ || (exists('g:proj_running')
+      \     && a:winnr == bufwinnr(g:proj_running))
 
       let l:is_special = 1
     endif
