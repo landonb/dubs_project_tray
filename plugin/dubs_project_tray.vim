@@ -278,34 +278,40 @@ endfunction
 " If the user is editing using two windows, resize and reposition the windows
 " to the pleasurement of all
 function s:ToggleProjectPost_ResizeTwoWindowView(winnr_lhs, winnr_rhs, cols_avail) abort
-  if a:winnr_lhs != 0 && a:winnr_rhs != 0
-    " Switch to the second window, remember its buffer, and close the window
-    execute a:winnr_rhs . 'wincmd w'
-    let bufnr = winbufnr('%')
-    close
-    " Switch back to the first window and split it
-    execute a:winnr_lhs . 'wincmd w'
-    " Split the window either vertically or horizontally, depending on the
-    " amount of room available and if the project window is showing.
-    " NOTE We closed a window and use to (v)split to make a new window,
-    "      which automatically sizes each window similarly. If we didn't
-    "      close the window and instead wanted to resize each window
-    "      manually, we'd call
-    "         let half_width = &columns / 2
-    "         execute 'vertical resize ' . half_width
-    " Hack alert! a:winnr_lhs is 1 if project window isn't showing, 2 otherwise
-    if a:winnr_lhs == 1 || a:cols_avail > 160
-      " Split vertically
-      execute 'vsplit'
-    else
-      " Split horizontally
-      execute 'split'
-    endif
-    " Switch back to the (newly-created) second window and load the
-    " remembered buffer
-    execute a:winnr_rhs . 'wincmd w'
-    execute 'buffer ' . bufnr
+  if a:winnr_lhs == 0 || a:winnr_rhs == 0
+
+    return
   endif
+
+  " Switch to the second window, remember its buffer, and close the window
+  execute a:winnr_rhs . 'wincmd w'
+  let l:bufnr = winbufnr('%')
+  close
+
+  " Switch back to the first window and split it
+  execute a:winnr_lhs . 'wincmd w'
+
+  " Split the window either vertically or horizontally, depending on the
+  " amount of room available and if the project window is showing.
+  " NOTE We closed a window and use to (v)split to make a new window,
+  "      which automatically sizes each window similarly. If we didn't
+  "      close the window and instead wanted to resize each window
+  "      manually, we'd call
+  "         let half_width = &columns / 2
+  "         execute 'vertical resize ' . half_width
+  " Hack alert! a:winnr_lhs is 1 if project window isn't showing, 2 otherwise
+  if a:winnr_lhs == 1 || a:cols_avail > 160
+    " Split vertically
+    execute 'vsplit'
+  else
+    " Split horizontally
+    execute 'split'
+  endif
+
+  " Switch back to the (newly-created) second window and load the
+  " remembered buffer
+  execute a:winnr_rhs . 'wincmd w'
+  execute 'buffer ' . l:bufnr
 endfunction
 
 " ***
