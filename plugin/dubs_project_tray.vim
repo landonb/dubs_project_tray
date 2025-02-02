@@ -304,18 +304,19 @@ function! s:ToggleProject_Wrapper()
 endfunction
 
 " Test if a window is the Help, Quickfix, MiniBufExplorer, or Project window
-function! s:IsWindowSpecial(window_nr)
+function! s:IsWindowSpecial(winnr)
   let is_special = 0
-  if (-1 == winbufnr(a:window_nr))
+
+  if (-1 == winbufnr(a:winnr))
     let is_special = -1
   else
-    let l:bufnr = winbufnr(a:window_nr)
+    let l:bufnr = winbufnr(a:winnr)
     if ( (-1 != l:bufnr)
         \ && ( (getbufvar(l:bufnr, '&buftype') == 'help')
           \ || (getbufvar(l:bufnr, '&buftype') == 'quickfix')
           \ || (bufname(l:bufnr) == '-MiniBufExplorer-')
           \ || ( (exists('g:proj_running'))
-              \ && (a:window_nr == bufwinnr(g:proj_running)) ) ) )
+              \ && (a:winnr == bufwinnr(g:proj_running)) ) ) )
       " FIXME There's probably an easy way to check if a window/buffer is normal
       let is_special = 1
     endif
