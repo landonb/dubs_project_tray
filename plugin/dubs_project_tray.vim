@@ -309,11 +309,11 @@ function! s:IsWindowSpecial(window_nr)
   if (-1 == winbufnr(a:window_nr))
     let is_special = -1
   else
-    let buffer_nr = winbufnr(a:window_nr)
-    if ( (-1 != buffer_nr)
-        \ && ( (getbufvar(buffer_nr, '&buftype') == 'help')
-          \ || (getbufvar(buffer_nr, '&buftype') == 'quickfix')
-          \ || (bufname(buffer_nr) == '-MiniBufExplorer-')
+    let l:bufnr = winbufnr(a:window_nr)
+    if ( (-1 != l:bufnr)
+        \ && ( (getbufvar(l:bufnr, '&buftype') == 'help')
+          \ || (getbufvar(l:bufnr, '&buftype') == 'quickfix')
+          \ || (bufname(l:bufnr) == '-MiniBufExplorer-')
           \ || ( (exists('g:proj_running'))
               \ && (a:window_nr == bufwinnr(g:proj_running)) ) ) )
       " FIXME There's probably an easy way to check if a window/buffer is normal
