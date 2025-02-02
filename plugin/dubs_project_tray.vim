@@ -104,13 +104,13 @@ function! s:ToggleProject_Wrapper() abort
   " NOTE: Use silent to avoid 'E35: No file name' warning message.
   silent! mkview
 
-  let save_winnr = winnr()
+  let l:save_winnr = winnr()
 
   if !exists('g:proj_running') || bufwinnr(g:proj_running) == -1
     " the Project adds itself as the first window, so
     " we need to increase winnr by 1 to find our current
     " window again
-    let save_winnr = save_winnr + 1
+    let l:save_winnr = l:save_winnr + 1
     if exists('g:proj_running')
       " After we set the .vimprojects path, we can stick
       " to using toggle to show and hide the project tray.
@@ -191,7 +191,7 @@ function! s:ToggleProject_Wrapper() abort
   else
     " Otherwise, we're losing the first window, so
     " compensate for the loss by subtracting one
-    let save_winnr = save_winnr - 1
+    let l:save_winnr = l:save_winnr - 1
     " Clear the project buffer
     "execute bufwinnr(g:proj_running) . 'wincmd w'
     "bwipeout
@@ -267,7 +267,7 @@ function! s:ToggleProject_Wrapper() abort
   call s:ToggleProjectPost_ResizeTwoWindowView(l:winnr_lhs, l:winnr_rhs, l:cols_avail)
 
   " Move cursor back to window it was just in
-  execute save_winnr . 'wincmd w'
+  execute l:save_winnr . 'wincmd w'
 
   " NOTE: Use silent to avoid 'E35: No file name' warning message.
   silent! loadview
