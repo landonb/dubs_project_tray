@@ -98,7 +98,7 @@ call <SID>mappings_toggle_project_wrapper()
 function! s:ToggleProject_Wrapper()
   " Use mkview/loadview to store current view, i.e., to maintain
   " current folds (otherwise Vim resets them when you reenter buffer).
-  " NOTE: Use silent to avoid "E35: No file name" warning message.
+  " NOTE: Use silent to avoid 'E35: No file name' warning message.
   silent! mkview
 
   let save_winnr = winnr()
@@ -108,7 +108,7 @@ function! s:ToggleProject_Wrapper()
     " we need to increase winnr by 1 to find our current
     " window again
     let save_winnr = save_winnr + 1
-    if exists("g:proj_running")
+    if exists('g:proj_running')
       " After we set the .vimprojects path, we can stick
       " to using toggle to show and hide the project tray.
       " In fact, we cannot call Project(some_path) again
@@ -131,7 +131,7 @@ function! s:ToggleProject_Wrapper()
       endif
       if (try_file == '') && filereadable($HOME . '/.vimprojects')
         " By default, Project opens ~/.vimprojects.
-        execute "ToggleProject"
+        execute 'ToggleProject'
       else
         let l:projf = ''
         if (try_file != '') && filereadable(try_file)
@@ -143,8 +143,8 @@ function! s:ToggleProject_Wrapper()
           " This happens if the user installs Dubs Vim using Pathogen.
 
           " Soooooo slow:
-          "   let l:projf = findfile('.vimprojects',
-          "                          \ pathogen#split(&rtp)[0] . "/**")
+          "   let l:projf =
+          "     \ findfile('.vimprojects', pathogen#split(&rtp)[0] . '/**')
 
           for vim_dir in pathogen#split(&rtp)
             let try_file = vim_dir . '/' . '.vimprojects'
@@ -160,12 +160,12 @@ function! s:ToggleProject_Wrapper()
           "        then the Project function's variable is assigned the value
           "        l:projf (the *name* of the variable we're passing!). So
           "        we have to convert to a string first and use execute.
-          execute "Project ".l:projf
+          execute 'Project ' . l:projf
           " Tell the user if they've got multiple project files.
 
           " Hey slow poke:
-          "   let l:fcnt2 = findfile('.vimprojects',
-          "                          \ pathogen#split(&rtp)[0] . "/**", -1)
+          "   let l:fcnt2 =
+          "     \ findfile('.vimprojects', pathogen#split(&rtp)[0] . '/**', -1)
           let l:fcnt = 0
           for vim_dir in pathogen#split(&rtp)
             let try_file = vim_dir . '/' . '.vimprojects'
@@ -269,7 +269,7 @@ function! s:ToggleProject_Wrapper()
   if winnr_lhs != 0 && winnr_rhs != 0
     " Switch to the second window, remember its buffer, and close the window
     execute winnr_rhs . 'wincmd w'
-    let bufnr = winbufnr("%")
+    let bufnr = winbufnr('%')
     close
     " Switch back to the first window and split it
     execute winnr_lhs . 'wincmd w'
@@ -292,13 +292,13 @@ function! s:ToggleProject_Wrapper()
     " Switch back to the (newly-created) second window and load the
     " remembered buffer
     execute winnr_rhs . 'wincmd w'
-    execute "buffer " . bufnr
+    execute 'buffer ' . bufnr
   endif
 
   " Move cursor back to window it was just in
   execute save_winnr . 'wincmd w'
 
-  " NOTE: Use silent to avoid "E35: No file name" warning message.
+  " NOTE: Use silent to avoid 'E35: No file name' warning message.
   silent! loadview
 endfunction
 
@@ -310,9 +310,9 @@ function! s:IsWindowSpecial(window_nr)
   else
     let buffer_nr = winbufnr(a:window_nr)
     if ( (-1 != buffer_nr)
-        \ && ( (getbufvar(buffer_nr, "&buftype") == "help")
-          \ || (getbufvar(buffer_nr, "&buftype") == "quickfix")
-          \ || (bufname(buffer_nr) == "-MiniBufExplorer-")
+        \ && ( (getbufvar(buffer_nr, '&buftype') == 'help')
+          \ || (getbufvar(buffer_nr, '&buftype') == 'quickfix')
+          \ || (bufname(buffer_nr) == '-MiniBufExplorer-')
           \ || ( (exists('g:proj_running'))
               \ && (a:window_nr == bufwinnr(g:proj_running)) ) ) )
       " FIXME There's probably an easy way to check if a window/buffer is normal
