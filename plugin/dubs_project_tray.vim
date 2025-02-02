@@ -192,65 +192,65 @@ endfunction
 " ***
 
 function! s:ToggleProject_Unitialized() abort
-      let try_file = ''
-      if exists('g:vimprojects_file')
-        let try_file = g:vimprojects_file
-      endif
-      if (try_file == '') && filereadable($HOME . '/' . s:vimprojs_fname)
-        " By default, Project opens ~/.vimprojects.
-        execute 'ToggleProject'
-      else
-        let l:projf = ''
-        if (try_file != '') && filereadable(try_file)
+  let try_file = ''
+  if exists('g:vimprojects_file')
+    let try_file = g:vimprojects_file
+  endif
+  if (try_file == '') && filereadable($HOME . '/' . s:vimprojs_fname)
+    " By default, Project opens ~/.vimprojects.
+    execute 'ToggleProject'
+  else
+    let l:projf = ''
+    if (try_file != '') && filereadable(try_file)
+      let l:projf = try_file
+    else
+      " The project file is not at ~/.vimprojects.
+      " - Rummage through user's &runtimepath.
+
+      " Soooooo slow:
+      "   let projf = findfile('.vimprojects', pathogen#split(&rtp)[0] . '/**')
+
+      for vim_dir in pathogen#split(&rtp)
+        let try_file = vim_dir . '/' . s:vimprojs_fname
+        if filereadable(try_file)
           let l:projf = try_file
-        else
-          " The project file is not at ~/.vimprojects.
-          " - Rummage through user's &runtimepath.
-
-          " Soooooo slow:
-          "   let projf = findfile('.vimprojects', pathogen#split(&rtp)[0] . '/**')
-
-          for vim_dir in pathogen#split(&rtp)
-            let try_file = vim_dir . '/' . s:vimprojs_fname
-            if filereadable(try_file)
-              let l:projf = try_file
-              break
-            endif
-          endfor
+          break
         endif
+      endfor
+    endif
 
-        if l:projf != ''
-          " Weird: If we call the fcn. directly, e.g., `Project(l:projf)`
-          "        then the Project function's variable is assigned the value
-          "        l:projf (the *name* of the variable we're passing!). So
-          "        we have to convert to a string first and use execute.
-          execute 'Project ' . l:projf
-          " Tell the user if they've got multiple project files.
+    if l:projf != ''
+      " Weird: If we call the fcn. directly, e.g., `Project(l:projf)`
+      "        then the Project function's variable is assigned the value
+      "        l:projf (the *name* of the variable we're passing!). So
+      "        we have to convert to a string first and use execute.
+      execute 'Project ' . l:projf
+      " Tell the user if they've got multiple project files.
 
-          " Hey slow poke:
-          "   let l:fcnt2 =
-          "     \ findfile(s:vimprojs_fname, pathogen#split(&rtp)[0] . '/**', -1)
-          let l:fcnt = 0
-          for vim_dir in pathogen#split(&rtp)
-            let try_file = vim_dir . '/' . s:vimprojs_fname
-            if filereadable(try_file)
-              let l:fcnt = l:fcnt + 1
-            endif
-          endfor
-
-          if l:fcnt > 1
-            " This plugin has its own .vimprojects file, which I want
-            " to leave, so, well... ignore the warning. Also, findfile
-            " follows symlinks, so it could just as well find .vimprojects
-            " files in source code outside of the ~/.vim folder.
-            "   call confirm('Warning: found ' . l:fcnt
-            "                \ . ' ' . s:vimprojs_fname . ' files.', 'OK')
-            echomsg 'Found ' . l:fcnt . ' ' . s:vimprojs_fname . ' files.'
-          endif
-        else
-          call confirm('dubs: Cannot find ' . s:vimprojs_fname . ' file.', 'OK')
+      " Hey slow poke:
+      "   let l:fcnt2 =
+      "     \ findfile(s:vimprojs_fname, pathogen#split(&rtp)[0] . '/**', -1)
+      let l:fcnt = 0
+      for vim_dir in pathogen#split(&rtp)
+        let try_file = vim_dir . '/' . s:vimprojs_fname
+        if filereadable(try_file)
+          let l:fcnt = l:fcnt + 1
         endif
+      endfor
+
+      if l:fcnt > 1
+        " This plugin has its own .vimprojects file, which I want
+        " to leave, so, well... ignore the warning. Also, findfile
+        " follows symlinks, so it could just as well find .vimprojects
+        " files in source code outside of the ~/.vim folder.
+        "   call confirm('Warning: found ' . l:fcnt
+        "                \ . ' ' . s:vimprojs_fname . ' files.', 'OK')
+        echomsg 'Found ' . l:fcnt . ' ' . s:vimprojs_fname . ' files.'
       endif
+    else
+      call confirm('dubs: Cannot find ' . s:vimprojs_fname . ' file.', 'OK')
+    endif
+  endif
 endfunction
 
 " ***
