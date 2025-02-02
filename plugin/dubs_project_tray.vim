@@ -5,25 +5,6 @@
 " Summary: Enhanced Project Plugin
 
 " -------------------------------------------------------------------
-
-" FIXME: On first boot, make the project template.
-"        E.g.,
-"
-"         command cp \
-"           ~/.kit/nvim/landonb/start/dubs_project_tray/.vimprojects.template \
-"           ~/.kit/nvim/landonb/start/dubs_project_tray/.vimprojects
-"
-"       and tell user to move to private location
-"       and to create a symlink in project root.
-"
-"       - Or, just document in the readme and call it, 'good'.
-"
-"       - For an example of copying the template, see how
-"           dubs_projects.vim.template
-"         is copied by `LoadUsersGrepProjects` in:
-"           ~/.kit/nvim/landonb/start/dubs_grep_steady/plugin/dubs_grep_steady.vim
-
-" -------------------------------------------------------------------
 " About/Usage
 " -------------------------------------------------------------------
 
@@ -413,6 +394,16 @@ function! s:AlertIfMultipleUsersVimProjectsFiles(matches, what) abort
     echom '  ' .. l:path
   endfor
 endfunction
+
+" On first boot, make the project template.
+" - E.g.,
+"     command cp \
+"       ~/.kit/nvim/landonb/start/dubs_project_tray/.vimprojects.template \
+"       ~/.kit/nvim/landonb/start/dubs_project_tray/.vimprojects
+"
+" FIXME: Advise user to move to new file to private location
+"        and to create a symlink in its new location (either
+"        via UX message, or in the readme).
 
 function! s:DeployUsersVimProjectsTemplate(tmplate) abort
   let l:user_projs = ''
