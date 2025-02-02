@@ -206,17 +206,7 @@ function! s:ToggleProject_Unitialized() abort
     else
       " The project file is not at ~/.vimprojects.
       " - Rummage through user's &runtimepath.
-
-      " Soooooo slow:
-      "   let projf = findfile('.vimprojects', pathogen#split(&rtp)[0] . '/**')
-
-      for vim_dir in pathogen#split(&rtp)
-        let try_file = vim_dir . '/' . s:vimprojs_fname
-        if filereadable(try_file)
-          let l:projf = try_file
-          break
-        endif
-      endfor
+      let l:projf = s:FindUsersVimProjects()
     endif
 
     if l:projf != ''
@@ -225,28 +215,6 @@ function! s:ToggleProject_Unitialized() abort
       "        l:projf (the *name* of the variable we're passing!). So
       "        we have to convert to a string first and use execute.
       execute 'Project ' . l:projf
-      " Tell the user if they've got multiple project files.
-
-      " Hey slow poke:
-      "   let l:fcnt2 =
-      "     \ findfile(s:vimprojs_fname, pathogen#split(&rtp)[0] . '/**', -1)
-      let l:fcnt = 0
-      for vim_dir in pathogen#split(&rtp)
-        let try_file = vim_dir . '/' . s:vimprojs_fname
-        if filereadable(try_file)
-          let l:fcnt = l:fcnt + 1
-        endif
-      endfor
-
-      if l:fcnt > 1
-        " This plugin has its own .vimprojects file, which I want
-        " to leave, so, well... ignore the warning. Also, findfile
-        " follows symlinks, so it could just as well find .vimprojects
-        " files in source code outside of the ~/.vim folder.
-        "   call confirm('Warning: found ' . l:fcnt
-        "                \ . ' ' . s:vimprojs_fname . ' files.', 'OK')
-        echomsg 'Found ' . l:fcnt . ' ' . s:vimprojs_fname . ' files.'
-      endif
     else
       call confirm('dubs: Cannot find ' . s:vimprojs_fname . ' file.', 'OK')
     endif
@@ -330,6 +298,108 @@ function s:ToggleProjectPost_ResizeTwoWindowView(winnr_lhs, winnr_rhs, cols_avai
   " remembered buffer
   execute a:winnr_rhs . 'wincmd w'
   execute 'buffer ' . l:bufnr
+endfunction
+
+" ***
+
+function! s:FindUsersVimProjects() abort
+  let l:files = s:FindFile(s:vimprojs_fname)
+
+  " Tell the user if they've got multiple project files.
+  call s:AlertIfMultipleUsersVimProjectsFiles(l:files)
+
+  let l:user_projs = ''
+
+  if !empty(l:files)
+    let l:user_projs = l:files[0]
+  endif
+
+  return l:user_projs
+endfunction
+
+" COPYD/2025-02-02: FindFile et al shared between two plugins:
+"   ~/.kit/nvim/landonb/start/dubs_grep_steady/plugin/dubs_grep_steady.vim
+"   ~/.kit/nvim/landonb/start/dubs_project_tray/plugin/dubs_project_tray.vim
+
+function! s:FindFile(fname) abort
+  if has('nvim')
+    let l:files = s:FindFileAnywhereOnRuntimepath_Nvim(a:fname)
+  else
+    let l:files = s:FindFileInProjectOrRuntimeRoot_Vim(a:fname)
+    " ALTLY: [FTREQ: Or better yet: Add ~/.config path option]:
+    "   let l:files = s:FindFileAnywhereOnRuntimepath_Vim(a:fname)
+  endif
+
+  return l:files
+endfunction
+
+function! s:FindFileAnywhereOnRuntimepath_Nvim(fname) abort
+  let l:all = 1
+
+  let l:files = nvim_get_runtime_file(a:fname, l:all)
+
+  return l:files
+endfunction
+
+" SAVVY: Assumes split(&rtp)[0] is ~/.vim, which is generally the case.
+" - ASIDE: In Neovim, root path on &rtp is ~/.config/nvim.
+function! s:FindFileInProjectOrRuntimeRoot_Vim(fname) abort
+  let l:fpath = findfile(a:fname, pathogen#split(&rtp)[0] . '/**')
+
+  if l:fpath == ''
+    let l:proj_root = expand('<script>:h:h')
+
+    let l:fpath = findfile(a:fname, l:proj_root . '/**')
+  endif
+
+  let l:user_projs = []
+
+  if l:fpath != ''
+    " Turn into a full path. See :h filename-modifiers
+    let l:user_projs = [fnamemodify(l:fpath, ':p')]
+  endif
+
+  return l:user_projs
+endfunction
+
+" SAVVY: Alternative to previous fcn, though may take longer.
+" - 2025-02-02: Notes from years ago suggest checking every
+"   directory takes a while (think someone with 100 plugins
+"   and no dubs_projects.vim file therein), but when tested
+"   just now, it ran fine (though only checked ~10 paths).
+function! s:FindFileAnywhereOnRuntimepath_Vim(fname) abort
+  let l:fpath = ""
+
+  for l:rtp_dir in pathogen#split(&rtp)
+    let l:try_file = l:rtp_dir . '/' . a:fname
+
+    if filereadable(l:try_file)
+      let l:fpath = l:try_file
+
+      break
+    endif
+  endfor
+
+  let l:user_projs = []
+
+  if l:fpath != ''
+    " Turn into a full path. See :h filename-modifiers
+    let l:user_projs = [fnamemodify(l:fpath, ':p')]
+  endif
+
+  return l:user_projs
+endfunction
+
+function! s:AlertIfMultipleUsersVimProjectsFiles(matches) abort
+  if len(a:matches) <= 1
+
+    return
+  endif
+  
+  echom 'ALERT: dubs_project_tray: Found more than one ' . s:vimprojs_fname . ' file:'
+  for l:path in a:matches
+    echom '  ' .. l:path
+  endfor
 endfunction
 
 " ***
