@@ -263,9 +263,21 @@ function! s:ToggleProject_Wrapper()
       let winnr_rhs = 3
     endif
   endif
-  "
-  " If the user is editing using two windows, resize and reposition the windows
-  " to the pleasurement of all
+
+  call s:ToggleProjectPost_ResizeTwoWindowView(winnr_lhs, winnr_rhs, cols_avail)
+
+  " Move cursor back to window it was just in
+  execute save_winnr . 'wincmd w'
+
+  " NOTE: Use silent to avoid 'E35: No file name' warning message.
+  silent! loadview
+endfunction
+
+" ***
+
+" If the user is editing using two windows, resize and reposition the windows
+" to the pleasurement of all
+function s:ToggleProjectPost_ResizeTwoWindowView(winnr_lhs, winnr_rhs, cols_avail) abort
   if winnr_lhs != 0 && winnr_rhs != 0
     " Switch to the second window, remember its buffer, and close the window
     execute winnr_rhs . 'wincmd w'
@@ -294,13 +306,9 @@ function! s:ToggleProject_Wrapper()
     execute winnr_rhs . 'wincmd w'
     execute 'buffer ' . bufnr
   endif
-
-  " Move cursor back to window it was just in
-  execute save_winnr . 'wincmd w'
-
-  " NOTE: Use silent to avoid 'E35: No file name' warning message.
-  silent! loadview
 endfunction
+
+" ***
 
 " Test if a window is the Help, Quickfix, MiniBufExplorer, or Project window
 " - CXREF/2025-02-02: See similar fcn. in author's other plugins:
