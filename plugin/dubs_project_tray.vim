@@ -96,6 +96,8 @@ call <SID>mappings_toggle_project_wrapper()
 " - Project() complains when called again and project buffer exists.
 " - REFER: g:proj_running
 
+let s:vimprojs_fname = '.vimprojects'
+
 function! s:ToggleProject_Wrapper()
   " Use mkview/loadview to store current view, i.e., to maintain
   " current folds (otherwise Vim resets them when you reenter buffer).
@@ -130,7 +132,7 @@ function! s:ToggleProject_Wrapper()
       if exists('g:vimprojects_file')
         let try_file = g:vimprojects_file
       endif
-      if (try_file == '') && filereadable($HOME . '/.vimprojects')
+      if (try_file == '') && filereadable($HOME . '/' . s:vimprojs_fname)
         " By default, Project opens ~/.vimprojects.
         execute 'ToggleProject'
       else
@@ -144,11 +146,10 @@ function! s:ToggleProject_Wrapper()
           " This happens if the user installs Dubs Vim using Pathogen.
 
           " Soooooo slow:
-          "   let l:projf =
-          "     \ findfile('.vimprojects', pathogen#split(&rtp)[0] . '/**')
+          "   let projf = findfile('.vimprojects', pathogen#split(&rtp)[0] . '/**')
 
           for vim_dir in pathogen#split(&rtp)
-            let try_file = vim_dir . '/' . '.vimprojects'
+            let try_file = vim_dir . '/' . s:vimprojs_fname
             if filereadable(try_file)
               let l:projf = try_file
               break
@@ -166,10 +167,10 @@ function! s:ToggleProject_Wrapper()
 
           " Hey slow poke:
           "   let l:fcnt2 =
-          "     \ findfile('.vimprojects', pathogen#split(&rtp)[0] . '/**', -1)
+          "     \ findfile(s:vimprojs_fname, pathogen#split(&rtp)[0] . '/**', -1)
           let l:fcnt = 0
           for vim_dir in pathogen#split(&rtp)
-            let try_file = vim_dir . '/' . '.vimprojects'
+            let try_file = vim_dir . '/' . s:vimprojs_fname
             if filereadable(try_file)
               let l:fcnt = l:fcnt + 1
             endif
@@ -181,11 +182,11 @@ function! s:ToggleProject_Wrapper()
             " follows symlinks, so it could just as well find .vimprojects
             " files in source code outside of the ~/.vim folder.
             "   call confirm('Warning: found ' . l:fcnt
-            "                \ . ' .vimprojects files.', 'OK')
-            echomsg 'Found ' . l:fcnt . ' .vimprojects files.'
+            "                \ . ' ' . s:vimprojs_fname . ' files.', 'OK')
+            echomsg 'Found ' . l:fcnt . ' ' . s:vimprojs_fname . ' files.'
           endif
         else
-          call confirm('dubs: Cannot find .vimprojects file.', 'OK')
+          call confirm('dubs: Cannot find ' . s:vimprojs_fname . ' file.', 'OK')
         endif
       endif
     endif
