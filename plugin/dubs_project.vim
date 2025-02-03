@@ -66,6 +66,21 @@ function! s:Project(filename) " <<<
         let g:proj_window_increment = get(g:, 'proj_window_increment', 100)
     endif
     if !exists('g:proj_flags')
+        " i: Print directory path progress messages on refresh.
+        " m: Depfine <Plug>ProjectOnly
+        " s: Disable sort lines on refresh (use readdir order, then
+        "    g:proj_sort filter, also g:proj_unique will sort).
+        " t: Make <Space> to expand project window a toggle vs. just expanding.
+        " b: Uses :browse dialog to obtain directory path for new project.
+        "    Otherwise uses simple prompt.
+        " c: When opening entry, hides Project window and resizes equally.
+        " l: Use :lcd for CD= command, otherwise :cd.
+        " v: Use :grep (otherwise uses :vimpgrep).
+        " F: Use floating window
+        " L: When project uses CD=, sets up BufEnter, BufLeave, BufWipeout autocmd's
+        "    to save/restore cwd.
+        " S: Sort lines on refresh (see also 's' option and g:proj_sort).
+        " T: Go to top of fold on project listing refresh.
         if has("win32") || has("mac")
             let g:proj_flags='imst'             " Project default flags for windows/mac
         else
