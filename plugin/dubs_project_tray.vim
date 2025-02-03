@@ -41,8 +41,10 @@ let g:proj_window_width = get(g:, 'proj_window_width', 33)
 " Remove the 'b' project flag, which uses browse() when handling the
 " \C command. Problem is, you cannot select a directory (because it
 " opens the directory instead), so use a simple edit box instead.
-" - Default was 'imstb'.
-let g:proj_flags='imst'
+" - Default is 'imstb' for Linux ('b' excluded for macOS|Windows).
+if !exists('g:proj_flags')
+  let g:proj_flags='imst'
+endif
 
 " ***
 
