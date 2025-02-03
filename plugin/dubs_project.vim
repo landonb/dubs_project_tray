@@ -76,6 +76,8 @@ function! s:Project(filename) " <<<
         " c: When opening entry, hides Project window and resizes equally.
         " l: Use :lcd for CD= command, otherwise :cd.
         " v: Use :grep (otherwise uses :vimpgrep).
+        " B: Call `botright copen` instead of `copen` to open quickfix using full
+        "    horizontal width.
         " F: Use floating window
         " L: When project uses CD=, sets up BufEnter, BufLeave, BufWipeout autocmd's
         "    to save/restore cwd.
@@ -1427,12 +1429,18 @@ function! s:Project(filename) " <<<
             silent! exec 'silent! grep '.pattern.' '.fnames
             if v:shell_error != 0
                 echo 'GREP error. Perhaps there are too many filenames.'
+            elseif match(g:proj_flags, '\CB') != -1
+                botright copen
             else
                 copen
             endif
         else
             silent! exec 'silent! vimgrep '.pattern.' '.fnames
-            copen
+            if match(g:proj_flags, '\CB') != -1
+                botright copen
+            else
+                copen
+            endif
         endif
     endfunction ">>>
     " GetXXX Functions <<<
