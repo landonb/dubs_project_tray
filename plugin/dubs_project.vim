@@ -1819,9 +1819,10 @@ function! s:Project(filename) " <<<
         "     \ gV
         "     \ /^.\{-}\zs<C-R>"<CR>
 
-        " This is to avoid changing the buffer, but it is not fool-proof.
+        " This is to avoid changing the buffer, but it is not fool-proof (full proof?).
         nnoremap <buffer> <silent> <C-^> <Nop>
-        "nnoremap <script> <Plug>ProjectOnly :let lzsave=&lz<CR>:set lz<CR><C-W>o:Project<CR>:silent! wincmd p<CR>:let &lz=lzsave<CR>:unlet lzsave<CR>
+        "nnoremap <script> <Plug>ProjectOnly
+        "  \ :let lzsave=&lz<CR>:set lz<CR><C-W>o:Project<CR>:silent! wincmd p<CR>:let &lz=lzsave<CR>:unlet lzsave<CR>
         "
         " 2020-02-13: (lb): <Ctrl-w>o not working very well for me, didn't
         " close all my windows; and on restore, hung (no files loaded) until

@@ -355,6 +355,8 @@ function! s:FindFileInProjectOrRuntimeRoot_Vim(fname) abort
   let l:fpath = findfile(a:fname, pathogen#split(&rtp)[0] . '/**')
 
   if l:fpath == ''
+    " <script> is: /path/to/dubs_project_tray/plugin/dubs_project_tray.vim
+    " del 2 heads: /path/to/dubs_project_tray/
     let l:proj_root = expand('<script>:h:h')
 
     if l:proj_root != ''
