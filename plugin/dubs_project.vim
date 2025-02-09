@@ -1819,6 +1819,25 @@ function! s:Project(filename) " <<<
         "     \ gV
         "     \ /^.\{-}\zs<C-R>"<CR>
 
+        " Pressing Home or End moves cursor to edge of window without scrolling.
+        " - The Home/End maps are generally used when wrapping in ON, not off,
+        "   e.g.,
+        "     s  <Home>      * <C-O><Esc>g<Home>
+        "     n  <Home>      * g<Home>
+        "   stop at the edge on the window, not at the end of the line, which
+        "   is useful when wrapping is on. But not so much when wrapping is
+        "   off [then I find this behavior it annoying].
+        " - ALTLY:
+        "     nnoremap <buffer> <Home> 0
+        "     nnoremap <buffer> <End> $
+        "     " etc.
+        nnoremap <buffer> <Home> <Home>
+        inoremap <buffer> <Home> <C-O><Home>
+        snoremap <buffer> <Home> <C-O><Esc><Home>
+        nnoremap <buffer> <End> <End>
+        inoremap <buffer> <End> <C-O><End>
+        snoremap <buffer> <End> <C-O><Esc><End>
+
         " This is to avoid changing the buffer, but it is not fool-proof (full proof?).
         nnoremap <buffer> <silent> <C-^> <Nop>
         "nnoremap <script> <Plug>ProjectOnly
