@@ -45,6 +45,9 @@ let g:plugin_dubs_project_skip_symlink_dirs = 0
 
 function! s:Project(filename) " <<<
     " Initialization <<<
+    if exists("g:proj_running") && bufnr(g:proj_running) == -1
+        unlet! g:proj_running
+    endif
     if exists("g:proj_running")
         if strlen(a:filename) != 0
             call confirm('Project already loaded; ignoring filename "'.a:filename."\".\n".'See ":help project-invoking" for information about changing project files.', "&OK", 1)
