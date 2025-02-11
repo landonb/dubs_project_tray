@@ -83,6 +83,8 @@ function! s:Project(filename) " <<<
         "    to save/restore cwd.
         " S: Sort lines on refresh (see also 's' option and g:proj_sort).
         " T: Go to top of fold on project listing refresh.
+        " See also g: vars:
+        "   g:syntax_on
         if has("win32") || has("mac")
             let g:proj_flags='imst'             " Project default flags for windows/mac
         else
@@ -1825,8 +1827,7 @@ function! s:Project(filename) " <<<
         "     s  <Home>      * <C-O><Esc>g<Home>
         "     n  <Home>      * g<Home>
         "   stop at the edge on the window, not at the end of the line, which
-        "   is useful when wrapping is on. But not so much when wrapping is
-        "   off [then I find this behavior it annoying].
+        "   is useful when wrapping is on. But not so much when wrapping is off.
         " - ALTLY:
         "     nnoremap <buffer> <Home> 0
         "     nnoremap <buffer> <End> $
