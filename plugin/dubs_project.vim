@@ -1199,11 +1199,11 @@ function! s:Project(filename) " <<<
     "   the flags.
     function! s:DisplayInfo()
         if match(g:proj_flags, '\Ci') != -1
-            " [lb] FIXME Not sure how to disable with flags
-            "      so instead I'm commenting this out -- it's 
-            "      annoying having to hit Enter after double-
-            "      clicking a file to open
-            "echo 'file: '.expand('%').', cwd: '.getcwd().', lines: '.line('$')
+            " Print message after user double-clicks a file to open.
+            " - Note than `echo` here causes Vim to prompt for acknowledgment:
+            "     echo 'file: '.expand('%').', cwd: '.getcwd().', lines: '.line('$')
+            "   But using `echon` doesn't provoke confirmation prompt.
+            echon 'file: '.expand('%').', cwd: '.getcwd().', lines: '.line('$')."\r"
         endif
     endfunction ">>>
     " s:SetupAutoCommand(cwd) <<<
