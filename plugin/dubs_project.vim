@@ -1884,10 +1884,11 @@ function! s:Project(filename) " <<<
         " Autocommands to clean up if we do a buffer wipe
         " These don't work unless we substitute \ for / for Windows
         let bufname=escape(substitute(expand('%:p', 0), '\\', '/', 'g'), ' ')
-        exec 'au BufWipeout '.bufname.' au! * '.bufname
         exec 'au BufWipeout '.bufname.' unlet g:proj_running'
         exec 'au BufWipeout '.bufname.' silent! nunmap <C-W>o'
         exec 'au BufWipeout '.bufname.' silent! nunmap <C-W><C-O>'
+        " This even necessary? Seems unlikely since buffer being wiped...
+        exec 'au BufWipeout '.bufname.' au! * '.bufname
         " Autocommands to keep the window the specified size
         exec 'au WinLeave '.bufname.' call s:DoEnsurePlacementSize_au()'
         exec 'au BufEnter '.bufname.' call s:DoSetupAndSplit_au()'
