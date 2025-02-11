@@ -77,7 +77,7 @@ function! s:Project(filename) " <<<
         " l: Use :lcd for CD= command, otherwise :cd.
         " v: Use :grep (otherwise uses :vimpgrep).
         " B: Call `botright copen` instead of `copen` to open quickfix using full
-        "    horizontal width.
+        "    horizontal width; and don't jump to first grep match.
         " F: Use floating window
         " L: When project uses CD=, sets up BufEnter, BufLeave, BufWipeout autocmd's
         "    to save/restore cwd.
@@ -1427,9 +1427,14 @@ function! s:Project(filename) " <<<
         cclose " Make sure grep window is closed
         call s:DoSetupAndSplit()
         if match(g:proj_flags, '\Cv') == -1
+            " Don't open first match be default if B flag enabled.
+            let l:bang = ''
+            if match(g:proj_flags, '\CB') != -1
+                let l:bang = '!'
+            endif
             " Note in Neovim, default grepprg is `rg --vimgrep -uu`.
             " - On classic Vim, it's `grep -n $* /dev/null`
-            silent! exec 'silent! grep '.pattern.' '.fnames
+            silent! exec 'silent! grep'.l:bang.' '.pattern.' '.fnames
             if v:shell_error != 0
                 echo 'GREP error. Perhaps there are too many filenames.'
             elseif match(g:proj_flags, '\CB') != -1
