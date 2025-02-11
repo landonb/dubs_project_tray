@@ -1427,6 +1427,8 @@ function! s:Project(filename) " <<<
         cclose " Make sure grep window is closed
         call s:DoSetupAndSplit()
         if match(g:proj_flags, '\Cv') == -1
+            " Note in Neovim, default grepprg is `rg --vimgrep -uu`.
+            " - On classic Vim, it's `grep -n $* /dev/null`
             silent! exec 'silent! grep '.pattern.' '.fnames
             if v:shell_error != 0
                 echo 'GREP error. Perhaps there are too many filenames.'
