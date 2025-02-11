@@ -242,7 +242,12 @@ endfunction
 " If the user is editing using two windows, resize and reposition the windows
 " to the pleasurement of all
 function s:ToggleProjectPost_ResizeTwoWindowView(winnr_lhs, winnr_rhs, cols_avail) abort
-  if a:winnr_lhs == 0 || a:winnr_rhs == 0
+  if a:winnr_lhs == 0 || a:winnr_rhs == 0 || a:cols_avail > 160
+    " DUNNO: Call twice — if you trace, you'll see the same 'vertical resize {width}'
+    " commands called by each function call; but for some reason the first call does
+    " not resize the windows equally.
+    call g:embrace#vresize#VerticalResizeNormalBufferWindowsEqually()
+    call g:embrace#vresize#VerticalResizeNormalBufferWindowsEqually()
 
     return
   endif
