@@ -306,7 +306,6 @@ function! s:Project(filename) " <<<
             silent! execute n."wincmd W"
             "execute 'silent  '.n.'wincmd W'
         else
-            "" If n == winnr(), then there is no CTRL_W-p window
             " If n == winnr(), then there is no CTRL_W-p window
             " So we have to create a new one
             if exists("g:proj_running") && (bufnr('%') == g:proj_running)
