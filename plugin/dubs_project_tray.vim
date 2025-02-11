@@ -221,20 +221,14 @@ function! s:ToggleProjectPost_ProbeTwoWindowView() abort
     " The project window is not showing, so the user's windows are the first
     " and maybe the second window (since Vim numbers windows 1, 2, 3, ..., from
     " left to right and top to bottom
-    if ( (0 == s:IsWindowSpecial(1))
-        \ && (0 == s:IsWindowSpecial(2))
-        \ && (0 != s:IsWindowSpecial(3)) )
-
+    if winnr('$') < 3 && 0 == s:IsWindowSpecial(1) && 0 == s:IsWindowSpecial(2)
       let l:winnr_lhs = 1
       let l:winnr_rhs = 2
     endif
-  else
+  elseif winnr('$') < 4
     " The project window is showing, so the user's window(s) are the second and
     " maybe the third window(s)
-    if ( (0 == s:IsWindowSpecial(2))
-        \ && (0 == s:IsWindowSpecial(3))
-        \ && (0 != s:IsWindowSpecial(4)) )
-
+    if 0 == s:IsWindowSpecial(2) && 0 == s:IsWindowSpecial(3)
       let l:winnr_lhs = 2
       let l:winnr_rhs = 3
     endif
