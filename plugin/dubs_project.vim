@@ -1,6 +1,6 @@
 " vim:tw=0:ts=4:sw=4:et:norl:
 " File:        project.vim
-" Maintainer+: Landon Bouma <https://tallybark.com/> 
+" Maintainer+: Landon Bouma <https://tallybark.com/>
 " Project URL: https://github.com/landonb/dubs_project#🗂
 "  vim:foldmethod=marker:foldmarker=<<<,>>>:foldlevel=20
 "  Fold hints: zM closes all, zR opens all; zm/zr close/open 1; za/zA toggle.

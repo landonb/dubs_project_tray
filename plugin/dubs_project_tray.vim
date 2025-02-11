@@ -1,5 +1,5 @@
 " vim:tw=0:ts=2:sw=2:et:norl:
-" Author: Landon Bouma <https://tallybark.com/> 
+" Author: Landon Bouma <https://tallybark.com/>
 " Project: https://github.com/landonb/dubs_project_tray#🗂
 " License: GPLv3 | Copyright © 2009, 2015-2017 Landon Bouma.
 " Summary: Enhanced Project Plugin
