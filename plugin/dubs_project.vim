@@ -823,7 +823,7 @@ function! s:Project(filename) " <<<
                     " USYNC: Similar ignore lists (in 3 different DepoXy projects):
                     "   ~/.depoxy/ambers/home/.projlns/infuse-projlns-omr.sh
                     "   ~/.homefries/lib/alias/alias_fd.sh
-                    "   ~/.kit/nvim/landonb/start/dubs_project_tray/plugin/dubs_project.vim
+                    "   ~/.kit/nvim/landonb/dubs_project_tray/plugin/dubs_project.vim
                     elseif fname == "node_modules"
                       \ || fname == ".nyc_output"
                       \ || fname == "__pycache__"

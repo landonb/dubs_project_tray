@@ -312,8 +312,8 @@ function! s:FindUsersVimProjects() abort
 endfunction
 
 " COPYD/2025-02-02: FindFile et al shared between two plugins:
-"   ~/.kit/nvim/landonb/start/dubs_grep_steady/plugin/dubs_grep_steady.vim
-"   ~/.kit/nvim/landonb/start/dubs_project_tray/plugin/dubs_project_tray.vim
+"   ~/.kit/nvim/landonb/dubs_grep_steady/plugin/dubs_grep_steady.vim
+"   ~/.kit/nvim/landonb/dubs_project_tray/plugin/dubs_project_tray.vim
 
 function! s:FindFile(fname) abort
   if a:fname == ''
@@ -416,8 +416,8 @@ endfunction
 " On first boot, make the project template.
 " - E.g.,
 "     command cp \
-"       ~/.kit/nvim/landonb/start/dubs_project_tray/.vimprojects.template \
-"       ~/.kit/nvim/landonb/start/dubs_project_tray/.vimprojects
+"       ~/.kit/nvim/landonb/dubs_project_tray/.vimprojects.template \
+"       ~/.kit/nvim/landonb/dubs_project_tray/.vimprojects
 "
 " FIXME: Advise user to move to new file to private location
 "        and to create a symlink in its new location (either
