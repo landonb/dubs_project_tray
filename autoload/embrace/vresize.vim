@@ -22,7 +22,7 @@ function! g:embrace#vresize#VerticalResizeNormalBufferWindowsEqually() abort
 
     let l:cur_buf = winbufnr(l:cur_win)
 
-    if g:embrace#windows#IsNormalBuffer(l:cur_buf)
+    if g:embrace#normal_buffer#IsNormalBuffer(l:cur_buf)
       let l:avail_cols += winwidth(l:cur_win)
 
       call add(l:normal_wins, l:cur_win)

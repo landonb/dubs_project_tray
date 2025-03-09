@@ -456,7 +456,7 @@ endfunction
 
 " Test if a window is the Help, Quickfix, MiniBufExplorer, or Project window
 " - CXREF/2025-02-02: See similar fcn. in author's other plugins:
-"     g:embrace#windows#IsNormalBuffer
+"     g:embrace#normal_buffer#IsNormalBuffer
 "   ~/.kit/nvim/embrace-vim/start/vim-buffer-delights/autoload/embrace/windows.vim
 function! s:IsWindowSpecial(winnr) abort
   let l:is_special = 0
