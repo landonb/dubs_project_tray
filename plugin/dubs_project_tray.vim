@@ -48,19 +48,32 @@ endif
 
 " ***
 
-" FTREQ: Here are elsewhere, use g:vars to control bindings.
-" - Another option is to skip a binding if already bound, e.g.,
-"   if !hasmapto('<Plug>DubsProjectTray_ToggleProject_Wrapper')
+" FTREQ: Rather than add 2 maps for each Alt-key binding,
+" i.e., the <M-> map and the literal character map, use a
+" meta key suss, e.g.,
+"
+"   " FIXME- Add terminal support, e.g., check if alacritty.toml
+"   "    option_as_alt ~= "None"
+"   " - Or indicate via vim.env or vim.g...
+"   function! s:IsUsingMetaKeys() abort
+"     return exists('g:neovide') && g:neovide
+"       \ && (
+"       \   g:neovide_input_macos_option_key_is_meta == "both"
+"       \   || g:neovide_input_macos_option_key_is_meta == "only_left"
+"       \ )
+"   endfunction
 
-" SYNC_ME: Dubs Vim's <M-????> mappings are spread across plugins. [M-S-4]
+" FIXME: Make all bindings opt-in, or remove completely.
+
 function! s:mappings_toggle_project_wrapper() abort
-  " Note that nnoremap and inoremap won't work because <Plug> mapping.
+  " FTREQ: Only add <M-$> or › per s:IsUsingMetaKeys()
+  " - But for now, add both maps (the only drawback is
+  "   you'll see two entries in the which-key popup).
+  nnoremap <silent> <M-$> <Plug>DubsProjectTray_ToggleProject_Wrapper
+  inoremap <silent> <M-$> <C-O><Plug>DubsProjectTray_ToggleProject_Wrapper
   if has('macunix')
     nnoremap <silent> › <Plug>DubsProjectTray_ToggleProject_Wrapper
     inoremap <silent> › <C-O><Plug>DubsProjectTray_ToggleProject_Wrapper
-  else
-    nnoremap <silent> <M-$> <Plug>DubsProjectTray_ToggleProject_Wrapper
-    inoremap <silent> <M-$> <C-O><Plug>DubsProjectTray_ToggleProject_Wrapper
   endif
   " Regarding of previous bindings, always create the Plug map.
   " - This makes the command externally callable, which allows
