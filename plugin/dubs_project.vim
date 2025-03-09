@@ -99,6 +99,7 @@ function! s:Project(filename) " <<<
         if match(g:proj_flags, '\CF') == -1      " We're floating
             silent! wincmd H
             exec 'vertical resize '.g:proj_window_width
+            setlocal winfixwidth
         endif
         setlocal nomodeline
     else
