@@ -141,7 +141,7 @@ function! s:Project(filename) " <<<
     " s:DoSetup() <<<
     "   Ensure everything is set up
     function! s:DoSetup()
-        setlocal foldenable foldmethod=marker foldmarker={,} commentstring=%s foldcolumn=0 nonumber noswapfile shiftwidth=1
+        setlocal foldenable foldmethod=marker foldmarker={,} commentstring=%s foldcolumn=0 nonumber norelativenumber noswapfile shiftwidth=1 signcolumn=no
         setlocal foldtext=ProjFoldText() nobuflisted nowrap
         let l:minwidth = max([1, &winminwidth])
         exec "setlocal winwidth=" .. l:minwidth
