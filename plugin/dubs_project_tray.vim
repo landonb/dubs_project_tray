@@ -466,18 +466,9 @@ function! s:IsWindowSpecial(winnr) abort
   else
     let l:bufnr = winbufnr(a:winnr)
 
-    let l:ftype = getbufvar(l:bufnr, "&filetype")
-
     if 0
       \ || -1 == l:bufnr
-      \ || getbufvar(l:bufnr, '&buftype') != ''
-      \ || getbufvar(l:bufnr, "&previewwindow")
-      \ || !getbufvar(l:bufnr, "&modifiable")
-      \ || !buflisted(l:bufnr)
-      \ || l:ftype == 'qf'
-      \ || l:ftype == 'git'
-      \ || l:ftype == 'fugitiveblame'
-      \ || bufname(l:bufnr) == '-MiniBufExplorer-'
+      \ || g:embrace#normal_buffer#IsNormalBuffer(l:bufnr)
       \ || (exists('g:proj_running')
       \     && a:winnr == bufwinnr(g:proj_running))
 
