@@ -143,7 +143,8 @@ function! s:Project(filename) " <<<
     function! s:DoSetup()
         setlocal foldenable foldmethod=marker foldmarker={,} commentstring=%s foldcolumn=0 nonumber noswapfile shiftwidth=1
         setlocal foldtext=ProjFoldText() nobuflisted nowrap
-        setlocal winwidth=1
+        let l:minwidth = max([1, &winminwidth])
+        exec "setlocal winwidth=" .. l:minwidth
         if match(g:proj_flags, '\Cn') != -1
             setlocal number
         endif
