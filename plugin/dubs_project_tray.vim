@@ -163,22 +163,8 @@ function! s:ToggleProject_Wrapper() abort
   "  " Now when the user closes the first fold, all others are visible
   "endif
 
-  " 2011.01.15 On my laptop, I can't have the project window open and also
-  "            look at two buffers side-by-side with at least 80 columns each,
-  "            unless if I dismiss the project window. But that messes up the
-  "            widths of my windows. Hence, we do a little dance.
-  "
-  " First, see how many columns we have to work with.
-  let l:cols_avail = &columns
-  if exists('g:proj_running') && bufwinnr(g:proj_running) == 1
-    let l:cols_avail = l:cols_avail - g:proj_window_width
-  endif
-  "
-  " Next, see if two buffers are open, and figure out which windows they're in.
-  let [l:winnr_lhs, l:winnr_rhs] = s:ToggleProjectPost_ProbeTwoWindowView()
-
-  call s:ToggleProjectPost_ResizeTwoWindowView(l:winnr_lhs, l:winnr_rhs, l:cols_avail)
-
+  call s:ResizeIfTwoWindowView()
+  
   " Move cursor back to window it was just in
   execute l:save_winnr . 'wincmd w'
 
@@ -219,6 +205,24 @@ function! s:ToggleProject_Unitialized() abort
 endfunction
 
 " ***
+
+function! s:ResizeIfTwoWindowView() abort
+  " 2011.01.15 On my laptop, I can't have the project window open and also
+  "            look at two buffers side-by-side with at least 80 columns each,
+  "            unless if I dismiss the project window. But that messes up the
+  "            widths of my windows. Hence, we do a little dance.
+  "
+  " First, see how many columns we have to work with.
+  let l:cols_avail = &columns
+  if exists('g:proj_running') && bufwinnr(g:proj_running) == 1
+    let l:cols_avail = l:cols_avail - g:proj_window_width
+  endif
+  "
+  " Next, see if two buffers are open, and figure out which windows they're in.
+  let [l:winnr_lhs, l:winnr_rhs] = s:ToggleProjectPost_ProbeTwoWindowView()
+
+  call s:ToggleProjectPost_ResizeTwoWindowView(l:winnr_lhs, l:winnr_rhs, l:cols_avail)
+endfunction
 
 " Checks if user is working on two buffers in two of the first three windows.
 " Hint: the way dubs_project_tray sets it up, the Project window (file browser)
