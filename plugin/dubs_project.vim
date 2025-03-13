@@ -279,46 +279,26 @@ function! s:Project(filename) " <<<
         let proj_winnr = winnr()        " Determine if there is a CTRL_W-p window
         silent! wincmd p
         let n = winnr()
-        "  [lb] Previous window is project window, so find a new window.
-        " NOTE: We cannot just move one window right, like this:
-        "         if n == winnr()
-        "           silent! wincmd l
-        "         endif
-        " Don't load into 'quickfix' or 'help' windows, or into windows with a buffer 
-        " not being saved ('nowrite'), or a buffer not associated with a file ('nofile', 
-        " like MiniBufExplorer), or if this buffer is also the previous buffer
+        " Previous window is project window, so find a new window.
+        " - Walk windows to avoid loading into a special buffer window.
+        "   - E.g., avoid |buftype| 'quickfix', 'help', 'nofile', 'nowrite'.
         let first_time = 1
-        " FIXME Remove echos
-        "echo "proj_winnr = ".proj_winnr
-        "echo "Trying n = ".n
-        "echo "buftype = ".getbufvar(winbufnr(n), "&buftype")
         while ((getbufvar(winbufnr(n), "&buftype") != "")
                 \ || (n == proj_winnr))
                 \ && (n <= winnr("$"))
-                "\ || (getbufvar(n, "&buftype") == "quickfix")
-                "\ || (getbufvar(n, "&buftype") == "help")
-                "\ || (getbufvar(n, "&buftype") == "nofile")
-                "\ || (bufname(n) == "-MiniBufExplorer-")
-            " NOTE If (n == proj_winnr), n == 1 and this is the project window
-            " NOTE (n <= winnr("$") stops after last buffer
-            "echo "Skipping n = ".n
-            "echo "buftype = ".getbufvar(n, "&buftype")
+            " NOTE If (n == proj_winnr), n == 1 and this is the project window.
+            " OBVI (n <= winnr("$") stops after last window.
             if first_time == 1
-                " Jump to the first buffer. Buffers are numbered from top-left to bottom-right.
-                " The first buffer should be the project window, and the second buffer should 
-                " be the buffer to the right of the top of the project window. This might be the 
-                " help window, in which case we drop down to the window to the right or below that.
                 let first_time = 0
                 let n = 1
             else
               " NOTE wincmd w wraps around, which we don't want
-              "silent! wincmd w
-              "let n = winnr()
+              "   silent! wincmd w
+              "   let n = winnr()
               " INSTEAD We want to stop after the last window
               let n = n + 1
             endif
         endwhile
-        "if n == winnr()
         if n != proj_winnr
             " Found an available window to load into
             silent! execute n .. 'wincmd W'
