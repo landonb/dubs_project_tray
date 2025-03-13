@@ -63,27 +63,26 @@ endif
 "       \ )
 "   endfunction
 
-" FIXME: Make all bindings opt-in, or remove completely.
-
-function! s:mappings_toggle_project_wrapper() abort
-  " FTREQ: Only add <M-$> or › per s:IsUsingMetaKeys()
-  " - But for now, add both maps (the only drawback is
-  "   you'll see two entries in the which-key popup).
-  nnoremap <silent> <M-$> <Plug>DubsProjectTray_ToggleProject_Wrapper
-  inoremap <silent> <M-$> <C-O><Plug>DubsProjectTray_ToggleProject_Wrapper
-  if has('macunix')
-    nnoremap <silent> › <Plug>DubsProjectTray_ToggleProject_Wrapper
-    inoremap <silent> › <C-O><Plug>DubsProjectTray_ToggleProject_Wrapper
-  endif
-  " Regarding of previous bindings, always create the Plug map.
-  " - This makes the command externally callable, which allows
-  "   other plugins to toggle the project tray.
+function! s:CreateMaps_Plug() abort
   nnoremap <silent> <unique> <script>
     \ <Plug>DubsProjectTray_ToggleProject_Wrapper
     \ :call <SID>ToggleProject_Wrapper()<CR>
 endfunction
 
-call s:mappings_toggle_project_wrapper()
+function! s:CreateMaps_ToggleProject(key_sequence = '<M-$>') abort
+  execute 'nnoremap <silent> ' .. a:key_sequence .. ' <Plug>DubsProjectTray_ToggleProject_Wrapper'
+  execute 'inoremap <silent> ' .. a:key_sequence .. ' <C-O><Plug>DubsProjectTray_ToggleProject_Wrapper'
+endfunction
+
+call s:CreateMaps_Plug()
+
+" FIXME: Make opt-in (break!).
+if get(g:, 'proj_create_maps', 1)
+  call s:CreateMaps_ToggleProject('<M-$>')
+  if has('macunix')
+    call s:CreateMaps_ToggleProject('›')
+  endif
+endif
 
 " ***
 
