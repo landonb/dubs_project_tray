@@ -198,7 +198,7 @@ function! s:ToggleProject_Unitialized() abort
       "        we have to convert to a string first and use execute.
       execute 'Project ' . l:projf
     else
-      call confirm('dubs: Cannot find ' . s:vimprojs_fname . ' file.', 'OK')
+      call confirm('ALERT: Cannot find ' . s:vimprojs_fname . ' file.', 'OK')
     endif
   endif
 endfunction
