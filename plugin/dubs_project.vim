@@ -127,7 +127,8 @@ function! s:Project(filename) " <<<
 
     let b:proj_locate_command='silent! wincmd H'
     let b:proj_resize_command='exec ''vertical resize ''.g:proj_window_width'
-    if match(g:proj_flags, '\CF') != -1         " Set the resize commands to nothing
+    if match(g:proj_flags, '\CF') != -1
+        " Set the resize commands to nothing
         let b:proj_locate_command=''
         let b:proj_resize_command=''
     endif
@@ -312,18 +313,17 @@ function! s:Project(filename) " <<<
         "if n == winnr()
         if n != proj_winnr
             " Found an available window to load into
-            "echo "Using window n = ".n
-            silent! execute n."wincmd W"
-            "execute 'silent  '.n.'wincmd W'
+            silent! execute n .. 'wincmd W'
         else
             " If n == winnr(), then there is no CTRL_W-p window
             " So we have to create a new one
-            if exists("g:proj_running") && (bufnr('%') == g:proj_running)
+            if exists('g:proj_running') && (bufnr('%') == g:proj_running)
                 exec 'silent vertical new'
             else
                 exec 'silent vertical split | silent! bnext'
             endif
-            wincmd p " Go back to the Project Window and ensure it is the right width
+            " Go back to the Project Window and ensure it's the correct width.
+            wincmd p
             exec b:proj_locate_command
             exec b:proj_resize_command
             wincmd p
@@ -333,7 +333,7 @@ function! s:Project(filename) " <<<
     "   Same as above but ensure that the Project window is the current
     "   window.  Only called from an autocommand
     function! s:DoSetupAndSplit_au()
-        if exists("g:proj_running") && (winbufnr(0) != g:proj_running)
+        if exists('g:proj_running') && (winbufnr(0) != g:proj_running)
             return
         endif
         call s:DoSetup()                " Ensure that all the settings are right
@@ -359,7 +359,8 @@ function! s:Project(filename) " <<<
                 enew
             endif
             if bufnr('%') == g:proj_last_buffer | bnext | bprev | bnext | endif
-            wincmd p " Go back to the Project Window and ensure it is the right width
+            " Go back to the Project Window and ensure it's the correct width.
+            wincmd p
             exec b:proj_locate_command
             exec b:proj_resize_command
         elseif(winnr() != 1)
