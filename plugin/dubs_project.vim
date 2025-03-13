@@ -68,12 +68,13 @@ function! s:Project(filename) " <<<
         let g:proj_window_width = get(g:, 'proj_window_width', 33)
     endif
     if !exists('g:proj_window_increment')
-        " Project Window width increment
+        " Project Window width increment (used on <Space> to toggle wider width).
         let g:proj_window_increment = get(g:, 'proj_window_increment', 100)
     endif
     if !exists('g:proj_flags')
         " i: Print directory path progress messages on refresh.
-        " m: Depfine <Plug>ProjectOnly
+        " m: Define <Plug>ProjectOnly
+        " g: Add nmap <F12> <Plug>ToggleProject
         " s: Disable sort lines on refresh (use readdir order, then
         "    g:proj_sort filter, also g:proj_unique will sort).
         " t: Make <Space> to expand project window a toggle vs. just expanding.
@@ -1928,7 +1929,7 @@ endif
 if !exists("*<SID>DoToggleProject()")
     function! s:DoToggleProject()
         if !exists('g:proj_running') || bufwinnr(g:proj_running) == -1
-            ":call <SID>Project("~/.vimprojects")
+            " :call <SID>Project("~/.vimprojects")
             Project
         else
             let g:proj_mywindow = winnr()
