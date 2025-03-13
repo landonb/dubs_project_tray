@@ -92,6 +92,7 @@ function! s:Project(filename) " <<<
         "    to save/restore cwd.
         " S: Sort lines on refresh (see also 's' option and g:proj_sort).
         " T: Go to top of fold on project listing refresh.
+        " n: Calls :setlocal number
         " See also g: vars:
         "   g:syntax_on
         if has("win32") || has("mac")
