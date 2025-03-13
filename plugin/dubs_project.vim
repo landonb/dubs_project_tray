@@ -1932,13 +1932,12 @@ if !exists("*<SID>DoToggleProject()")
             " :call <SID>Project("~/.vimprojects")
             Project
         else
-            let g:proj_mywindow = winnr()
+            let l:proj_mywindow = winnr()
             Project
             hide
-            if(winnr() != g:proj_mywindow)
+            if winnr() != l:proj_mywindow
                 wincmd p
             endif
-            unlet g:proj_mywindow
         endif
     endfunction
 endif
