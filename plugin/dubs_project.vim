@@ -113,7 +113,10 @@ function! s:Project(filename) " <<<
         " - This plays nice with LazyVim/other distros/or if user sets this globally.
         setlocal sidescrolloff=0
     else
-        silent! 99wincmd h
+        " Project running and visible, so just focus its window.
+        " - If toggling off, caller will `hide` buffer (and window) next.
+        exec 'silent! ' .. bufwinnr(g:proj_running) .. 'wincmd w'
+
         return
     endif
     " Process the flags
