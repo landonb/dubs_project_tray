@@ -276,34 +276,47 @@ function! s:Project(filename) " <<<
     "   file.
     function! s:DoSetupAndSplit()
         call s:DoSetup()                " Ensure that all the settings are right
-        let proj_winnr = winnr()        " Determine if there is a CTRL_W-p window
+        let l:proj_winnr = winnr()        " Determine if there is a CTRL_W-p window
         silent! wincmd p
-        let n = winnr()
-        " Previous window is project window, so find a new window.
-        " - Walk windows to avoid loading into a special buffer window.
-        "   - E.g., avoid |buftype| 'quickfix', 'help', 'nofile', 'nowrite'.
-        let first_time = 1
-        while ((getbufvar(winbufnr(n), "&buftype") != "")
-                \ || (n == proj_winnr))
-                \ && (n <= winnr("$"))
-            " NOTE If (n == proj_winnr), n == 1 and this is the project window.
-            " OBVI (n <= winnr("$") stops after last window.
-            if first_time == 1
-                let first_time = 0
-                let n = 1
-            else
-              " NOTE wincmd w wraps around, which we don't want
-              "   silent! wincmd w
-              "   let n = winnr()
-              " INSTEAD We want to stop after the last window
-              let n = n + 1
+        let l:split_nr = winnr()
+        if !s:IsWindowSplittable(l:split_nr, l:proj_winnr)
+            let l:winnr_lt = 0
+            let l:winnr_gt = 0
+            let l:offset_lt = 0
+            let l:offset_gt = 0
+            let l:final_winnr = winnr('$')
+            for l:visit_winnr in range(1, l:final_winnr)
+                if l:visit_winnr == l:split_nr
+                    " Already checked.
+                    continue
+                endif
+                if s:IsWindowSplittable(l:visit_winnr, l:proj_winnr)
+                    if l:visit_winnr < l:split_nr
+                        let l:winnr_lt = l:visit_winnr
+                        let l:offset_lt = l:split_nr - l:visit_winnr
+                    elseif l:winnr_gt == 0
+                        let l:winnr_gt = l:visit_winnr
+                        let l:offset_gt = l:visit_winnr - l:split_nr
+                    endif
+                endif
+            endfor
+            if l:offset_lt && l:offset_gt
+                if l:offset_lt < l:offset_gt
+                    let l:split_nr = l:winnr_lt
+                else
+                    let l:split_nr = l:winnr_gt
+                endif
+            elseif l:offset_lt
+                let l:split_nr = l:winnr_lt
+            elseif l:offset_gt
+                let l:split_nr = l:winnr_gt
             endif
-        endwhile
-        if n != proj_winnr
-            " Found an available window to load into
-            silent! execute n .. 'wincmd W'
+        endif
+        if l:split_nr != proj_winnr
+            " Found an available window to load into.
+            silent! execute l:split_nr .. 'wincmd W'
         else
-            " If n == winnr(), then there is no CTRL_W-p window
+            " If l:split_nr == winnr(), then there is no CTRL_W-p window
             " So we have to create a new one
             if exists('g:proj_running') && (bufnr('%') == g:proj_running)
                 exec 'silent vertical new'
@@ -316,6 +329,10 @@ function! s:Project(filename) " <<<
             exec b:proj_resize_command
             wincmd p
         endif
+    endfunction
+    function! s:IsWindowSplittable(winnr, proj_winnr)
+        return (getbufvar(winbufnr(a:winnr), "&buftype") == "")
+            \ && (a:winnr != a:proj_winnr)
     endfunction ">>>
     " s:DoSetupAndSplit_au() <<<
     "   Same as above but ensure that the Project window is the current
