@@ -61,8 +61,11 @@ function! s:Project(filename) " <<<
         endif
     endif
     if !exists('g:proj_window_width')
-        " Default project window width
-        let g:proj_window_width = get(g:, 'proj_window_width', 24)
+        " Default project window width.
+        " - This value already set (to 33) by the other plugin file
+        "   when it was sourced (vs. here in :Project callback).
+        "   ~/.kit/nvim/landonb/dubs_project_tray/plugin/dubs_project_tray.vim
+        let g:proj_window_width = get(g:, 'proj_window_width', 33)
     endif
     if !exists('g:proj_window_increment')
         " Project Window width increment
