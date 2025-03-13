@@ -106,6 +106,12 @@ function! s:Project(filename) " <<<
             setlocal winfixwidth
         endif
         setlocal nomodeline
+        " So that <Home>/<End> doesn't scroll horizontally (which happens
+        " if a line is almost as long as the window width, and you <End>
+        " or |$|, (Neo)vim scrolls horizontally to ensure cursor is
+        " |sidescrolloff| columns from the edge of the window).
+        " - This plays nice with LazyVim/other distros/or if user sets this globally.
+        setlocal sidescrolloff=0
     else
         silent! 99wincmd h
         if bufwinnr(g:proj_running) == -1
