@@ -85,7 +85,9 @@ function! s:Project(filename) " <<<
         " v: Use :grep (otherwise uses :vimpgrep).
         " B: Call `botright copen` instead of `copen` to open quickfix using full
         "    horizontal width; and don't jump to first grep match.
-        " F: Use floating window
+        " F: Use "floating" window (*not* a Neovim floating window; this flag
+        "    and doc. created before Neovim forked; it simply means to open the
+        "    Project window in a new split from the current window)
         " L: When project uses CD=, sets up BufEnter, BufLeave, BufWipeout autocmd's
         "    to save/restore cwd.
         " S: Sort lines on refresh (see also 's' option and g:proj_sort).
@@ -99,11 +101,13 @@ function! s:Project(filename) " <<<
         endif
     endif
     if !exists("g:proj_running") || (bufwinnr(g:proj_running) == -1) " Open the Project Window
-        exec 'silent vertical new '.filename
-        if match(g:proj_flags, '\CF') == -1      " We're floating
-            silent! wincmd H
-            exec 'vertical resize '.g:proj_window_width
-            setlocal winfixwidth
+        if match(g:proj_flags, '\CF') != -1
+            " Open Project window in vertical split on right of current window.
+            exec 'silent vertical new ' .. filename
+        else
+            " 
+            exec 'silent vertical topleft ' .. g:proj_window_width .. 'split'
+            exec 'edit ' .. filename
         endif
         setlocal nomodeline
         " So that <Home>/<End> doesn't scroll horizontally (which happens
