@@ -114,14 +114,6 @@ function! s:Project(filename) " <<<
         setlocal sidescrolloff=0
     else
         silent! 99wincmd h
-        if bufwinnr(g:proj_running) == -1
-            vertical split
-            let v:errmsg="nothing"
-            silent! bnext
-            if 'nothing' != v:errmsg
-                enew
-            endif
-        endif
         return
     endif
     " Process the flags
