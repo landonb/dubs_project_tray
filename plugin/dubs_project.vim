@@ -109,6 +109,9 @@ function! s:Project(filename) " <<<
             exec 'silent vertical topleft ' .. g:proj_window_width .. 'split'
             exec 'edit ' .. filename
         endif
+        " So the Project window stays the same width as user
+        " resizes the app window. REFER: |equalalways|
+        setlocal winfixwidth
         setlocal nomodeline
         " So that <Home>/<End> doesn't scroll horizontally (which happens
         " if a line is almost as long as the window width, and you <End>
