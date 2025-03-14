@@ -183,17 +183,6 @@ function! s:Project(filename) " <<<
             setlocal number
         endif
     endfunction ">>>
-
-    call s:InitializeGlobals()
-    let l:filename = s:ResolveVimprojectsPath(a:filename)
-    let l:already_open = s:OpenOrFocusProjectWindow(l:filename)
-    if l:already_open
-
-        return
-    endif
-    call s:PrepareReusableCommands()
-    call s:DoSetup()
-
     " Syntax Stuff <<<
     function! s:CreateProjectSyntaxRulesAndHighlights() abort
         if match(g:proj_flags, '\Cs') == -1 || !has('syntax') || !exists('g:syntax_on')
@@ -245,7 +234,6 @@ function! s:Project(filename) " <<<
         highlight def link projectFilterError   Error
         highlight def link projectExcludeError  Error
     endfunction ">>>
-    call s:CreateProjectSyntaxRulesAndHighlights()
     " s:SortR(start, end) <<<
     " Sort lines.  SortR() is called recursively.
     "  from ":help eval-examples" by Robert Webb, slightly modified
@@ -1706,6 +1694,16 @@ function! s:Project(filename) " <<<
             endif
         endif
     endfunction ">>>
+    call s:InitializeGlobals()
+    let l:filename = s:ResolveVimprojectsPath(a:filename)
+    let l:already_open = s:OpenOrFocusProjectWindow(l:filename)
+    if l:already_open
+
+        return
+    endif
+    call s:PrepareReusableCommands()
+    call s:DoSetup()
+    call s:CreateProjectSyntaxRulesAndHighlights()
     if !exists("g:proj_running") "<<<
         " s:DoProjectOnly(void) <<<
         "   Make the file window the only one.
