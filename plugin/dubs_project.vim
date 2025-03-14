@@ -1694,12 +1694,7 @@ function! s:Project(filename) " <<<
             endif
         endif
     endfunction ">>>
-    function! s:CreateMapsAndAutocmds_ProjectBuffer() "<<<
-        if exists("g:proj_running")
-
-            return
-        endif
-
+    function! s:CreateMaps_ProjectBuffer() "<<<
         " s:DoProjectOnly(void) <<<
         "   Make the file window the only one.
         function! s:DoProjectOnly()
@@ -1932,9 +1927,12 @@ function! s:Project(filename) " <<<
           endif
         endif
 
+        " BWARE: Is this a security concern? (Also a feature I've never used.)
         if filereadable(glob('~/.vimproject_mappings')) | source ~/.vimproject_mappings | endif
         ">>>
-        " Autocommands "<<<
+    endfunction ">>>
+    " Autocommands "<<<
+    function! s:CreateAutocmds_ProjectBuffer()
         " Autocommands to clean up if we do a buffer wipe
         " These don't work unless we substitute \ for / for Windows
         let bufname=escape(substitute(expand('%:p', 0), '\\', '/', 'g'), ' ')
@@ -1947,18 +1945,22 @@ function! s:Project(filename) " <<<
         exec 'au WinLeave '.bufname.' call s:DoEnsurePlacementSize_au()'
         exec 'au BufEnter '.bufname.' call s:DoSetupAndSplit_au()'
         au WinLeave * call s:RecordPrevBuffer_au()
-        ">>>
-        " Verify that :Project loaded okay "<<<
+
+        return bufname
+    endfunction ">>>
+    function! s:SetProjRunning(bufname) "<<<
+        " Verify that :Project loaded okay
         " [2021-02-06: At least I think that's what's happening here.]
         setlocal buflisted
-        let g:proj_running = bufnr(bufname.'\>')
+        let g:proj_running = bufnr(a:bufname.'\>')
         if g:proj_running == -1
             call confirm('Project/Vim error. Please Enter :Project again and report this bug.', "&OK", 1)
             unlet g:proj_running
         endif
         setlocal nobuflisted
-        " >>>
     endfunction ">>>
+
+    " *** s:Project() top-level calls (everything above is inline fcn. defs)
 
     call s:InitializeGlobals()
     let l:filename = s:ResolveVimprojectsPath(a:filename)
@@ -1970,7 +1972,13 @@ function! s:Project(filename) " <<<
     call s:PrepareReusableCommands()
     call s:SetLocalOptions()
     call s:CreateProjectSyntaxRulesAndHighlights()
-    call s:CreateMapsAndAutocmds_ProjectBuffer()
+    if exists("g:proj_running")
+
+        return
+    endif
+    call s:CreateMaps_ProjectBuffer()
+    let l:bufname = s:CreateAutocmds_ProjectBuffer()
+    call s:SetProjRunning(l:bufname)
 endfunction ">>>
 
 " :Project and :ToggleProject commands "<<<
