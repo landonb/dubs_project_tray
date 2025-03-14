@@ -521,12 +521,16 @@ function! s:Project(filename) " <<<
                 let fname='.'
             else
                 if (s:get_correct_foldlevel(a:line) == 0) && (a:editcmd[0] != '')
-                    return 0                    " If we're outside a fold, do nothing
+                    " If we're outside a fold, do nothing
+                    return 0
                 endif
-                let fname=substitute(getline(a:line), '\s*#.*', '', '') " Get rid of comments and whitespace before comment
-                let fname=substitute(fname, '^\s*\(.*\)', '\1', '') " Get rid of leading whitespace
+                " Get rid of comments and whitespace before comment
+                let fname=substitute(getline(a:line), '\s*#.*', '', '')
+                " Get rid of leading whitespace
+                let fname=substitute(fname, '^\s*\(.*\)', '\1', '')
                 if strlen(fname) == 0
-                    return 0                    " The line is blank. Do nothing.
+                    " The line is blank. Do nothing.
+                    return 0
                 endif
             endif
         else
