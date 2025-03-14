@@ -162,14 +162,6 @@ function! s:Project(filename) " <<<
 
         let g:proj_last_buffer = -1
     endfunction
-    call s:InitializeGlobals()
-    let l:filename = s:ResolveVimprojectsPath(a:filename)
-    let l:already_open = s:OpenOrFocusProjectWindow(l:filename)
-    if l:already_open
-
-        return
-    endif
-    call s:PrepareReusableCommands()
     ">>>
     " ProjFoldText() <<<
     "   The foldtext function for displaying just the description.
@@ -192,6 +184,15 @@ function! s:Project(filename) " <<<
             setlocal number
         endif
     endfunction ">>>
+
+    call s:InitializeGlobals()
+    let l:filename = s:ResolveVimprojectsPath(a:filename)
+    let l:already_open = s:OpenOrFocusProjectWindow(l:filename)
+    if l:already_open
+
+        return
+    endif
+    call s:PrepareReusableCommands()
     call s:DoSetup()
 
     ">>>
