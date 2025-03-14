@@ -1827,7 +1827,10 @@ let g:plugin_dubs_project_skip_symlink_dirs = 0
         nnoremap <buffer> <silent> <LocalLeader>R :call <SID>RefreshEntriesFromDir(1)<CR>
         " For Fkey users: <F5> same as \R (<F5> similar to browser refresh, etc.).
         nnoremap <buffer> <silent>           <F5> :call <SID>RefreshEntriesFromDir(1)<CR>
-        nnoremap <buffer> <silent> <LocalLeader>e :call <SID>OpenEntry(line('.'), '', '', 0)<CR>
+        " DUNNO: What's intent of this command? It behaves like |^| for me.
+        "  nnoremap <buffer> <silent> <LocalLeader>e :call <SID>OpenEntry(line('.'), '', '', 0)<CR>
+        " This opens directory for file under cursor, so opens :netrw, or your
+        " directory opener, e.g., Snacks Explorer.
         nnoremap <buffer> <silent> <LocalLeader>E :call <SID>OpenEntry(line('.'), '', 'e', 1)<CR>
         " The :help command stomps on the Project Window. Try to avoid that.
         " This is not perfect, but it is alot better than without the mappings.
