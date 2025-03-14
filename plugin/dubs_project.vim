@@ -41,7 +41,6 @@ let g:plugin_dubs_project = 1
 " -------------------------------------------------------------------
 
 let g:plugin_dubs_project_skip_symlink_dirs = 0
-">>>
 
 function! s:Project(filename) " <<<
     " Initialization <<<
@@ -195,7 +194,6 @@ function! s:Project(filename) " <<<
     call s:PrepareReusableCommands()
     call s:DoSetup()
 
-    ">>>
     " Syntax Stuff <<<
     function! s:CreateProjectSyntaxRulesAndHighlights() abort
         if match(g:proj_flags, '\Cs') == -1 || !has('syntax') || !exists('g:syntax_on')
@@ -893,7 +891,7 @@ function! s:Project(filename) " <<<
             endif
         endfor
     endfunction ">>>
-    " s:GenerateEntry(recursive, name, absolute_dir, dir, c_d, filter_directive, filter, exclude_directive, exclude, foldlev, sort) <<<
+    " s:GenerateEntry(...) <<<
     function! s:GenerateEntry(recursive, line, name, absolute_dir, dir, c_d, filter_directive, filter, exclude_directive, exclude, foldlev, sort, first_line)
         let line=a:line
         if a:dir =~ '\\ '
@@ -936,7 +934,7 @@ function! s:Project(filename) " <<<
         endif
         return line+1
     endfunction " >>>
-    " s:DoEntryFromDir(line, name, absolute_dir, dir, c_d, filter_directive, filter, exclude_directive, exclude, foldlev, sort) <<<
+    " s:DoEntryFromDir(...) <<<
     "   Generate the fold from the directory hierarchy (if recursive), then
     "   fill it in with RefreshEntriesFromDir()
     function! s:DoEntryFromDir(recursive, line, name, absolute_dir, dir, c_d, filter_directive, filter, exclude_directive, exclude, foldlev, sort)
