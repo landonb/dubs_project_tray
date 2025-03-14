@@ -197,7 +197,12 @@ function! s:Project(filename) " <<<
 
     ">>>
     " Syntax Stuff <<<
-    if match(g:proj_flags, '\Cs')!=-1 && has('syntax') && exists('g:syntax_on')
+    function! s:CreateProjectSyntaxRulesAndHighlights() abort
+        if match(g:proj_flags, '\Cs') == -1 || !has('syntax') || !exists('g:syntax_on')
+
+            return
+        endif
+
         syntax clear
 
         syntax match projectDescriptionDir '^\s*.\{-}=\s*\(\\ \|\f\|:\|"\)\+' contains=projectDescription,projectWhiteError
@@ -241,7 +246,8 @@ function! s:Project(filename) " <<<
         highlight def link projectFlagsError    Error
         highlight def link projectFilterError   Error
         highlight def link projectExcludeError  Error
-    endif ">>>
+    endfunction ">>>
+    call s:CreateProjectSyntaxRulesAndHighlights()
     " s:SortR(start, end) <<<
     " Sort lines.  SortR() is called recursively.
     "  from ":help eval-examples" by Robert Webb, slightly modified
