@@ -42,7 +42,6 @@ let g:plugin_dubs_project = 1
 
 let g:plugin_dubs_project_skip_symlink_dirs = 0
 
-function! s:Project(filename) " <<<
     " Initialization <<<
     function! s:InitializeGlobals() abort
         if exists("g:proj_running") && bufnr(g:proj_running) == -1
@@ -2022,8 +2021,7 @@ function! s:Project(filename) " <<<
         setlocal filetype=project_tray
     endfunction ">>>
 
-    " *** s:Project() top-level calls (everything above is inline fcn. defs)
-
+function! s:Project(filename) " <<<
     call s:InitializeGlobals()
     let l:filename = s:ResolveVimprojectsPath(a:filename)
     let l:already_open = s:OpenOrFocusProjectWindow(l:filename)
