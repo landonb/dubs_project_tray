@@ -604,8 +604,8 @@ function! s:Project(filename) " <<<
         return 1
     endfunction ">>>
     " s:DoFoldOrOpenEntry(cmd0, cmd1) <<<
-    "   Used for double clicking. If the mouse is on a fold, open/close it. If
-    "   not, try to open the file.
+    "   Used for <Enter> and double clicking.
+    "   Open/close fold (directory), or open file.
     function! s:DoFoldOrOpenEntry(cmd0, cmd1)
         " (lb): Note to self: A right brace also ends the line$.
         " ~ ...ine('.') =~ '{\|}$' ...
@@ -1274,6 +1274,7 @@ function! s:Project(filename) " <<<
     function! s:DoEnsurePlacementSize_au()
         if ((exists("g:proj_running") && (winbufnr(0) != g:proj_running)) 
             \ || (winnr() != 1))
+            " ISOFF: The g:proj_doinghelp mechanism is never enabled.
             if exists("g:proj_doinghelp")
                 if g:proj_doinghelp > 0
                     let g:proj_doinghelp = g:proj_doinghelp - 1
@@ -1458,7 +1459,7 @@ function! s:Project(filename) " <<<
         let pattern=(a:pattern[0] == '')?input("GREP options and pattern: "):a:pattern
         " 2018-05-06: (lb): See comment below/elsewhere: Disable 'help' mapping,
         " because it interferes with /-search.
-        "cnoremap <buffer> help let g:proj_doinghelp = 1<CR>:help
+        "  cnoremap <buffer> help let g:proj_doinghelp = 1<CR>:help
         if pattern[0] == ''
             return
         endif
