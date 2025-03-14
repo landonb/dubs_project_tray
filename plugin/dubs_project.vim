@@ -1950,6 +1950,46 @@ function! s:Project(filename) " <<<
         " BWARE: Is this a security concern? (Also a feature I've never used.)
         if filereadable(glob('~/.vimproject_mappings')) | source ~/.vimproject_mappings | endif
     endfunction ">>>
+    " which-key <<<
+    function! s:CreateMaps_WhichKeyDescs()
+        if !has('nvim')
+
+            return
+        endif
+
+        let l:wk = luaeval('pcall(function() require("which-key") end)')
+        if l:wk != v:true
+
+            return
+        endif
+
+        execute 'lua vim.g.proj_width_toggle_lhs = "' .. s:WidthToggleLhs() .. '"'
+
+        " CXREF:
+        "   https://github.com/landonb/nvim-lazyb#🧸
+        " ~/.kit/nvim/landonb/nvim-lazyb/lua/plugins/project-tray.lua
+        "
+        "         lua << EOF
+        "             local wk = require("which-key")
+        "             wk.add({
+        "                 -- Base/Inherited values for nested mappings.
+        "                 mode = "n",
+        "                 noremap = true,
+        "                 buffer = true,
+        "                 silent = true,
+        "                 -- Nested mappings.
+        "                 { "<CR>", desc = "Open File in Previous Window" },
+        "                 { "<S-CR>", desc = "Edit File in Horiz'ntl Split" },
+        "                 { "<C-CR>", desc = "Edit File in Only Window" },
+        "                 { "<LocalLeader>T", desc = "Edit File in New Tab" },
+        "                 -- Same as <S-Return>.
+        "                 { "<LocalLeader>s", desc = "<S-Return>" },
+        "                 -- ...
+        "                 { vim.g.proj_width_toggle_lhs, desc = "Toggle Window Width" },
+        "                 -- ...
+        "             })
+        " EOF
+    endfunction ">>>
     " Autocommands "<<<
     function! s:CreateAutocmds_ProjectBuffer()
         " Autocommands to clean up if we do a buffer wipe
@@ -1977,6 +2017,9 @@ function! s:Project(filename) " <<<
             unlet g:proj_running
         endif
         setlocal nobuflisted
+
+        " Default &ft=config, which also causes which-key to show  icon.
+        setlocal filetype=project_tray
     endfunction ">>>
 
     " *** s:Project() top-level calls (everything above is inline fcn. defs)
@@ -1996,6 +2039,7 @@ function! s:Project(filename) " <<<
         return
     endif
     call s:CreateMaps_ProjectBuffer()
+    call s:CreateMaps_WhichKeyDescs()
     let l:bufname = s:CreateAutocmds_ProjectBuffer()
     call s:SetProjRunning(l:bufname)
 endfunction ">>>
