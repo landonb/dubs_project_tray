@@ -172,9 +172,9 @@ function! s:Project(filename) " <<<
         let line=strpart('                                     ', 0, (v:foldlevel - 1)).substitute(line,'\s*{[^{]\s*', '', '')
         return line
     endfunction ">>>
-    " s:DoSetup() <<<
+    " s:SetLocalOptions() <<<
     "   Ensure everything is set up
-    function! s:DoSetup()
+    function! s:SetLocalOptions()
         setlocal foldenable foldmethod=marker foldmarker={,} commentstring=%s foldcolumn=0 nonumber norelativenumber noswapfile shiftwidth=1 signcolumn=no
         setlocal foldtext=ProjFoldText() nobuflisted nowrap
         let l:minwidth = max([1, &winminwidth])
@@ -293,10 +293,10 @@ function! s:Project(filename) " <<<
         return 0
     endfunction ">>>
     " s:DoSetupAndSplit() <<<
-    "   Call DoSetup to ensure the settings are correct.  Split to the next
-    "   file.
+    "   Call SetLocalOptions to ensure the settings are correct.
+    "   Split to the next file.
     function! s:DoSetupAndSplit()
-        call s:DoSetup()                " Ensure that all the settings are right
+        call s:SetLocalOptions()                " Ensure that all the settings are right
         let l:proj_winnr = winnr()        " Determine if there is a CTRL_W-p window
         silent! wincmd p
         let l:split_nr = winnr()
@@ -362,7 +362,7 @@ function! s:Project(filename) " <<<
         if exists('g:proj_running') && (winbufnr(0) != g:proj_running)
             return
         endif
-        call s:DoSetup()                " Ensure that all the settings are right
+        call s:SetLocalOptions()        " Ensure that all the settings are right
         if winbufnr(2) == -1            " We're the only window right now.
             " If two windows are open, including the tray, and the other window
             " is closed, BufEnter actions this function, but the split fails,
@@ -1956,7 +1956,7 @@ function! s:Project(filename) " <<<
         return
     endif
     call s:PrepareReusableCommands()
-    call s:DoSetup()
+    call s:SetLocalOptions()
     call s:CreateProjectSyntaxRulesAndHighlights()
     call s:CreateMapsAndAutocmds_ProjectBuffer()
 endfunction ">>>
