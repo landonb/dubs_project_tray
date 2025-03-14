@@ -1699,8 +1699,21 @@ function! s:Project(filename) " <<<
             endif
         endif
     endfunction ">>>
+    " Project has historically used <Space> as the width toggle, but some
+    " (Neo)vim distros (e.g., LazyVim) and some users use <Space> as a
+    " leader character. Let's not interfere.
+    function! s:WidthToggleLhs()
+        let l:lhs_width_toggle = '<space>'
+        if g:mapleader == ' ' || vim.g.maplocalleader == ' '
+            " Default <S-Space> appears same as |w| (but undocumented?).
+            let l:lhs_width_toggle = get(g:, 'proj_width_toggle_lhs', '<s-space>')
+        endif
+        return l:lhs_width_toggle
+    endfunction
     " Mappings <<<
     function! s:CreateMaps_ProjectBuffer()
+        let l:width_toggle_lhs = s:WidthToggleLhs()
+
         nnoremap <buffer> <silent> <Return>   \|:call <SID>DoFoldOrOpenEntry('', 'e')<CR>
         nnoremap <buffer> <silent> <S-Return> \|:call <SID>DoFoldOrOpenEntry('', 'sp')<CR>
         nnoremap <buffer> <silent> <C-Return> \|:call <SID>DoFoldOrOpenEntry('silent! only', 'e')<CR>
@@ -1727,19 +1740,12 @@ function! s:Project(filename) " <<<
         nmap     <buffer> <silent> <C-2-LeftMouse> <C-Return>
         nnoremap <buffer> <silent> <C-LeftMouse>   <LeftMouse>
         nnoremap <buffer> <silent> <3-LeftMouse>  <Nop>
-        nmap     <buffer> <silent> <RightMouse>   <space>
-        nmap     <buffer> <silent> <2-RightMouse> <space>
-        nmap     <buffer> <silent> <3-RightMouse> <space>
-        nmap     <buffer> <silent> <4-RightMouse> <space>
-        " Project has historically used <Space> as the width toggle, but some
-        " (Neo)vim distros (e.g., LazyVim) and some users use <Space> as a
-        " leader character. Let's not interfere.
-        let l:lhs_width_toggle = '<space>'
-        if g:mapleader == ' ' || vim.g.maplocalleader == ' '
-            " Default <S-Space> appears same as |w| (but undocumented?).
-            let l:lhs_width_toggle = get(g:, 'proj_width_toggle_lhs', '<s-space>')
-        endif
-        exec "nnoremap <buffer> <silent> " .. l:lhs_width_toggle .. " \\|:silent exec 'vertical resize ' .. (match(g:proj_flags, '\\Ct') != -1 && winwidth('.') > g:proj_window_width ? g:proj_window_width : (winwidth('.') + g:proj_window_increment))" .. '<CR>'
+
+        exec "nmap     <buffer> <silent> <RightMouse>   " .. l:width_toggle_lhs
+        exec "nmap     <buffer> <silent> <2-RightMouse> " .. l:width_toggle_lhs
+        exec "nmap     <buffer> <silent> <3-RightMouse> " .. l:width_toggle_lhs
+        exec "nmap     <buffer> <silent> <4-RightMouse> " .. l:width_toggle_lhs
+        exec "nnoremap <buffer> <silent> " .. l:width_toggle_lhs .. " \\|:silent exec 'vertical resize ' .. (match(g:proj_flags, '\\Ct') != -1 && winwidth('.') > g:proj_window_width ? g:proj_window_width : (winwidth('.') + g:proj_window_increment))" .. '<CR>'
 
         " 2021-01-31: (lb) The dubs_buffer_fun plugin maps Ctrl-Up/-Down to
         " scrolling the window up/down one line (without moving the cursor);
