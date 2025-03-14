@@ -1717,20 +1717,24 @@ function! s:Project(filename) " <<<
         nnoremap <buffer> <silent> <Return>   \|:call <SID>DoFoldOrOpenEntry('', 'e')<CR>
         nnoremap <buffer> <silent> <S-Return> \|:call <SID>DoFoldOrOpenEntry('', 'sp')<CR>
         nnoremap <buffer> <silent> <C-Return> \|:call <SID>DoFoldOrOpenEntry('silent! only', 'e')<CR>
+
         nnoremap <buffer> <silent> <LocalLeader>T \|:call <SID>DoFoldOrOpenEntry('', 'tabe')<CR>
         nmap     <buffer> <silent> <LocalLeader>s <S-Return>
         nnoremap <buffer> <silent> <LocalLeader>S \|:call <SID>LoadAllSplit(0, line('.'))<CR>
         nmap     <buffer> <silent> <LocalLeader>o <C-Return>
         nnoremap <buffer> <silent> <LocalLeader>i :echo <SID>RecursivelyConstructDirectives(line('.'))<CR>
         nnoremap <buffer> <silent> <LocalLeader>I :echo Project_GetFname(line('.'))<CR>
+
         nmap     <buffer> <silent> <M-CR> <Return><C-W>p
         nmap     <buffer> <silent> <LocalLeader>v <M-CR>
+
         nnoremap <buffer> <silent> <LocalLeader>l \|:call <SID>LoadAll(0, line('.'))<CR>
         nnoremap <buffer> <silent> <LocalLeader>L \|:call <SID>LoadAll(1, line('.'))<CR>
         nnoremap <buffer> <silent> <LocalLeader>w \|:call <SID>WipeAll(0, line('.'))<CR>
         nnoremap <buffer> <silent> <LocalLeader>W \|:call <SID>WipeAll(1, line('.'))<CR>
         nnoremap <buffer> <silent> <LocalLeader>g \|:call <SID>GrepAll(1, line('.'), "")<CR>
         nnoremap <buffer> <silent> <LocalLeader>G \|:call <SID>GrepAll(0, line('.'), "")<CR>
+
         nnoremap <buffer> <silent> <2-LeftMouse>   \|:call <SID>DoFoldOrOpenEntry('', 'e')<CR>
         " [lb] add insert mode mapping, too.
         inoremap <buffer> <silent> <2-LeftMouse>   <C-O>:call <SID>DoFoldOrOpenEntry('', 'e')<CR>
@@ -1811,6 +1815,7 @@ function! s:Project(filename) " <<<
         nnoremap <buffer>          <LocalLeader>0 \|:call <SID>ListSpawn("")<CR>
         nnoremap <buffer>          <LocalLeader>f0 \|:call <SID>ListSpawn("_fold")<CR>
         nnoremap <buffer>          <LocalLeader>F0 \|:call <SID>ListSpawn("_fold")<CR>
+
         " 2015.01.08: [lb] only ever creates recursively, so redoing the
         "             mappings to make little 'c' use a less verbose
         "             setup wizard and to search recursively.
