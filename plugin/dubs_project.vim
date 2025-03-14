@@ -1694,22 +1694,8 @@ function! s:Project(filename) " <<<
             endif
         endif
     endfunction ">>>
-    function! s:CreateMaps_ProjectBuffer() "<<<
-        " s:DoProjectOnly(void) <<<
-        "   Make the file window the only one.
-        function! s:DoProjectOnly()
-            if winbufnr(0) != g:proj_running
-                let lzsave=&lz
-                set lz
-                only
-                Project
-                silent! wincmd p
-                let &lz=lzsave
-                unlet lzsave
-            endif
-        endfunction
-        " >>>
-        " Mappings <<<
+    " Mappings <<<
+    function! s:CreateMaps_ProjectBuffer()
         nnoremap <buffer> <silent> <Return>   \|:call <SID>DoFoldOrOpenEntry('', 'e')<CR>
         nnoremap <buffer> <silent> <S-Return> \|:call <SID>DoFoldOrOpenEntry('', 'sp')<CR>
         nnoremap <buffer> <silent> <C-Return> \|:call <SID>DoFoldOrOpenEntry('silent! only', 'e')<CR>
@@ -1918,18 +1904,31 @@ function! s:Project(filename) " <<<
         "   - tl;dr A general purpose tool like ZoomWin works great. It also
         "     decouples the project tray from doing things outside its core.
         if 0
-          nnoremap <script> <Plug>ProjectOnly :call <SID>DoProjectOnly()<CR>
-          if match(g:proj_flags, '\Cm') != -1
-              if !hasmapto('<Plug>ProjectOnly')
-                  nmap <silent> <unique> <C-W>o <Plug>ProjectOnly
-                  nmap <silent> <unique> <C-W><C-O> <C-W>o
-              endif
-          endif
+            " s:DoProjectOnly(void) <<<
+            "   Make the file window the only one.
+            function! s:DoProjectOnly()
+                if winbufnr(0) != g:proj_running
+                    let lzsave=&lz
+                    set lz
+                    only
+                    Project
+                    silent! wincmd p
+                    let &lz=lzsave
+                    unlet lzsave
+                endif
+            endfunction
+            " >>>
+            nnoremap <script> <Plug>ProjectOnly :call <SID>DoProjectOnly()<CR>
+            if match(g:proj_flags, '\Cm') != -1
+                if !hasmapto('<Plug>ProjectOnly')
+                    nmap <silent> <unique> <C-W>o <Plug>ProjectOnly
+                    nmap <silent> <unique> <C-W><C-O> <C-W>o
+                endif
+            endif
         endif
 
         " BWARE: Is this a security concern? (Also a feature I've never used.)
         if filereadable(glob('~/.vimproject_mappings')) | source ~/.vimproject_mappings | endif
-        ">>>
     endfunction ">>>
     " Autocommands "<<<
     function! s:CreateAutocmds_ProjectBuffer()
