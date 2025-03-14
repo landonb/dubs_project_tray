@@ -1800,9 +1800,13 @@ function! s:Project(filename) " <<<
 
         let k=1
         while k < 10
-            exec 'nnoremap <buffer> <LocalLeader>'.k.'  \|:call <SID>Spawn('.k.')<CR>'
-            exec 'nnoremap <buffer> <LocalLeader>f'.k.' \|:call <SID>SpawnAll(0, '.k.')<CR>'
-            exec 'nnoremap <buffer> <LocalLeader>F'.k.' \|:call <SID>SpawnAll(1, '.k.')<CR>'
+            if exists("g:proj_run" .. l:k)
+                exec 'nnoremap <buffer> <LocalLeader>'.k.'  \|:call <SID>Spawn('.k.')<CR>'
+            endif
+            if exists("g:proj_run_fold" .. l:k)
+                exec 'nnoremap <buffer> <LocalLeader>f'.k.' \|:call <SID>SpawnAll(0, '.k.')<CR>'
+                exec 'nnoremap <buffer> <LocalLeader>F'.k.' \|:call <SID>SpawnAll(1, '.k.')<CR>'
+            endif
             let k=k+1
         endwhile
         nnoremap <buffer>          <LocalLeader>0 \|:call <SID>ListSpawn("")<CR>
