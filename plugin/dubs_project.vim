@@ -115,34 +115,45 @@ function! s:Project(filename) " <<<
         endif
         return l:filename
     endfunction
+    function! s:OpenOrFocusProjectWindow(filename) abort
+        if !exists("g:proj_running") || (bufwinnr(g:proj_running) == -1) " Open the Project Window
+            if match(g:proj_flags, '\CF') != -1
+                " Open Project window in vertical split on right of current window.
+                exec 'silent vertical new ' .. a:filename
+            else
+                " 
+                exec 'silent vertical topleft ' .. g:proj_window_width .. 'split'
+                exec 'edit ' .. a:filename
+            endif
+            " So the Project window stays the same width as user
+            " resizes the app window. REFER: |equalalways|
+            setlocal winfixwidth
+            setlocal nomodeline
+            " So that <Home>/<End> doesn't scroll horizontally (which happens
+            " if a line is almost as long as the window width, and you <End>
+            " or |$|, (Neo)vim scrolls horizontally to ensure cursor is
+            " |sidescrolloff| columns from the edge of the window).
+            " - This plays nice with LazyVim/other distros/or if user sets this globally.
+            setlocal sidescrolloff=0
+        else
+            " Project running and visible, so just focus its window.
+            " - If toggling off, caller will `hide` buffer (and window) next.
+            exec 'silent! ' .. bufwinnr(g:proj_running) .. 'wincmd w'
+
+            return 1
+        endif
+
+        return 0
+    endfunction
+
     call s:InitializeGlobals()
     let l:filename = s:ResolveVimprojectsPath(a:filename)
-    if !exists("g:proj_running") || (bufwinnr(g:proj_running) == -1) " Open the Project Window
-        if match(g:proj_flags, '\CF') != -1
-            " Open Project window in vertical split on right of current window.
-            exec 'silent vertical new ' .. filename
-        else
-            " 
-            exec 'silent vertical topleft ' .. g:proj_window_width .. 'split'
-            exec 'edit ' .. filename
-        endif
-        " So the Project window stays the same width as user
-        " resizes the app window. REFER: |equalalways|
-        setlocal winfixwidth
-        setlocal nomodeline
-        " So that <Home>/<End> doesn't scroll horizontally (which happens
-        " if a line is almost as long as the window width, and you <End>
-        " or |$|, (Neo)vim scrolls horizontally to ensure cursor is
-        " |sidescrolloff| columns from the edge of the window).
-        " - This plays nice with LazyVim/other distros/or if user sets this globally.
-        setlocal sidescrolloff=0
-    else
-        " Project running and visible, so just focus its window.
-        " - If toggling off, caller will `hide` buffer (and window) next.
-        exec 'silent! ' .. bufwinnr(g:proj_running) .. 'wincmd w'
+    let l:already_open = s:OpenOrFocusProjectWindow(l:filename)
+    if l:already_open
 
         return
     endif
+
     " Process the flags
     let b:proj_cd_cmd='cd'
     if match(g:proj_flags, '\Cl') != -1
