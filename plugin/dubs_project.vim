@@ -1826,20 +1826,20 @@ function! s:Project(filename) " <<<
         nnoremap <buffer> <silent> <LocalLeader>C :call <SID>CreateEntriesFromDir(1)<CR>
         nnoremap <buffer> <silent> <LocalLeader>r :call <SID>RefreshEntriesFromDir(0)<CR>
         nnoremap <buffer> <silent> <LocalLeader>R :call <SID>RefreshEntriesFromDir(1)<CR>
-        " For Windows users: same as \R
+        " For Fkey users: <F5> same as \R (<F5> similar to browser refresh, etc.).
         nnoremap <buffer> <silent>           <F5> :call <SID>RefreshEntriesFromDir(1)<CR>
         nnoremap <buffer> <silent> <LocalLeader>e :call <SID>OpenEntry(line('.'), '', '', 0)<CR>
         nnoremap <buffer> <silent> <LocalLeader>E :call <SID>OpenEntry(line('.'), '', 'e', 1)<CR>
-        " The :help command stomps on the Project Window.  Try to avoid that.
+        " The :help command stomps on the Project Window. Try to avoid that.
         " This is not perfect, but it is alot better than without the mappings.
         " 2018-05-06: (lb): This messes up /-search!
         "   E.g., If you type </> <h> <e>, the autosearch feature does not
         "   activate because Vim is waiting to see if you'll spell h-e-l-p!
-        "cnoremap <buffer> help let g:proj_doinghelp = 1<CR>:help
+        "  cnoremap <buffer> help let g:proj_doinghelp = 1<CR>:help
 
         " 2011-04-14: (lb): dubs_project's <F1> conflicts
         "   with dubs_edit_juice's <F1> find-under-cursor
-        " nnoremap <buffer> <F1> :let g:proj_doinghelp = 1<CR><F1>
+        "  nnoremap <buffer> <F1> :let g:proj_doinghelp = 1<CR><F1>
         "
         " 2021-01-31: (lb): Only match once (first hit) per line.
         " - Only took 10 years to figure this out.
@@ -1897,8 +1897,13 @@ function! s:Project(filename) " <<<
 
         " This is to avoid changing the buffer, but it is not fool-proof (full proof?).
         nnoremap <buffer> <silent> <C-^> <Nop>
-        "nnoremap <script> <Plug>ProjectOnly
-        "  \ :let lzsave=&lz<CR>:set lz<CR><C-W>o:Project<CR>:silent! wincmd p<CR>:let &lz=lzsave<CR>:unlet lzsave<CR>
+        "  nnoremap <script> <Plug>ProjectOnly
+        "    \ :let lzsave=&lz<CR>
+        "    \ :set lz<CR><C-W>o
+        "    \ :Project<CR>
+        "    \ :silent! wincmd p<CR>
+        "    \ :let &lz=lzsave<CR>
+        "    \ :unlet lzsave<CR>
         "
         " 2020-02-13: (lb): <Ctrl-w>o not working very well for me, didn't
         " close all my windows; and on restore, hung (no files loaded) until
