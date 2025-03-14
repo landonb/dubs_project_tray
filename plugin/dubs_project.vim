@@ -50,7 +50,11 @@ function! s:Project(filename) " <<<
     endif
     if exists("g:proj_running")
         if strlen(a:filename) != 0
-            call confirm('Project already loaded; ignoring filename "'.a:filename."\".\n".'See ":help project-invoking" for information about changing project files.', "&OK", 1)
+            call confirm('Project already loaded; ignoring filename "'
+              \ .. a:filename .. "\".\n"
+              \ .. 'See ":help project-invoking" for information about changing project files.',
+              \ "&OK",
+              \ 1)
         endif
         let filename=bufname(g:proj_running)
     else
