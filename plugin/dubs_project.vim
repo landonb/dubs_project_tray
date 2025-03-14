@@ -2021,6 +2021,8 @@ function! s:SetProjRunning(bufname) "<<<
     setlocal nobuflisted
 
     " Default &ft=config, which also causes which-key to show  icon.
+    " - USAGE: Use `autocmd FileType project_tray`` to register buffer
+    "   maps with which-key (via Lua config.)
     setlocal filetype=project_tray
 endfunction ">>>
 
@@ -2034,15 +2036,14 @@ function! s:Project(filename) " <<<
     endif
     call s:PrepareReusableCommands()
     call s:SetLocalOptions()
-    call s:CreateProjectSyntaxRulesAndHighlights()
-    if exists("g:proj_running")
-
-        return
+    if !exists("g:proj_running")
+        call s:CreateMaps_ProjectBuffer()
+        call s:CreateMaps_WhichKeyDescs()
+        let l:bufname = s:CreateAutocmds_ProjectBuffer()
+        call s:SetProjRunning(l:bufname)
     endif
-    call s:CreateMaps_ProjectBuffer()
-    call s:CreateMaps_WhichKeyDescs()
-    let l:bufname = s:CreateAutocmds_ProjectBuffer()
-    call s:SetProjRunning(l:bufname)
+    " Setting filetype clears syntax, so this comes after.
+    call s:CreateProjectSyntaxRulesAndHighlights()
 endfunction ">>>
 
 " :Project and :ToggleProject commands "<<<
