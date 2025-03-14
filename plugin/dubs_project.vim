@@ -1716,7 +1716,6 @@ function! s:Project(filename) " <<<
         nnoremap <buffer> <silent> <LocalLeader>L \|:call <SID>LoadAll(1, line('.'))<CR>
         nnoremap <buffer> <silent> <LocalLeader>w \|:call <SID>WipeAll(0, line('.'))<CR>
         nnoremap <buffer> <silent> <LocalLeader>W \|:call <SID>WipeAll(1, line('.'))<CR>
-        nnoremap <buffer> <silent> <LocalLeader>W \|:call <SID>WipeAll(1, line('.'))<CR>
         nnoremap <buffer> <silent> <LocalLeader>g \|:call <SID>GrepAll(1, line('.'), "")<CR>
         nnoremap <buffer> <silent> <LocalLeader>G \|:call <SID>GrepAll(0, line('.'), "")<CR>
         nnoremap <buffer> <silent> <2-LeftMouse>   \|:call <SID>DoFoldOrOpenEntry('', 'e')<CR>
