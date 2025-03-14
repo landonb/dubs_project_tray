@@ -108,7 +108,7 @@ function! s:Project(filename) " <<<
                 " Default project filename
                 " - FTREQ: This should be elsewhere, and not at top-level user home,
                 "   perhaps under ~/.config/${NVIM_APPNAME}/
-                let l:filename = '~/.vimprojects'
+                let l:filename = get(g:, 'proj_filename', '~/.vimprojects')
             else
                 let l:filename = a:filename
             endif
