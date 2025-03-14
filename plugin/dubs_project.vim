@@ -45,26 +45,9 @@ let g:plugin_dubs_project_skip_symlink_dirs = 0
 
 function! s:Project(filename) " <<<
     " Initialization <<<
-    function s:InitializeGlobals(filename) abort
+    function! s:InitializeGlobals() abort
         if exists("g:proj_running") && bufnr(g:proj_running) == -1
             unlet! g:proj_running
-        endif
-        if exists("g:proj_running")
-            if strlen(a:filename) != 0
-                call confirm('Project already loaded; ignoring filename "'
-                \ .. a:filename .. "\".\n"
-                \ .. 'See ":help project-invoking" for information about changing project files.',
-                \ "&OK",
-                \ 1)
-            endif
-            let filename=bufname(g:proj_running)
-        else
-            if strlen(a:filename) == 0
-                " Default project filename
-                let filename = '~/.vimprojects'
-            else
-                let filename = a:filename
-            endif
         endif
         if !exists('g:proj_window_width')
             " Default project window width.
@@ -110,8 +93,30 @@ function! s:Project(filename) " <<<
             endif
         endif
     endfunction
-    call s:InitializeGlobals(a:filename)
-    
+    function! s:ResolveVimprojectsPath(filename) abort
+        if exists("g:proj_running")
+            if strlen(a:filename) != 0
+                call confirm('Project already loaded; ignoring filename "'
+                \ .. a:filename .. "\".\n"
+                \ .. 'See ":help project-invoking" for information about changing project files.',
+                \ "&OK",
+                \ 1)
+            endif
+            let l:filename = bufname(g:proj_running)
+        else
+            if strlen(a:filename) == 0
+                " Default project filename
+                " - FTREQ: This should be elsewhere, and not at top-level user home,
+                "   perhaps under ~/.config/${NVIM_APPNAME}/
+                let l:filename = '~/.vimprojects'
+            else
+                let l:filename = a:filename
+            endif
+        endif
+        return l:filename
+    endfunction
+    call s:InitializeGlobals()
+    let l:filename = s:ResolveVimprojectsPath(a:filename)
     if !exists("g:proj_running") || (bufwinnr(g:proj_running) == -1) " Open the Project Window
         if match(g:proj_flags, '\CF') != -1
             " Open Project window in vertical split on right of current window.
