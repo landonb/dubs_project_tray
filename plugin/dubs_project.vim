@@ -1694,17 +1694,12 @@ function! s:Project(filename) " <<<
             endif
         endif
     endfunction ">>>
-    call s:InitializeGlobals()
-    let l:filename = s:ResolveVimprojectsPath(a:filename)
-    let l:already_open = s:OpenOrFocusProjectWindow(l:filename)
-    if l:already_open
+    function! s:CreateMapsAndAutocmds_ProjectBuffer() "<<<
+        if exists("g:proj_running")
 
-        return
-    endif
-    call s:PrepareReusableCommands()
-    call s:DoSetup()
-    call s:CreateProjectSyntaxRulesAndHighlights()
-    if !exists("g:proj_running") "<<<
+            return
+        endif
+
         " s:DoProjectOnly(void) <<<
         "   Make the file window the only one.
         function! s:DoProjectOnly()
@@ -1951,7 +1946,19 @@ function! s:Project(filename) " <<<
         endif
         setlocal nobuflisted
         " >>>
-    endif ">>>
+    endfunction ">>>
+
+    call s:InitializeGlobals()
+    let l:filename = s:ResolveVimprojectsPath(a:filename)
+    let l:already_open = s:OpenOrFocusProjectWindow(l:filename)
+    if l:already_open
+
+        return
+    endif
+    call s:PrepareReusableCommands()
+    call s:DoSetup()
+    call s:CreateProjectSyntaxRulesAndHighlights()
+    call s:CreateMapsAndAutocmds_ProjectBuffer()
 endfunction ">>>
 
 " :Project and :ToggleProject commands "<<<
