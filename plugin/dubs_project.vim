@@ -45,66 +45,73 @@ let g:plugin_dubs_project_skip_symlink_dirs = 0
 
 function! s:Project(filename) " <<<
     " Initialization <<<
-    if exists("g:proj_running") && bufnr(g:proj_running) == -1
-        unlet! g:proj_running
-    endif
-    if exists("g:proj_running")
-        if strlen(a:filename) != 0
-            call confirm('Project already loaded; ignoring filename "'
-              \ .. a:filename .. "\".\n"
-              \ .. 'See ":help project-invoking" for information about changing project files.',
-              \ "&OK",
-              \ 1)
+    function s:InitializeGlobals(filename) abort
+        if exists("g:proj_running") && bufnr(g:proj_running) == -1
+            unlet! g:proj_running
         endif
-        let filename=bufname(g:proj_running)
-    else
-        if strlen(a:filename) == 0
-            let filename ='~/.vimprojects'      " Default project filename
+        if exists("g:proj_running")
+            if strlen(a:filename) != 0
+                call confirm('Project already loaded; ignoring filename "'
+                \ .. a:filename .. "\".\n"
+                \ .. 'See ":help project-invoking" for information about changing project files.',
+                \ "&OK",
+                \ 1)
+            endif
+            let filename=bufname(g:proj_running)
         else
-            let filename = a:filename
+            if strlen(a:filename) == 0
+                " Default project filename
+                let filename = '~/.vimprojects'
+            else
+                let filename = a:filename
+            endif
         endif
-    endif
-    if !exists('g:proj_window_width')
-        " Default project window width.
-        " - This value already set (to 33) by the other plugin file
-        "   when it was sourced (vs. here in :Project callback).
-        "   ~/.kit/nvim/landonb/dubs_project_tray/plugin/dubs_project_tray.vim
-        let g:proj_window_width = get(g:, 'proj_window_width', 33)
-    endif
-    if !exists('g:proj_window_increment')
-        " Project Window width increment (used on <Space> to toggle wider width).
-        let g:proj_window_increment = get(g:, 'proj_window_increment', 100)
-    endif
-    if !exists('g:proj_flags')
-        " i: Print directory path progress messages on refresh.
-        " m: Define <Plug>ProjectOnly
-        " g: Add nmap <F12> <Plug>ToggleProject
-        " s: Disable sort lines on refresh (use readdir order, then
-        "    g:proj_sort filter, also g:proj_unique will sort).
-        " t: Make <Space> to expand project window a toggle vs. just expanding.
-        " b: Uses :browse dialog to obtain directory path for new project.
-        "    Otherwise uses simple prompt.
-        " c: When opening entry, hides Project window and resizes equally.
-        " l: Use :lcd for CD= command, otherwise :cd.
-        " v: Use :grep (otherwise uses :vimpgrep).
-        " B: Call `botright copen` instead of `copen` to open quickfix using full
-        "    horizontal width; and don't jump to first grep match.
-        " F: Use "floating" window (*not* a Neovim floating window; this flag
-        "    and doc. created before Neovim forked; it simply means to open the
-        "    Project window in a new split from the current window)
-        " L: When project uses CD=, sets up BufEnter, BufLeave, BufWipeout autocmd's
-        "    to save/restore cwd.
-        " S: Sort lines on refresh (see also 's' option and g:proj_sort).
-        " T: Go to top of fold on project listing refresh.
-        " n: Calls :setlocal number
-        " See also g: vars:
-        "   g:syntax_on
-        if has("win32") || has("mac")
-            let g:proj_flags='imst'             " Project default flags for windows/mac
-        else
-            let g:proj_flags='imstb'            " Project default flags for everything else
+        if !exists('g:proj_window_width')
+            " Default project window width.
+            " - This value already set (to 33) by the other plugin file
+            "   when it was sourced (vs. here in :Project callback).
+            "   ~/.kit/nvim/landonb/dubs_project_tray/plugin/dubs_project_tray.vim
+            let g:proj_window_width = get(g:, 'proj_window_width', 33)
         endif
-    endif
+        if !exists('g:proj_window_increment')
+            " Project Window width increment (used on <Space> to toggle wider width).
+            let g:proj_window_increment = get(g:, 'proj_window_increment', 100)
+        endif
+        if !exists('g:proj_flags')
+            " i: Print directory path progress messages on refresh.
+            " m: Define <Plug>ProjectOnly
+            " g: Add nmap <F12> <Plug>ToggleProject
+            " s: Disable sort lines on refresh (use readdir order, then
+            "    g:proj_sort filter, also g:proj_unique will sort).
+            " t: Make <Space> to expand project window a toggle vs. just expanding.
+            " b: Uses :browse dialog to obtain directory path for new project.
+            "    Otherwise uses simple prompt.
+            " c: When opening entry, hides Project window and resizes equally.
+            " l: Use :lcd for CD= command, otherwise :cd.
+            " v: Use :grep (otherwise uses :vimpgrep).
+            " B: Call `botright copen` instead of `copen` to open quickfix using full
+            "    horizontal width; and don't jump to first grep match.
+            " F: Use "floating" window (*not* a Neovim floating window; this flag
+            "    and doc. created before Neovim forked; it simply means to open the
+            "    Project window in a new split from the current window)
+            " L: When project uses CD=, sets up BufEnter, BufLeave, BufWipeout autocmd's
+            "    to save/restore cwd.
+            " S: Sort lines on refresh (see also 's' option and g:proj_sort).
+            " T: Go to top of fold on project listing refresh.
+            " n: Calls :setlocal number
+            " See also g: vars:
+            "   g:syntax_on
+            if has("win32") || has("mac")
+                " Project default flags for windows/mac
+                let g:proj_flags='imst'
+            else
+                " Project default flags for everything else
+                let g:proj_flags='imstb'
+            endif
+        endif
+    endfunction
+    call s:InitializeGlobals(a:filename)
+    
     if !exists("g:proj_running") || (bufwinnr(g:proj_running) == -1) " Open the Project Window
         if match(g:proj_flags, '\CF') != -1
             " Open Project window in vertical split on right of current window.
