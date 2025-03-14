@@ -145,7 +145,23 @@ function! s:Project(filename) " <<<
 
         return 0
     endfunction
+    function! s:PrepareReusableCommands() abort
+        " Process the flags
+        let b:proj_cd_cmd='cd'
+        if match(g:proj_flags, '\Cl') != -1
+            let b:proj_cd_cmd = 'lcd'
+        endif
 
+        let b:proj_locate_command='silent! wincmd H'
+        let b:proj_resize_command='exec ''vertical resize ''.g:proj_window_width'
+        if match(g:proj_flags, '\CF') != -1
+            " Set the resize commands to nothing
+            let b:proj_locate_command=''
+            let b:proj_resize_command=''
+        endif
+
+        let g:proj_last_buffer = -1
+    endfunction
     call s:InitializeGlobals()
     let l:filename = s:ResolveVimprojectsPath(a:filename)
     let l:already_open = s:OpenOrFocusProjectWindow(l:filename)
@@ -153,22 +169,7 @@ function! s:Project(filename) " <<<
 
         return
     endif
-
-    " Process the flags
-    let b:proj_cd_cmd='cd'
-    if match(g:proj_flags, '\Cl') != -1
-        let b:proj_cd_cmd = 'lcd'
-    endif
-
-    let b:proj_locate_command='silent! wincmd H'
-    let b:proj_resize_command='exec ''vertical resize ''.g:proj_window_width'
-    if match(g:proj_flags, '\CF') != -1
-        " Set the resize commands to nothing
-        let b:proj_locate_command=''
-        let b:proj_resize_command=''
-    endif
-
-    let g:proj_last_buffer = -1
+    call s:PrepareReusableCommands()
     ">>>
     " ProjFoldText() <<<
     "   The foldtext function for displaying just the description.
