@@ -5,7 +5,10 @@
 
 " -------------------------------------------------------------------
 
-" I wish this were more responsive!
+" CALSO: |'equalalways'|
+
+" TIMED: Not the fastest in MacVim, but as responsive as &equalalways in Neovide.
+
 function! g:embrace#vresize#VerticalResizeNormalBufferWindowsEqually() abort
   let l:old_win = winnr()
 
