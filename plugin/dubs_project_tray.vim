@@ -70,8 +70,10 @@ function! s:CreateMaps_Plug() abort
 endfunction
 
 function! s:CreateMaps_ToggleProject(key_sequence = '<M-$>') abort
-  execute 'nnoremap <silent> ' .. a:key_sequence .. ' <Plug>DubsProjectTray_ToggleProject_Wrapper'
-  execute 'inoremap <silent> ' .. a:key_sequence .. ' <C-O><Plug>DubsProjectTray_ToggleProject_Wrapper'
+  execute 'nnoremap <silent> ' .. a:key_sequence
+    \ .. ' <Plug>DubsProjectTray_ToggleProject_Wrapper'
+  execute 'inoremap <silent> ' .. a:key_sequence
+    \ .. ' <C-O><Plug>DubsProjectTray_ToggleProject_Wrapper'
 endfunction
 
 call s:CreateMaps_Plug()
