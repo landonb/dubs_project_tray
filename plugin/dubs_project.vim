@@ -351,8 +351,12 @@ function! s:DoSetupAndSplit()
     endif
 endfunction
 function! s:IsWindowSplittable(winnr, proj_winnr)
-    return (getbufvar(winbufnr(a:winnr), "&buftype") == "")
-        \ && (a:winnr != a:proj_winnr)
+    let l:bufnr = winbufnr(a:winnr)
+    " Make an exception for @folke/snacks dashboard.
+    return (
+        \ getbufvar(l:bufnr, "&buftype") == ""
+        \  || getbufvar(l:bufnr, "&filetype") == 'snacks_dashboard'
+        \ ) && (a:winnr != a:proj_winnr)
 endfunction ">>>
 " s:DoSetupAndSplit_au() <<<
 "   Same as above but ensure that the Project window is the current
