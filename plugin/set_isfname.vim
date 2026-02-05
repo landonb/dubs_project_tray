@@ -93,6 +93,9 @@ let g:loaded_dubs_project_tray_set_isfname = 1
 "   ~/.kit/nvim/embrace-vim/start/vim-goto-file-sh/autoload/embrace/sh_expand.vim
 " - Latest isfname:
 "     set isfname=@,48-57,/,.,:,-,_,+,,,#,$,%,~,=,{,},(,),!,39
+"
+" 2026-02-04: Adding at sign (@), which, per |isfname|, is matched using
+" "@-@", because the leading "@" matches all ``isalpha()`` characters.
 
-set isfname=@,48-57,/,.,:,-,_,+,,,#,$,%,~,=,{,},(,),!,39
+set isfname=@,48-57,/,.,:,-,_,+,,,#,$,%,~,=,{,},(,),!,39,@-@
 
