@@ -390,9 +390,9 @@ Map	Action ~
 <F12>	When the 'g' flag is present in g:proj_flags (see |project-flags|)
 	this key toggles the Project Window open and closed. You may remap
 	this toggle function by putting the following in your vimrc and
-	replacing <Leader>P with whatever key combination you wish:
+	replacing <LocalLeader>P with whatever key combination you wish:
 
-		nmap <silent> <Leader>P <Plug>ToggleProject
+		nmap <silent> <LocalLeader>P <Plug>ToggleProject
 
 Note that the Project Plugin remaps :help because the Help Window and the
 Project Window get into a fight over placement. The mapping avoids the
@@ -684,7 +684,7 @@ TIPS ON USING PROJECT PLUGIN					*project-tips*
     self-contained as possible, so I'm not going to add it by default. But you
     can put this in your vimrc:
 >
-    	nmap <silent> <Leader>P :Project<CR>
+ 	nmap <silent> <LocalLeader>P :Project<CR>
 
 <
 9.  You can put the . entry in a project, and it will launch the
