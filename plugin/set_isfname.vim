@@ -89,8 +89,8 @@ let g:loaded_dubs_project_tray_set_isfname = 1
 " 2024-12-03: Adding colon (:) so `gf` and `includeexpr` can work on paths
 " that contain shell variables with default values, e.g., ${foo:-bar}/path.
 " - CXREF:
-"   ~/.kit/nvim/embrace-vim/start/vim-goto-file-sh/plugin/includeexpr-for-gf.vim
-"   ~/.kit/nvim/embrace-vim/start/vim-goto-file-sh/autoload/embrace/sh_expand.vim
+"   ~/.kit/nvim/embrace-vim/start/vim-goto-file-improved/plugin/includeexpr-for-gf.vim
+"   ~/.kit/nvim/embrace-vim/start/vim-goto-file-improved/autoload/embrace/sh_expand.vim
 " - Latest isfname:
 "     set isfname=@,48-57,/,.,:,-,_,+,,,#,$,%,~,=,{,},(,),!,39
 "
