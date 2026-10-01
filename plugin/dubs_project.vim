@@ -1709,6 +1709,7 @@ function! s:WidthToggleLhs()
     let l:lhs_width_toggle = '<space>'
     if g:mapleader == ' ' || vim.g.maplocalleader == ' '
         " Default <S-Space> appears same as |w| (but undocumented?).
+        " - BNDNG: <Shift-Space> (<S-Space>)
         let l:lhs_width_toggle = get(g:, 'proj_width_toggle_lhs', '<s-space>')
     endif
     return l:lhs_width_toggle
